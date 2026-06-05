@@ -1,4 +1,6 @@
-﻿# SCOPE Image Orchestrator
+[English](README.md) | [????](README.zh-CN.md)
+
+# SCOPE Image Orchestrator
 
 A Codex skill for SCOPE-style image generation orchestration.
 
