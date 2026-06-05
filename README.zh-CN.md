@@ -8,6 +8,14 @@
 
 > 这是一个受 SCOPE 论文启发的独立实践改造版本，不是论文作者的官方实现。
 
+## 社区交流
+
+QQ 群：`1107570994`
+
+扫码加入：
+
+<img src="docs/assets/qq-group.png" alt="QQ 群 1107570994" width="360">
+
 ## 论文来源
 
 - **SCOPE: Structured Decomposition and Conditional Skill Orchestration for Complex Image Generation**
@@ -30,6 +38,16 @@
 ```
 
 核心思路是把关键需求显式保存下来，而不是把所有内容都藏在一条超长提示词里。
+
+## 生成样例
+
+查看生成样例图库：
+
+- [样例图库](docs/gallery.md)
+
+预览：
+
+![生成样例总览](docs/assets/gallery/overview-contact-sheet.jpg)
 
 ## 命令模式
 
