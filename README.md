@@ -123,15 +123,6 @@ scope_runs/<task>/
   final_summary.json
 ```
 
-## Safety notes
-
-Do not commit:
-
-- Real API keys.
-- Private endpoint URLs.
-- Private generated outputs.
-- Personal account data.
-
 ## Community
 
 QQ group: `1107570994`

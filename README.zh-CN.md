@@ -119,15 +119,6 @@ scope_runs/<task>/
   final_summary.json
 ```
 
-## 安全说明
-
-不要提交：
-
-- 真实 API key。
-- 私有 endpoint URL。
-- 私有生成结果。
-- 个人账号数据。
-
 ## 社区交流
 
 QQ 群：`1107570994`
