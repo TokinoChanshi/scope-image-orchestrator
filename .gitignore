@@ -1,0 +1,15 @@
+# Local secrets and generated output
+*.env
+!.env.example
+.local-keys/
+scope_runs/
+.codex_tmp/
+__pycache__/
+*.pyc
+*.pyo
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

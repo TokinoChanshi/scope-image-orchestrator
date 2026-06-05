@@ -1,0 +1,202 @@
+{
+  "version": "scope-provider-config-v1",
+  "notes": "Example only. Keep real endpoints and secrets in environment variables. Public docs should list model names, official API formats, and generic JSON adapter shapes only.",
+  "roles": {
+    "decomposer": {
+      "provider": "llm_openai_responses",
+      "model": "gpt-5.5"
+    },
+    "reasoner": {
+      "provider": "llm_openai_responses",
+      "model": "gpt-5.5"
+    },
+    "retrieval_corrector": {
+      "provider": "llm_openai_chat",
+      "model": "grok-4.3"
+    },
+    "prompt_optimizer": {
+      "provider": "llm_openai_responses",
+      "model": "gpt-5.5"
+    },
+    "verifier": {
+      "provider": "vision_gemini",
+      "model": "gemini-3.5-flash"
+    },
+    "repair_planner": {
+      "provider": "llm_openai_responses",
+      "model": "gpt-5.5"
+    },
+    "image_generator": {
+      "provider": "image_openai",
+      "model": "gpt-image-2"
+    },
+    "image_generator_gemini": {
+      "provider": "image_gemini",
+      "model": "gemini-3-pro-image"
+    },
+    "prompt_optimizer_generic": {
+      "provider": "llm_generic",
+      "model": "custom-llm"
+    },
+    "verifier_generic": {
+      "provider": "vision_generic",
+      "model": "custom-vision"
+    },
+    "image_generator_generic": {
+      "provider": "image_generic",
+      "model": "custom-image"
+    },
+    "image_generator_legacy": {
+      "provider": "image_legacy",
+      "model": "gpt-image-2"
+    }
+  },
+  "providers": {
+    "llm_openai_chat": {
+      "adapter": "openai-chat",
+      "base_url_env": "SCOPE_LLM_BASE_URL",
+      "api_key_env": "SCOPE_LLM_API_KEY",
+      "models": [
+        "gpt-5.5",
+        "grok-4.3"
+      ],
+      "default_options": {
+        "temperature": 0.25,
+        "response_format": {
+          "type": "json_object"
+        }
+      }
+    },
+    "llm_openai_responses": {
+      "adapter": "openai-responses",
+      "base_url_env": "SCOPE_LLM_BASE_URL",
+      "api_key_env": "SCOPE_LLM_API_KEY",
+      "models": [
+        "gpt-5.5"
+      ],
+      "default_options": {
+        "temperature": 0.25
+      }
+    },
+    "vision_openai": {
+      "adapter": "openai-responses",
+      "base_url_env": "SCOPE_VISION_BASE_URL",
+      "api_key_env": "SCOPE_VISION_API_KEY",
+      "models": [
+        "gpt-5.5",
+        "grok-4.3"
+      ],
+      "default_options": {
+        "temperature": 0
+      }
+    },
+    "vision_gemini": {
+      "adapter": "google-gemini",
+      "base_url_env": "SCOPE_VISION_BASE_URL",
+      "api_key_env": "SCOPE_VISION_API_KEY",
+      "models": [
+        "gemini-3.5-flash",
+        "gemini-3-pro"
+      ],
+      "default_options": {
+        "generationConfig": {
+          "temperature": 0,
+          "responseMimeType": "application/json"
+        }
+      }
+    },
+    "image_openai": {
+      "adapter": "openai-images",
+      "base_url_env": "SCOPE_IMAGE_BASE_URL",
+      "generations_url_env": "SCOPE_IMAGE_GENERATIONS_URL",
+      "api_key_env": "SCOPE_IMAGE_API_KEY",
+      "models": [
+        "gpt-image-2"
+      ],
+      "default_options": {
+        "size": "1024x1536",
+        "quality": "high"
+      }
+    },
+    "image_openai_responses": {
+      "adapter": "openai-responses-image",
+      "base_url_env": "SCOPE_IMAGE_BASE_URL",
+      "api_key_env": "SCOPE_IMAGE_API_KEY",
+      "models": [
+        "gpt-5.5"
+      ],
+      "default_options": {
+        "tools": [
+          {
+            "type": "image_generation"
+          }
+        ]
+      }
+    },
+    "image_gemini": {
+      "adapter": "google-gemini-image",
+      "base_url_env": "SCOPE_IMAGE_BASE_URL",
+      "api_key_env": "SCOPE_IMAGE_API_KEY",
+      "models": [
+        "gemini-3.1-flash-image",
+        "gemini-3-pro-image",
+        "gemini-2.5-flash-image"
+      ],
+      "default_options": {
+        "generationConfig": {
+          "responseModalities": [
+            "TEXT",
+            "IMAGE"
+          ]
+        }
+      }
+    },
+    "llm_generic": {
+      "adapter": "generic-text-json",
+      "base_url_env": "SCOPE_LLM_ENDPOINT_URL",
+      "api_key_env": "SCOPE_LLM_API_KEY",
+      "models": [
+        "custom-llm"
+      ],
+      "default_options": {
+        "payload_style": "both"
+      }
+    },
+    "vision_generic": {
+      "adapter": "generic-vision-json",
+      "base_url_env": "SCOPE_VISION_ENDPOINT_URL",
+      "api_key_env": "SCOPE_VISION_API_KEY",
+      "models": [
+        "custom-vision"
+      ],
+      "default_options": {
+        "payload_style": "both"
+      }
+    },
+    "image_generic": {
+      "adapter": "generic-image-json",
+      "base_url_env": "SCOPE_IMAGE_ENDPOINT_URL",
+      "api_key_env": "SCOPE_IMAGE_API_KEY",
+      "models": [
+        "custom-image"
+      ],
+      "default_options": {
+        "n": 1,
+        "response_format": "b64_json"
+      }
+    },
+    "image_legacy": {
+      "adapter": "openai-images-legacy",
+      "base_url_env": "SCOPE_IMAGE_BASE_URL",
+      "generations_url_env": "SCOPE_IMAGE_GENERATIONS_URL",
+      "api_key_env": "SCOPE_IMAGE_API_KEY",
+      "models": [
+        "gpt-image-2"
+      ],
+      "default_options": {
+        "n": 1,
+        "response_format": "b64_json"
+      }
+    }
+  }
+}

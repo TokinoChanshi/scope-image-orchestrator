@@ -1,0 +1,453 @@
+{
+  "schema_version": "scope-unified-preset-library-v1",
+  "description": "Single preset entrypoint for the SCOPE Image Orchestrator skill. Runtime route presets, route keyword maps, optimizer guides, external prompt-pattern notes, and import summaries live here to avoid scattered preset files.",
+  "updated_at": "2026-06-02",
+  "runtime_schema_version": "scope-prompt-presets-v2",
+  "compatibility": {
+    "primary_file": "references/scope-preset-library.json",
+    "replaces": [
+      "references/prompt-presets-custom.json",
+      "references/prompt-presets.md",
+      "references/prompt-optimizer-compact.md",
+      "references/prompt-optimizer-engineering.md",
+      "references/external-prompt-patterns.md"
+    ],
+    "legacy_file_map": {
+      "prompt-presets-custom.json": "top-level runtime fields",
+      "prompt-presets.md": "optimizer_guides.prompt_presets_md",
+      "prompt-optimizer-compact.md": "optimizer_guides.prompt_optimizer_compact_md",
+      "prompt-optimizer-engineering.md": "optimizer_guides.prompt_optimizer_engineering_md",
+      "external-prompt-patterns.md": "optimizer_guides.external_prompt_patterns_md"
+    }
+  },
+  "global_rules": {
+    "negative_anchor": "Negative: no minors, no nudity, no sexual acts, no watermark.",
+    "short_prompt_english_only": "Keep final production prompt in compact clean English.",
+    "text_principles": [
+      "Prefer concrete camera/light/material controls before abstract adjectives.",
+      "Use 2-4 distinct scene anchors and avoid long safety-flavored filler words.",
+      "Keep hard constraints in negative_prompt, not in main descriptive tone.",
+      "Add route-specific detail if the request is generic."
+    ],
+    "gpt5_vs_grok_note": "Prompt optimization and repair should stay compact, deterministic, and easy to parse.",
+    "external_library_usage": "When route_preset_brief.external_patterns is present, use it as distilled inspiration: keep camera/layout/material controls, but do not copy long third-party prompt text verbatim. Prefer compact route-specific production English."
+  },
+  "nano_banana_influence": {
+    "core_idea": [
+      "replace mood words with measurable controls",
+      "split prompt into scene, lens, material, and composition blocks",
+      "anchor style with practical physical details first"
+    ],
+    "supported_templates": [
+      "photography",
+      "character",
+      "scene",
+      "product",
+      "interior"
+    ],
+    "distilled_from_infinite_canvas_sources": [
+      "treat the prompt as a physical shot plan, not as keyword spam",
+      "separate subject, environment, camera, material, lighting, and post-processing controls",
+      "for human scenes, add ordinary capture imperfections before beauty adjectives",
+      "for commercial scenes, keep one primary hero and 2-3 supporting anchors"
+    ]
+  },
+  "gpt_image2_influence": [
+    "layout before atmosphere",
+    "explicit scene + subject + lens + material order",
+    "short constraints, long constraints go to negative",
+    "if text is required, specify exact hierarchy and keep visible wording short",
+    "for unstable endpoints, keep the final prompt under 900-1100 characters and avoid nested JSON-like prompt prose"
+  ],
+  "routes": {
+    "portrait": {
+      "route_hint": "editorial / lifestyle portrait, real face identity, concrete setting, capture realism, skin/hair/fabric microtexture, not beauty-filter glamour",
+      "fallback_prompt": "Photorealistic 2:3 vertical editorial portrait, adult subject based on: {subject}. Scene first: {style_blocks}. {camera_phrase}. Real skin micro-texture, natural face asymmetry, realistic neck and shoulder anatomy, subtle under-eye variation, tiny flyaway hairs, visible fabric texture. Relaxed practical pose with realistic hands and gentle body shift.",
+      "camera_phrase": "85mm portrait lens, practical indoor/window light, natural falloff",
+      "aspect_ratio": "2:3",
+      "negative": "Negative: no cartoon look, no beauty-filter face, no plastic skin, no repeated random text, no watermark.",
+      "booster_lines": [
+        "one concrete scene anchor from the request and 2 nearby props",
+        "micro texture details on skin and hair only, not over-posed filters",
+        "distinct face geometry and hair silhouette per variant",
+        "micro texture on skin/hair/fabric without plastic smoothing",
+        "avoid over-posed stock-photo posture"
+      ],
+      "style_blocks": [
+        "real camera capture: 35mm/50mm/85mm, phone candid, CCD/film influence only when requested",
+        "one everyday location anchor with 2-3 props, not an empty studio unless requested",
+        "natural pose asymmetry: imperfect hand placement, shoulder weight, tiny expression imbalance"
+      ],
+      "external_patterns": [
+        "soft airy 35mm portrait with natural window light and mild film grain",
+        "iPhone candid realism with imperfect crop, natural face geometry, visible pores and flyaway hair",
+        "black mist / low-contrast indoor portrait, practical lamp glow, subtle under-eye variation",
+        "editorial lifestyle portrait with environment-first composition and realistic fabric folds"
+      ],
+      "route_keywords": [
+        "美女",
+        "写真",
+        "美女写真",
+        "日系写真",
+        "portrait",
+        "editorial portrait",
+        "lifestyle portrait",
+        "高端写真",
+        "生活写真",
+        "girlfriend photo",
+        "photography",
+        "journalist portrait"
+      ]
+    },
+    "magazine": {
+      "route_hint": "fashion / editorial magazine cover, layout-first, one masthead, 2-3 short cover lines, clean typography hierarchy, model integrated with text",
+      "fallback_prompt": "Photorealistic 2:3 high-fashion magazine cover, adult model based on: {subject}. Compose by layout-first with masthead, clean short cover lines, small issue badge and one issue number. Keep text density concise and readable. {light_phrase}. Model and scene are integrated with strong composition depth.",
+      "camera_phrase": "cinematic still look with subtle paper-like contrast",
+      "light_phrase": "cool ambient plus warm key, print-quality contrast control",
+      "aspect_ratio": "2:3",
+      "negative": "Negative: no repeated text paragraphs, no unreadable gibberish, no fake logos unless requested, no watermark, no minors, no messy text clutter.",
+      "booster_lines": [
+        "prioritize layout hierarchy over extra adjectives",
+        "one readable model-over-masthead composition"
+      ],
+      "external_patterns": [
+        "masthead at top, subject overlaps part of masthead, 2-3 readable cover lines on grid",
+        "one circular badge or issue mark, short serif/sans hierarchy, no paragraph clutter",
+        "cover lines frame the body rather than floating randomly; text zones must stay readable",
+        "premium print contrast, paper-like finish, controlled color palette and negative space"
+      ],
+      "composition_patterns": [
+        "2:3 vertical cover, model center or side-offset, clear top masthead zone",
+        "short text blocks: masthead, subtitle, feature line, small issue marker"
+      ],
+      "route_keywords": [
+        "杂志",
+        "封面",
+        "magazine",
+        "magazine cover",
+        "fashion cover",
+        "editorial cover",
+        "高端封面",
+        "luxe",
+        "vogue",
+        "cover"
+      ]
+    },
+    "poster": {
+      "route_hint": "cinematic/key-art poster, title-zone discipline, one hero focus, practical atmosphere, layered foreground-midground-background",
+      "fallback_prompt": "Cinematic 2:3 movie poster key art based on: {subject}. Hero silhouette and core prop in center-forward, readable title zone, short tagline, compact credits block. Build practical atmospheric background with real light direction and depth layers. ",
+      "camera_phrase": "cinematic composition with layered foreground-midground-background and controlled depth",
+      "light_phrase": "cold/warm split palette with controlled haze and practical reflections",
+      "aspect_ratio": "2:3",
+      "negative": "Negative: no repeated title, no fake logos unless requested, no unreadable clutter, no random text, no watermark.",
+      "booster_lines": [
+        "keep title and graphic zones clear and short",
+        "no poster texture pseudo-noise"
+      ],
+      "external_patterns": [
+        "one hero silhouette or face focus, one core prop, practical rain/fog/dust/flare lighting",
+        "clear title zone in lower third or center, one short tagline, compact credits block",
+        "poster composition has graphic negative space and depth layers, not random cinematic clutter",
+        "genre palette: cyberpunk neon rain, desert signal dust, noir station red, fantasy gate fog"
+      ],
+      "composition_patterns": [
+        "foreground texture, midground hero, background world cue, readable typography layer",
+        "title and credits occupy dedicated zones; keep wording short and legible"
+      ],
+      "route_keywords": [
+        "海报",
+        "poster",
+        "电影海报",
+        "movie poster",
+        "cinematic poster",
+        "key art",
+        "one-sheet"
+      ]
+    },
+    "cosplay": {
+      "route_hint": "live-action character/cosplay poster, preserve iconic anchors, premium real-material translation, adult real human texture, not anime/CGI",
+      "fallback_prompt": "Photorealistic 2:3 live-action character/cosplay poster, adult-inspired, preserve iconic anchors from: {subject}. Real human face structure and realistic hair strands. Costume becomes premium real materials with visible seams, embroidery, leather, metal, and silk layers. Practical mixed lighting, natural lens imperfection, natural body sway and subtle hand asymmetry.",
+      "camera_phrase": "practical mixed light, subtle handheld imperfection",
+      "aspect_ratio": "2:3",
+      "negative": "Negative: no anime render, no CGI skin, no cheap costume materials, no random text, no explicit sexual pose, no watermark, no minors.",
+      "booster_lines": [
+        "anchor one hairstyle/color and one signature accessory first",
+        "prioritize costume weight, seams, and fabric tension"
+      ],
+      "external_patterns": [
+        "translate character into real couture/costume materials: seams, embroidery, leather, metal, silk, fabric tension",
+        "keep one hairstyle/color anchor and one signature accessory before adding atmosphere",
+        "practical mixed light, natural lens imperfection, real pores, eyelashes, hair strands, believable jawline",
+        "hero pose with natural shoulder imbalance and hand asymmetry, not rigid 3D render pose"
+      ],
+      "composition_patterns": [
+        "2:3 vertical live-action character poster, one hero action, practical set background",
+        "costume weight and material boundaries must read clearly at first glance"
+      ],
+      "route_keywords": [
+        "cosplay",
+        "cos",
+        "真人cos",
+        "角色",
+        "游戏角色",
+        "character",
+        "character poster",
+        "live-action character",
+        "胡桃"
+      ]
+    },
+    "interior": {
+      "route_hint": "architectural interior visualization, lens/geometry/material first, straight verticals, true room scale, realistic lighting",
+      "fallback_prompt": "Photorealistic architectural interior visualization of: {subject}. Eye-height {camera_phrase}, straight verticals, realistic circulation path, proper room geometry and furniture scale. Materials show wood grain, fabric weave, stone veining, and metal reflections. Lighting is realistic practical, with gentle bounce and scene depth.",
+      "camera_phrase": "24-28mm wide-angle interior lens",
+      "aspect_ratio": "16:9",
+      "negative": "Negative: no warped furniture, no impossible perspective, no melted materials, no extra doors/windows, no people unless requested, no watermark.",
+      "booster_lines": [
+        "one scale anchor every 2-3 meters in scene",
+        "materials should be physically plausible with shadow and reflections",
+        "scale anchors every few meters",
+        "straight vertical lines and realistic furniture footprints"
+      ],
+      "external_patterns": [
+        "eye-height 24-28mm lens, straight verticals, believable room circulation and furniture scale",
+        "material separation: wood grain, stone veining, fabric weave, brushed metal, glass reflections",
+        "one architectural style anchor plus 3-5 physical objects for scale, no impossible geometry",
+        "practical daylight or lamp glow with soft bounce, not over-rendered glossy showroom lighting"
+      ],
+      "composition_patterns": [
+        "camera position and room function first, then materials, furniture, light, small props",
+        "keep walls, floor, ceiling and openings physically consistent"
+      ],
+      "route_keywords": [
+        "室内",
+        "室内效果图",
+        "interior",
+        "interior render",
+        "客厅",
+        "卧室",
+        "厨房",
+        "architecture",
+        "lounge",
+        "gallery",
+        "office",
+        "archviz"
+      ]
+    },
+    "product": {
+      "route_hint": "commercial product still life / ad creative, one hero object, material behavior, controlled reflections, clean background",
+      "fallback_prompt": "Photorealistic commercial product still life, hero object from: {subject}. Single main object with controlled reflections and realistic shadow. Clean background with minimal helpers for scale. Camera style: {camera_phrase}.",
+      "camera_phrase": "single-product studio or window-light style, moderate close-up control",
+      "aspect_ratio": "4:5",
+      "negative": "Negative: no duplicate hero object, no warped logo/label, no random label text, no clutter, no watermark.",
+      "booster_lines": [
+        "keep 1 hero object and 2–3 scale elements",
+        "preserve material boundary between object and base"
+      ],
+      "external_patterns": [
+        "single hero product on simple base, controlled softbox/window reflection, realistic contact shadow",
+        "macro material detail: glass transparency, brushed steel, leather grain, condensation, stitching, crumbs",
+        "advertising composition with negative space and 2-3 supporting props, no duplicate hero object",
+        "label/text should be blank or exact and short; avoid warped logos and random label text"
+      ],
+      "composition_patterns": [
+        "hero product first, camera angle second, material/reflection third, props last",
+        "clear silhouette and contact shadow; no clutter around the main object"
+      ],
+      "route_keywords": [
+        "产品",
+        "产品图",
+        "product",
+        "product photo",
+        "commercial still",
+        "perfume",
+        "香水",
+        "手表",
+        "耳机",
+        "食物",
+        "food",
+        "drink",
+        "饮料",
+        "sneaker",
+        "鞋"
+      ]
+    },
+    "bathroom": {
+      "route_hint": "real smartphone mirror selfie in modern hotel/compact apartment bathroom, private lifestyle feel, natural intimacy, not cover/magazine layout",
+      "fallback_prompt": "Photorealistic 9:16 real smartphone mirror selfie, adult woman in modern hotel or compact apartment bathroom, based on: {subject}. Half-body or three-quarter composition, one hand holding phone, one hand with soft natural adjustment to face, hair, or neckline. Slight 26mm smartphone lens edge distortion and imperfect mirror crop for realism. Scene includes tiled surfaces, glass shower edge, folded towels, sink counter, chrome fixtures, skincare bottles, natural mirror reflections.",
+      "camera_phrase": "26mm equivalent smartphone perspective, slightly asymmetrical handheld angle, mild sensor grain",
+      "style_blocks": [
+        "modern hotel/compact apartment bathroom",
+        "soft warm vanity bulb and ambient indoor fill",
+        "quiet girlfriend POV style",
+        "subtle, natural intimacy, no studio cover mood",
+        "modern hotel or compact apartment bathroom",
+        "soft warm vanity bulb and neutral indoor fill",
+        "quiet girlfriend POV / private lifestyle snapshot",
+        "half-body or three-quarter reflected composition with phone visible"
+      ],
+      "aspect_ratio": "9:16",
+      "negative": "Negative: no stock-photo posture, no influencer/advertising pose, no wet or transparent shirt, no sexual poses, no watermark, no minors.",
+      "booster_lines": [
+        "include practical mirror edge in frame",
+        "small hand, shoulder and collar asymmetry",
+        "realistic fabric folds and collar behavior",
+        "natural skin texture, no beauty-filter face",
+        "include practical mirror edge and phone crop asymmetry",
+        "small shoulder, collar, hand and leg asymmetry",
+        "real bathroom material separation: ceramic, chrome, glass, cotton"
+      ],
+      "external_patterns": [
+        "9:16 phone mirror selfie, slight 26mm edge distortion, imperfect crop, mirror edge visible",
+        "phone partly covers cheek/face; one hand adjusts glasses, hair, collar, or face naturally",
+        "bathroom props: cream tile, glass shower edge, folded towels, chrome faucet, sink counter, skincare bottles",
+        "opaque oversized white Oxford shirt or homewear with realistic cotton folds and collar behavior",
+        "sensor grain, mirror highlights, warm vanity bulbs, natural skin texture without beauty-filter face"
+      ],
+      "composition_patterns": [
+        "do not use magazine cover strategy or typography",
+        "prioritize lived-in smartphone realism over polished studio lighting"
+      ],
+      "route_keywords": [
+        "浴室自拍",
+        "镜前自拍",
+        "镜子自拍",
+        "白衬衫写真",
+        "白衬衫",
+        "酒店浴室",
+        "私房写真",
+        "生活感性感",
+        "轻私房",
+        "情侣视角",
+        "恋人视角",
+        "眼镜自拍",
+        "bathroom selfie",
+        "mirror selfie",
+        "hotel bathroom",
+        "白衬衫",
+        "hotel bathroom selfie",
+        "private room selfie"
+      ]
+    }
+  },
+  "external_prompt_sources": {
+    "source_note": "Distilled from the public prompt-source wiring used by https://infinite-canvas-cpco.onrender.com/prompts and its GitHub repo; prompt bodies are not copied verbatim into presets.",
+    "checked_at": "2026-06-02",
+    "public_page": "https://infinite-canvas-cpco.onrender.com/prompts",
+    "infinite_canvas_repo": "https://github.com/basketikun/infinite-canvas",
+    "source_impl": "https://raw.githubusercontent.com/basketikun/infinite-canvas/main/service/prompt_fetch.go",
+    "upstream_sources": [
+      "https://github.com/EvoLinkAI/awesome-gpt-image-2-API-and-Prompts",
+      "https://github.com/ZeroLu/awesome-gpt-image",
+      "https://github.com/ImgEdify/Awesome-GPT4o-Image-Prompts",
+      "https://github.com/YouMind-OpenLab/awesome-gpt-image-2",
+      "https://github.com/YouMind-OpenLab/awesome-nano-banana-pro-prompts"
+    ],
+    "imported_counts": {
+      "magazine": 124,
+      "poster": 331,
+      "portrait": 201,
+      "product": 41,
+      "interior": 39,
+      "cosplay": 120,
+      "bathroom": 40
+    },
+    "imported_total": 896,
+    "open_source_note": "Public internet prompt sources were used as inspiration and distilled into compact route controls rather than copied verbatim."
+  },
+  "optimizer_guides": {
+    "prompt_presets_md": "# Prompt Presets\n\nUse these presets when the default prompt is too generic.\n\nDefault style note: avoid visible safety-flavored adjectives/adverbs such as\n`tasteful`, `non-explicit`, or `cheap bait` in the positive production prompt.\nKeep hard boundaries as concise negative constraints or internal verification notes\ninstead of letting them dominate the aesthetic wording.\n\n## Visual regression notes from local gpt-image-2 tests\n\nObserved on `2026-05-31` multi-preset runs:\n\n- Portrait prompts with only `adult woman + photorealistic + editorial` drift toward the same brunette\n  AI-influencer face. Fix by giving every variant a different face geometry, age band, hair color/length,\n  ethnicity or regional styling, outfit material, and camera situation.\n- Generic realism language is not enough. Add visible capture defects: slight asymmetry, soft under-eye detail,\n  flyaway hairs, small wrinkles in fabric, imperfect hand placement, ordinary background objects at real scale.\n- Magazine covers worked best when typography was short: one masthead, 2-3 short cover lines, one badge.\n  Long multilingual text blocks or too many subtitle layers increase gibberish and gateway instability.\n- Person prompts should stay compact. Prefer 70-130 English words for batch testing, then expand only for\n  hero images. Long prompts increase `RemoteDisconnected`, `SSLEOFError`, and Cloudflare 502 risk.\n- For batch diversity, every category should have a `variant anchor`: face/hair for portraits, layout/title for\n  magazine/poster, silhouette/material for cosplay, room/camera/material for interior, and surface/light/prop for\n  product.\n\n### V4 batch prompt rules\n\nUse these rules when generating many variants:\n\n```text\n1. First sentence: canvas + route + concrete subject.\n2. Second sentence: variant anchors and camera/crop.\n3. Third sentence: light/material/background objects.\n4. Last sentence: concise negative constraints.\n```\n\nAvoid repeating the same base paragraph across all variants. Keep only a tiny shared negative line, then make each\nvariant visually distinct.\n\n## Photorealistic cosplay magazine cover\n\nBest for anime/game character-to-real-human cosplay posters.\n\n### Rules\n\n- Prefer a compact English production prompt over malformed JSON-like prompt blobs.\n- Keep the prompt around 150-260 English words for gateway stability.\n- Do not rely on API `size` unless verified; describe `vertical 2:3` in the prompt.\n- Always force real-world photographic language: `photorealistic`, `RAW full-frame`, `real pores`, `fine skin texture`, `subsurface scattering`, `not anime`, `not CGI`.\n- Keep sensual direction visually restrained and adult-only: `adult 25+`, `refined fashion pose`, `no nudity`, `no lingerie`, `no see-through clothing`, `no explicit pose`, `no minor`.\n- If the user provides a long structured prompt, convert it into a final clean production prompt instead of sending broken JSON syntax.\n\n### Template\n\n```text\nPhotorealistic vertical 2:3 cinematic cosplay magazine cover. Adult 25+ female cosplayer inspired by [SUBJECT]: real human face, [ICONIC_FACE], [ICONIC_HAIR], [ICONIC_ACCESSORIES], luxury [COLOR_PALETTE] fantasy couture costume. High-end glossy fashion cover, commercial photography, RAW full-frame photo realism, 85mm lens, shallow depth of field, real pores, fine skin texture, subtle subsurface scattering, natural skin oil sheen, glassy lips, eye catchlights. Confident refined fashion pose, elegant collarbone and neck line, intimate portrait energy. [ENVIRONMENT], warm bokeh, light mist, organized rich background details. Lighting: teal cool ambient light plus warm skin key light, strong hair rim light, glossy highlights, print-quality contrast. Editorial typography frame: Japanese title, Romanized name [ROMAJI], small English tagline, circular seal, JERLIN 2026. No anime, no CGI, no plastic skin, no nudity, no lingerie, no see-through clothing, no minor, no school uniform, no explicit pose, no repeated text.\n```\n\n### Hu Tao example\n\n```text\nPhotorealistic vertical 2:3 cinematic cosplay magazine cover. Adult 25+ female cosplayer inspired by Hu Tao: real human face, dark brown twin-tail hairstyle, plum blossom hair ornaments, red eyes, luxury red-black fantasy couture costume. High-end glossy fashion cover, RAW full-frame photo realism, 85mm lens, shallow depth of field, real pores, fine skin texture, soft oil sheen, glassy lips, eye catchlights. Confident refined fashion pose, elegant collarbone, warm lantern bokeh, mysterious Liyue-style night set, teal ambient light plus warm skin key light, strong hair rim light. Editorial typography frame: Japanese title, HUTAO roman name, small English tagline, circular seal, JERLIN 2026. No anime, no CGI, no plastic skin, no nudity, no lingerie, no see-through clothing, no minor, no school uniform, no explicit pose, no repeated text.\n```\n\n## Modern bathroom mirror selfie / white shirt lifestyle portrait\n\nUse this preset when the user asks for: `浴室自拍`, `镜前自拍`, `私房自拍`,\n`白衬衫写真`, `酒店浴室写真`, `生活感性感自拍`, `恋人视角自拍`,\n`眼镜自拍`, `轻私房写真`, `bathroom selfie`, `mirror selfie`, `white shirt portrait`,\nor similar lifestyle-intimacy requests.\n\n### Diagnosis from first batch\n\nIf results look like generic Airbnb / stock bathroom selfies, the prompt is too broad.\nThe model tends to overfit to ordinary Western phone selfies when the prompt only says\n`white shirt + bathroom + mirror selfie`. Fix it by adding:\n\n- a clearer **capture grammar**: real smartphone mirror shot, 26mm phone lens, slight edge distortion,\n  phone partly blocking the face, natural wrist/shoulder occlusion, imperfect crop.\n- a clearer **private-photo aesthetic**: quiet Japanese/Korean lifestyle photo mood when requested,\n  soft Muji / boutique-hotel bathroom, cream ceramic tiles, glass shower edge, folded towel stack,\n  small skincare bottles, warm vanity bulbs reflected in the mirror.\n- a clearer **model styling brief**: youthful adult styling, compact face proportions, soft natural makeup,\n  loose bun with broken strands, thin-frame glasses, clean white Oxford shirt with rolled sleeves.\n- a clearer **anti-stock direction**: avoid catalogue pose, runway posture, glossy magazine cover, over-smiling,\n  luxury real-estate render look, too-clean advertising composition.\n\n### Strategy\n\n- Do **not** use the magazine-cover or poster typography strategy.\n- Prefer everyday lifestyle selfie logic: intimate, realistic, relaxed, candid, slightly imperfect.\n- Scene: boutique hotel bathroom or high-end compact apartment bathroom, not a wide real-estate showroom.\n- Composition: real mirror selfie, half-body or three-quarter body reflected in the mirror, smartphone visible,\n  slightly imperfect framing, one edge of the mirror or sink counter cutting the composition naturally.\n- Subject: adult woman, youthful mature styling, relaxed intimacy, soft private-room mood.\n- Outfit: oversized opaque dry white Oxford/cotton shirt with rolled sleeves, soft wrinkles, natural drape,\n  visible fabric weight; optional pale lounge shorts only if the crop shows the lower body.\n- Hair/makeup: messy bun, loose updo, natural stray hairs around temples and neck, optional thin-frame glasses,\n  minimal makeup, soft eye highlight, realistic skin tone variation.\n- Pose: one hand holding the phone, the other lightly touching cheek, lips, glasses, collar, or hair;\n  gentle side angle, relaxed shoulders, natural crossed legs, collar slightly shifted by movement,\n  no model-catwalk posture.\n- Lighting: warm vanity bulbs or soft neutral indoor light, natural phone HDR, realistic mirror highlights,\n  mild sensor noise, no cinematic rim-light unless requested.\n- Background: mirror edge, cream/stone ceramic tiles, glass shower door, folded towels, sink counter,\n  chrome faucet, small skincare bottles, toothbrush cup, soft reflections and depth.\n- Mood: lazy morning or late-night private-room lifestyle, girlfriend/lover-view candid, quiet and believable.\n- Output should feel like a high-quality private lifestyle snapshot, not stock photography, not a cover,\n  not a luxury bathroom advertisement.\n\n### Template\n\n```text\nPhotorealistic 9:16 vertical real smartphone mirror selfie in a boutique hotel bathroom, adult woman with youthful mature styling, reflected in a clean mirror while holding a black phone partly covering one cheek. Quiet Japanese/Korean private lifestyle photo mood if requested, not a magazine cover. Soft natural makeup, lifelike eyes, subtle skin texture and pores, loose messy bun with broken hair strands, thin-frame glasses. Oversized opaque dry white Oxford cotton shirt, rolled sleeves, soft wrinkles, natural fabric weight and drape, optional pale lounge shorts only if visible in crop. One hand holds the phone, the other lightly touches the glasses, cheek, collar, or hair; relaxed shoulders, slight side angle, natural crossed legs, imperfect handheld crop, small wrist/shoulder occlusion. Warm vanity bulbs mixed with neutral bathroom light, phone HDR, mild sensor noise, realistic mirror reflection. Cream ceramic tiles, glass shower edge, folded towels, sink counter, chrome faucet, small skincare bottles. Negative: no typography, no nudity, no lingerie, no transparent or wet shirt, no explicit sexual pose, no minors, no watermark.\n```\n\n### Short prompt variant\n\n```text\nReal 9:16 smartphone bathroom mirror selfie, adult woman, boutique hotel bathroom, black phone partly covering cheek, oversized opaque dry white Oxford shirt with rolled sleeves, messy bun, thin-frame glasses, minimal makeup, realistic pores and hair strands, warm vanity bulbs, cream tiles, glass shower edge, towels, sink counter, skincare bottles, imperfect handheld crop, private Japanese/Korean lifestyle mood if requested. Negative: no typography, no nudity, no lingerie, no transparent or wet shirt, no explicit pose, no minors, no watermark.\n```\n\n### Strength boosters\n\nUse these only when the first generation looks bland:\n\n```text\nless stock photo, less Airbnb bathroom, less catalogue pose, more real phone snapshot,\nslight mirror smudges, phone-camera HDR, soft sensor noise, natural asymmetric face,\nshirt fabric weight visible at cuffs and hem, uneven loose strands around the bun,\nsmall skincare bottles on the counter, folded towels reflected behind her,\none mirror edge visible, sink faucet foreground crop\n```\n\n### V3 natural girlfriend-POV boosters\n\nUse these when v2 is technically correct but still feels like an AI influencer selfie:\n\n```text\nless beauty-filter face, more natural asymmetric face, soft under-eye detail,\nsubtle skin tone variation, tiny flyaway hairs, not influencer selfie,\nquiet girlfriend POV, low-key private snapshot, Japanese compact hotel bathroom,\nwarm vanity bulb reflections, slightly messy collar, rolled sleeves, realistic shirt hem,\nshirt fabric creases at elbow and cuff, phone partly covering one eye or cheek,\nmirror crop cuts one shoulder, sink faucet foreground blur, not polished commercial portrait\n```\n\nV3 template:\n\n```text\nPhotorealistic 9:16 real smartphone bathroom mirror selfie, quiet girlfriend POV, adult woman with youthful mature styling in a compact Japanese boutique-hotel bathroom. Black phone partly covers one eye or cheek; imperfect handheld mirror crop cuts one shoulder; slight 26mm phone-lens edge distortion and phone-camera HDR. Natural asymmetric face, soft under-eye detail, subtle skin tone variation, lifelike eyes, minimal makeup, loose messy bun with tiny flyaway hairs, optional thin-frame glasses. Oversized opaque dry white Oxford shirt, rolled sleeves, slightly messy collar, visible cotton texture, fabric creases at elbow and cuff, natural shirt hem drape; pale lounge shorts only if visible. One hand holds phone, the other lightly adjusts glasses, hair, collar, or cheek; relaxed shoulders and small natural body lean. Warm vanity bulb reflections, mild sensor noise, cream ceramic tiles, glass shower edge, folded towels, sink counter, chrome faucet foreground blur, small skincare bottles. Negative: no typography, no nudity, no lingerie, no transparent or wet shirt, no explicit pose, no minors, no influencer pose, no beauty-filter face, no stock photo, no commercial portrait, no watermark.\n```\n\n## Universal preset router\n\nBefore writing the final production prompt, classify the request into one of these scene routes.\nDo not mix routes unless the user explicitly asks for a hybrid.\n\n| Trigger | Route | Avoid |\n| --- | --- | --- |\n| 美女写真, 人像, lifestyle portrait, girlfriend photo | `editorial_lifestyle_portrait` | magazine text unless requested |\n| 杂志封面, fashion cover, editorial cover | `fashion_magazine_cover` | ordinary selfie grammar |\n| 电影海报, poster, cyberpunk poster | `cinematic_movie_poster` | real-estate / product framing |\n| 真人 COS, anime to real, character live action | `live_action_character_cosplay` | cheap costume snapshot |\n| 室内效果图, interior render, architecture | `interior_archviz` | people/fashion details |\n| 产品图, food, perfume, watch, product | `product_commercial_photo` | portrait pose language |\n\nGlobal quality rule: replace vague words like `beautiful`, `premium`, `high quality` with visible\ncontrols: camera distance, lens feel, scene objects, fabric/material texture, light source, color palette,\nforeground/background layering, and what should be excluded.\n\n## Editorial lifestyle portrait / non-cover portrait\n\nUse when the user asks for: `美女写真`, `高端写真`, `生活写真`, `日系写真`, `室内写真`,\n`girlfriend photo`, `portrait`, `editorial portrait`, but **not** magazine cover.\n\n### Strategy\n\n- No typography, no cover layout, no issue numbers.\n- Choose a real photographic capture grammar: 50mm/85mm portrait, window light, indoor practical light,\n  slight film grain, natural skin texture, not plastic or over-retouched.\n- Specify a concrete setting: window-side hotel room, quiet cafe corner, compact apartment, studio corner,\n  city night balcony, garden path. Do not leave background generic.\n- Styling should be coherent: one outfit material, one makeup style, one hairstyle, one mood.\n- Avoid generic AI model face by adding: natural asymmetry, soft under-eye detail, subtle skin tone variation,\n  flyaway hairs, real jaw/neck anatomy, imperfect but attractive human presence.\n- If user asks for sensuality, keep the visual language photographic and aesthetic; put hard boundaries in\n  `Negative` instead of positive adjective spam.\n\n### Template\n\n```text\nPhotorealistic 2:3 vertical editorial lifestyle portrait, adult woman in a [SETTING], captured with a [50mm/85mm] portrait lens. Natural asymmetric face, soft under-eye detail, subtle skin tone variation, lifelike eyes, real pores, tiny flyaway hairs, natural neck and shoulder anatomy. [HAIR], [MAKEUP]. Outfit: [OUTFIT] with visible [FABRIC] texture, natural wrinkles and weight, coherent color palette. Pose is relaxed and unforced: [POSE], small body lean, hands placed naturally, no catalogue posture. Lighting: [LIGHT SOURCE], soft shadow falloff, mild film grain, realistic phone/full-frame photo dynamic range. Background includes [3-6 concrete objects], shallow but believable depth, refined private/editorial mood, not a cover and not a studio stock image. Negative: no typography, no plastic skin, no doll face, no same-face model, no over-smoothed beauty filter, no watermark.\n```\n\n### Boosters\n\n```text\nless AI influencer face, natural facial asymmetry, soft eye fatigue, real skin tone variation,\nsmall flyaway hairs, imperfect hand placement, quiet candid timing, not stock photo pose,\nbackground objects with real scale, subtle phone/full-frame camera compression\n```\n\n## Fashion magazine cover\n\nUse when the user explicitly asks for: `杂志封面`, `fashion magazine cover`, `editorial cover`,\n`Vogue-like`, `high-end cover`, `封面排版`.\n\n### Strategy\n\n- Make typography a graphic element, but keep text requirements short. Exact spelling is often imperfect.\n- Always define title hierarchy, negative space, layer order, and where text sits relative to the subject.\n- Use only 2-4 readable text anchors; too many text blocks create gibberish.\n- Subject and typography must have layer interaction: head partly overlaps masthead, side cover lines align to grid.\n- Avoid generic poster chaos by defining a restrained palette and one lighting style.\n\n### Template\n\n```text\nPhotorealistic vertical 2:3 high-fashion magazine cover, adult model in [OUTFIT], [POSE], [SETTING]. Cover layout uses a clean editorial grid: large elegant serif masthead \"[TITLE]\" at the top, the model head slightly overlaps the masthead, 3 small left-side cover lines, one circular issue badge, minimal issue number in a corner. Realistic skin texture, lifelike eyes, detailed hair strands, visible fabric texture, refined makeup. Lighting: [LIGHTING], controlled highlights, print-quality contrast, shallow depth of field. Palette: [PALETTE]. Typography is crisp black/white/cream editorial text, not glowing, not distorted, not repeated. Negative: no random gibberish paragraphs, no repeated letters, no watermark, no plastic skin, no cheap poster effects.\n```\n\n### Text control\n\nPrefer:\n\n```text\nMasthead: LUXE\nCover lines: Modern Grace / Private Interview / The New Silhouette\nBadge: ISSUE 47\n```\n\nAvoid: long Japanese/English paragraphs, many tiny subtitles, multiple languages unless the user requires it.\n\n## Cinematic movie poster\n\nUse when the user asks for: `电影海报`, `科幻海报`, `赛博朋克海报`, `角色海报`, `movie poster`,\n`key art`, `one-sheet poster`.\n\n### Strategy\n\n- Define a single hero silhouette first, then environment, then title placement.\n- Use 2:3 vertical poster framing, foreground/midground/background layering, and atmospheric depth.\n- Give the poster a logline and title, but keep text short.\n- For cyberpunk/noir, specify rain reflections, neon color separation, and practical light sources.\n- Avoid overclutter: one protagonist, one core prop, one major background read.\n\n### Template\n\n```text\nCinematic vertical 2:3 movie poster key art for \"[TITLE]\". One adult protagonist stands in the foreground, [HERO DESCRIPTION], clear silhouette and strong eye-line. Midground: [KEY PROP/ACTION]. Background: [WORLD/LOCATION] with layered depth, atmospheric haze, rain or dust particles if appropriate, practical light sources. Lighting: [COLOR CONTRAST], rim light on hair/shoulders, readable face, dramatic shadows. Composition: title in large serif/sans lettering across lower third, short tagline at top, small credits block at bottom, subject partly overlaps the title. High-budget film still realism, detailed costume material, believable anatomy, cinematic color grade. Negative: no random extra limbs, no unreadable clutter, no repeated title, no fake logos unless requested, no watermark.\n```\n\n## Live-action character / cosplay adaptation\n\nUse for: `真人COS`, `二次元转真人`, `anime to real`, `game character live action`,\nnamed character posters.\n\n### Strategy\n\n- Translate character recognition into real-world costume materials, not literal plastic cosplay.\n- Preserve 3-5 iconic anchors: hairstyle silhouette, color palette, accessories, weapon/prop, emblem.\n- Use \"inspired by\" for character conversion unless the user provides exact licensed use context.\n- Avoid cheap cosplay by specifying tailoring, seams, embroidery, leather/metal/silk, and real weight.\n- Do not overfocus on face alone; costume and scene must carry the identity.\n- If CGI-like risk appears, force anti-CGI capture clues: practical lens/lighting, slight hand asymmetry,\n  small fabric wrinkles, realistic skin microtexture, mild depth-of-field haze, material-specific wear.\n\n### Template\n\n```text\nPhotorealistic vertical 2:3 live-action character poster, adult cosplayer inspired by [CHARACTER]. Preserve iconic anchors: [HAIR], [COLOR PALETTE], [ACCESSORY], [PROP], [EMBLEM]. Real human facial structure, lifelike eyes, subtle pores, natural skin texture, realistic hair strands. Costume is translated into high-end real materials: [MATERIALS], visible seams, embroidery, metal/leather/silk texture, believable weight and tailoring, not plastic. Pose: [POSE] with character attitude, clear silhouette. Environment: [SETTING] that matches the character world, practical lights, atmospheric depth, shallow depth of field. Cinematic live-action photography, 85mm lens feel, controlled rim light, warm/cool color contrast. Negative: no anime render, no CGI skin, no cheap Halloween costume, no plastic fabric, no random text, no watermark.\n```\n\n## Interior architecture visualization\n\nUse for: `室内效果图`, `客厅`, `卧室`, `酒店大堂`, `商业空间`, `interior render`,\n`architecture visualization`, `archviz`.\n\n### Strategy\n\n- Start with room type and camera position. Avoid fashion/portrait language.\n- Define layout, focal point, materials, lighting, and real architectural scale.\n- Use physically plausible object placement: sofa height, table scale, curtain length, ceiling lights.\n- Add lived-in detail if user wants realism; keep staged luxury if user wants showroom.\n- Avoid impossible geometry, warped furniture, extra windows, and overglossy CGI.\n\n### Template\n\n```text\nPhotorealistic architectural interior visualization, [ASPECT RATIO], camera at human eye height with a [24mm/28mm] wide-angle lens, showing a [ROOM TYPE] from [CAMERA POSITION]. Layout: [SOFA/TABLE/WALL/FOCAL POINT], clear circulation path and realistic furniture scale. Materials: [WOOD], [STONE], [FABRIC], [METAL], visible grain and tactile texture, not overglossy. Lighting: [DAYLIGHT/EVENING], practical hidden LED strips, soft bounce light, realistic shadows. Background includes [WINDOW/ART/SHELVES/PLANTS], foreground includes [RUG/TABLE/DECOR] for depth. Color palette: [PALETTE]. High-end archviz realism, straight vertical lines, clean geometry, believable reflections. Negative: no warped furniture, no impossible perspective, no melted objects, no extra doors/windows, no people unless requested, no watermark.\n```\n\n### Realism boosters\n\n```text\nslightly imperfect lived-in styling, real scale objects, subtle dustless realism,\nfabric weave on sofa, stone veining not too repetitive, wood grain direction aligned,\nvertical lines corrected, natural exposure balance between window and interior\n```\n\n## Product / food commercial photography\n\nUse for: `产品图`, `香水`, `手表`, `鞋子`, `饮料`, `食物摄影`, `product photo`, `commercial still life`.\n\n### Strategy\n\n- Define one hero object, camera angle, surface, props, material behavior, and reflection control.\n- Avoid portrait/fashion words unless the product is worn by a model.\n- Use exact material nouns: glass, chrome, brushed metal, ceramic, condensation, paper label, leather grain.\n- Keep props minimal and relevant; too many props reduce product clarity.\n\n### Template\n\n```text\nPhotorealistic commercial product photograph of [PRODUCT] as the single hero object, [ASPECT RATIO], camera angle [ANGLE], placed on [SURFACE]. Material detail: [GLASS/METAL/FABRIC/FOOD TEXTURE], controlled reflections, crisp edges, realistic shadows. Lighting: [SOFTBOX/WINDOW/RIM LIGHT], highlight gradient across the product, background color [PALETTE]. Props: [2-4 RELEVANT PROPS] arranged with negative space, foreground/background layering, premium advertising still-life composition. Sharp focus on brand/object shape; shallow depth only where it does not hide product details. Negative: no extra duplicate product, no warped logo, no unreadable random label text, no clutter, no watermark.\n```\n\n## External prompt-pattern distilled presets\n\nThese are distilled patterns from public prompt libraries. Do not copy long prompts verbatim; use them as\nsmall reusable controls inside the SCOPE synthesis stage.\n\n### GPT-image2 photoreal/candid controls\n\n- Put canvas and capture context early: `9:16 vertical`, `mirror selfie`, `iPhone candid`, `35mm film`,\n  `sharp focus on the mirror reflection`, `slight handheld imperfection`.\n- Use concrete scene nouns instead of generic quality words: mirror, phone case, tile seams, glass shower,\n  towel texture, faucet reflection, countertop objects, window or vanity light.\n- Separate material, light, palette, and camera controls: opaque cotton shirt, chrome/glass/ceramic,\n  warm vanity light, neutral cream/stone palette, soft film grain.\n- For realism, prefer ordinary capture language (`RAW full phone-camera quality`, `natural indoor lighting`,\n  `mild grain`, `slight imperfect framing`) over only `8K masterpiece`.\n\n### Nano Banana / Gemini-style promptgen controls\n\n- Expand simple requests through a category template: photography, character, scene, product/food, abstract, logo.\n- For scene prompts, split foreground / midground / background and specify concrete visible objects.\n- For photography prompts, include technical capture details, lighting, composition, material texture,\n  and output mood in one compact paragraph.\n",
+    "prompt_optimizer_compact_md": "# Compact Prompt Optimizer Guide\n\nTurn a rough request or SCOPE specification into a natural production prompt for GPT-image2.\n\nRules:\n- Output natural English prompt, not malformed JSON and not keyword spam.\n- Keep final English prompt around 70-160 words for batch tests, 160-300 words only for a single hero image.\n- Route first: portrait / magazine cover / movie poster / live-action cosplay / interior archviz / product still life.\n  Do not mix route grammars unless user asks for a hybrid.\n- Replace vague quality words with visible controls: camera, lens/crop, real objects, material texture,\n  light source, palette, foreground/background depth, and exclusions.\n- For real-person/cosplay/anime-to-real: emphasize photorealistic live-action quality, real pores, subtle skin texture, believable facial anatomy, lifelike eyes, realistic hair strands, natural neck/shoulder anatomy, premium costume materials, high-budget character poster quality, not cheap cosplay.\n- For magazine/poster/cover: add typography as graphic design element, elegant serif title, small editorial subtitles, issue number, badge/grid layout, refined negative space, layered relationship between subject and text. Exact text may be imperfect.\n- For lighting/composition: use cinematic commercial lighting, soft key light, rim light, warm key + cool ambient, shallow depth of field, 2:3 vertical poster, close-up or medium portrait.\n- Keep sensual direction visually restrained and adult-only: adult 25+, refined intimacy, elegant pose. Avoid nudity, lingerie, see-through clothing, explicit pose, minors, school uniform, fetish framing.\n- Avoid low realism, plastic skin, doll face, anime/CGI look when realism is requested, cheap cosplay, bad hands, repeated text, watermark.\n- For multi-image batches, do not reuse the same generic `adult woman` description. Assign every variant\n  a distinct face shape, hair color/length, age band, regional/ethnic styling, outfit material, camera distance,\n  and setting details. This reduces same-face drift.\n\n## 2026-05-31 visual regression fixes\n\nUse these when optimizing prompts after a batch looks too generic:\n\n- Same-face portraits: add `distinct oval/square/heart face shape`, `short bob / curls / red hair / silver-blonde hair`,\n  `soft under-eye detail`, `subtle skin tone variation`, and unique camera + setting anchors.\n- Stock-photo feel: add `decisive candid moment`, `small imperfect hand placement`, `slight fabric wrinkles`,\n  `ordinary real-scale background objects`, `not catalogue posture`.\n- Magazine covers: keep typography to `masthead + two short cover lines + one small badge`; avoid long paragraphs.\n- Gateway instability: cut repeated base prose first; keep prompts below ~900 characters; use short negative lines.\n\n## Compact route templates\n\n### Editorial lifestyle portrait, not cover\n\nUse for 美女写真 / portrait / lifestyle photo. No typography. Specify real setting, lens, outfit material,\nnatural face imperfections, and unforced pose.\n\nTemplate:\nPhotorealistic 2:3 vertical editorial lifestyle portrait, adult woman in [SETTING], captured with [50mm/85mm] lens.\nNatural asymmetric face, soft under-eye detail, subtle skin tone variation, real pores, flyaway hairs, lifelike eyes,\nnatural neck and shoulder anatomy. [HAIR], [MAKEUP], [OUTFIT] with visible [FABRIC] texture and natural wrinkles.\nRelaxed unforced pose, small body lean, hands placed naturally. [LIGHT SOURCE], soft shadows, mild film grain.\nBackground includes [3-6 concrete objects], believable depth, not a cover and not stock photography.\nNegative: no typography, no plastic skin, no doll face, no same-face model, no beauty-filter face, no watermark.\n\n### Fashion magazine cover\n\nUse only when cover/杂志 is requested. Keep readable text anchors short and hierarchical.\n\nTemplate:\nPhotorealistic vertical 2:3 high-fashion magazine cover, adult model in [OUTFIT], [POSE], [SETTING].\nClean editorial grid: large elegant serif masthead \"[TITLE]\" at top, model head partly overlaps masthead,\n3 short left-side cover lines, one circular issue badge, minimal issue number in a corner. Real skin texture,\nlifelike eyes, detailed hair strands, visible fabric texture. [LIGHTING], print-quality contrast, [PALETTE].\nTypography is crisp black/white/cream editorial text, not glowing, not repeated.\nNegative: no random gibberish paragraphs, no repeated letters, no watermark, no plastic skin.\n\n### Cinematic movie poster\n\nUse for 电影海报 / poster / cyberpunk. One protagonist, one world, one title zone.\n\nTemplate:\nCinematic vertical 2:3 movie poster key art for \"[TITLE]\". One adult protagonist in foreground, [HERO],\nclear silhouette and strong eye-line. Midground: [PROP/ACTION]. Background: [WORLD/LOCATION] with atmospheric depth,\npractical light sources, haze/rain/dust if appropriate. [COLOR CONTRAST] lighting, rim light, readable face.\nTitle across lower third, short tagline at top, small credits block at bottom, subject partly overlaps title.\nHigh-budget film still realism, detailed costume materials, cinematic color grade.\nNegative: no unreadable clutter, no repeated title, no fake logos unless requested, no watermark.\n\n### Live-action character / cosplay\n\nUse for 真人COS / anime to real / named game character.\n\nTemplate:\nPhotorealistic vertical 2:3 live-action character poster, adult cosplayer inspired by [CHARACTER].\nPreserve iconic anchors: [HAIR], [PALETTE], [ACCESSORY], [PROP], [EMBLEM]. Real human facial structure,\nlifelike eyes, subtle pores, realistic hair strands. Costume translated into real materials: [MATERIALS],\nvisible seams, embroidery, leather/metal/silk texture, believable weight and tailoring. [POSE] with clear silhouette.\nIf results drift CGI, strengthen with: slight asymmetry, real skin microtexture, subtle imperfections,\nslightly uneven garment drape, practical lens feel, controlled highlights, no clean toy-like shine.\n[SETTING] matching the character world, practical lights, atmospheric depth, 85mm lens feel.\nNegative: no anime render, no CGI skin, no cheap Halloween costume, no plastic fabric, no random text.\n\n### Interior archviz\n\nUse for 室内效果图 / architecture. Start with room, camera, layout, materials, light.\n\nTemplate:\nPhotorealistic architectural interior visualization, [ASPECT], camera at human eye height with [24mm/28mm] lens,\nshowing [ROOM TYPE] from [CAMERA POSITION]. Layout: [FURNITURE/FOCAL POINT], clear circulation path, realistic scale.\nMaterials: [WOOD], [STONE], [FABRIC], [METAL], visible grain and tactile texture. [DAYLIGHT/EVENING LIGHT],\nhidden LEDs/practical lamps, soft bounce shadows. Foreground [RUG/TABLE/DECOR], background [WINDOW/ART/SHELVES/PLANTS],\n[PALETTE], straight vertical lines, clean geometry.\nNegative: no warped furniture, no impossible perspective, no extra doors/windows, no people unless requested.\n\n### Product / food still life\n\nUse for 产品图 / food / watch / perfume. One hero object, controlled reflections, minimal props.\n\nTemplate:\nPhotorealistic commercial product photograph of [PRODUCT] as single hero object, [ASPECT], camera angle [ANGLE],\non [SURFACE]. Material detail: [GLASS/METAL/FABRIC/FOOD TEXTURE], crisp edges, controlled reflections, realistic shadow.\n[SOFTBOX/WINDOW/RIM LIGHT], highlight gradient, [PALETTE] background. Props: [2-4 RELEVANT PROPS] with negative space,\npremium still-life composition, sharp focus on product shape.\nNegative: no duplicate product, no warped logo, no random label text, no clutter, no watermark.\n\n## Scene preset: modern bathroom mirror selfie / white shirt lifestyle portrait\n\nTriggers: bathroom selfie, mirror selfie, private-room selfie, white shirt portrait, hotel bathroom portrait,\nlover-view selfie, glasses selfie, light boudoir / private-room portrait.\n\nRouting:\n- Do not use magazine cover typography or poster layout.\n- Use candid lifestyle selfie logic: real phone snapshot, intimate, relaxed, slightly imperfect, not stock photography.\n- Scene: boutique hotel or compact high-end apartment bathroom, cream/stone ceramic tiles, mirror edge, glass shower edge,\n  folded towels, sink counter, chrome faucet, small skincare bottles, realistic reflections.\n- Composition: 9:16 vertical, mirror reflection, smartphone visible and partly blocking one cheek, half-body or\n  three-quarter body, imperfect handheld crop, slight phone-lens edge distortion, sink/faucet foreground crop.\n- Outfit: oversized opaque dry white Oxford/cotton shirt, rolled sleeves, visible fabric weight, soft wrinkles,\n  natural drape; optional pale lounge shorts only if lower body is visible.\n- Styling: youthful mature adult styling, messy bun or loose updo, broken strands around temples and neck,\n  optional thin-frame glasses, minimal makeup, natural skin tone variation, real pores, lifelike eyes.\n- Pose: phone in one hand; other hand lightly touches cheek, glasses, collar, or hair; gentle side angle,\n  relaxed shoulders, natural crossed legs; no catalogue pose or exaggerated arching.\n- Lighting/camera: warm vanity bulbs or neutral bathroom light, realistic mirror highlights,\n  phone-camera HDR, mild sensor noise, slight iPhone/26mm candid realism.\n- If user asks for 日系/私房/恋人视角, add: quiet Japanese/Korean private lifestyle photo mood,\n  Muji or boutique hotel bathroom palette, girlfriend POV.\n- Negative line: no nudity, no lingerie, no see-through or wet shirt, no exposed nipples or genitals,\n  no explicit sexual pose, no minors, no school uniform, no watermark, no text, no magazine cover,\n  no luxury real-estate advertisement, no stock photo pose.\n\nShort English template:\nPhotorealistic 9:16 vertical real smartphone bathroom mirror selfie in a boutique hotel bathroom, adult woman with\nyouthful mature styling, black phone partly covering one cheek, oversized opaque dry white Oxford shirt with rolled\nsleeves, optional pale lounge shorts, messy bun with broken hair strands, thin-frame glasses, minimal makeup, realistic\npores and skin tone variation. One hand holds the phone, the other lightly touches glasses, cheek, collar, or hair;\nrelaxed shoulders, slight side angle, natural crossed legs, imperfect handheld crop. Warm vanity bulbs, phone-camera HDR,\nmild sensor noise, cream tiles, glass shower edge, folded towels, sink counter, chrome faucet, small skincare bottles,\nquiet private lifestyle mood, girlfriend POV if requested. Negative: no typography, no nudity, no lingerie,\nno transparent or wet shirt, no explicit pose, no minors, no watermark, no stock photo pose.\n\nV3 realism upgrade when results look like AI influencer selfies:\n- Add: quiet girlfriend POV, low-key private snapshot, less beauty-filter face,\n  more natural asymmetric face, soft under-eye detail, subtle skin tone variation,\n  tiny flyaway hairs, slightly messy collar, rolled sleeves, realistic shirt hem,\n  fabric creases at elbow and cuff, phone partly covering one eye or cheek,\n  mirror crop cuts one shoulder, sink faucet foreground blur.\n- Add negatives: no influencer pose, no beauty-filter face, no polished commercial portrait,\n  no luxury real-estate bathroom advertisement.\n\nV3 short template:\nPhotorealistic 9:16 real smartphone bathroom mirror selfie, quiet girlfriend POV, adult woman with youthful mature\nstyling in a compact Japanese boutique-hotel bathroom. Black phone partly covers one eye or cheek, imperfect handheld\nmirror crop cuts one shoulder, slight 26mm phone-lens edge distortion, phone-camera HDR. Natural asymmetric face,\nsoft under-eye detail, subtle skin tone variation, lifelike eyes, minimal makeup, loose messy bun with tiny flyaway hairs,\noptional thin-frame glasses. Oversized opaque dry white Oxford shirt, rolled sleeves, slightly messy collar, visible\ncotton texture, fabric creases at elbow and cuff, natural shirt hem drape. Warm vanity bulb reflections, mild sensor noise,\ncream ceramic tiles, glass shower edge, folded towels, sink counter, chrome faucet foreground blur, small skincare bottles.\nNegative: no typography, no nudity, no lingerie, no transparent or wet shirt, no explicit pose, no minors,\nno influencer pose, no beauty-filter face, no stock photo, no commercial portrait, no watermark.\n\n## Distilled prompt-library controls\n\n- For GPT-image2 realism: put canvas/layout before subject; use one primary hero; add concrete materials,\n  lighting, palette, and capture context separately.\n- For casual/selfie realism: name the capture device or feel (iPhone, 35mm, CCD, handheld), include ordinary\n  imperfections, and focus on 5-12 concrete room objects instead of empty quality adjectives.\n- For Nano Banana/Gemini-style prompt enhancement: expand simple requests using category templates\n  (photography / character / scene), and for scenes split foreground, midground, background.\n",
+    "prompt_optimizer_engineering_md": "# 高级生图提示词优化工程师 Prompt\n\n你是一名专业的 AI 生图提示词优化工程师、视觉导演、摄影美术指导、角色设计师与商业海报策划师。\n\n你的任务是：根据用户输入的简单需求，将其优化为一份高质量、结构清晰、适合 GPT-image2 / Midjourney / Stable Diffusion / Flux 等图像模型使用的高级生图提示词。\n\n用户可能只会输入非常简单的内容，例如：\n\n* 美女写真\n* 动漫少女\n* 高级杂志封面\n* 古风女角色\n* 真人COS海报\n* 赛博朋克女主\n* 甜妹写真\n* 黑长直少女\n* 游戏角色立绘\n* 二次元转真人\n* 电影级角色海报\n\n你需要根据用户的简单输入，自动补全画面的主体、风格、人物气质、服装、姿态、场景、构图、灯光、材质、摄影感、氛围与画面完成度。\n\n---\n\n## 一、核心目标\n\n你生成的提示词必须做到：\n\n1. 从简单词语扩展为完整视觉方案\n2. 让画面更高级、更完整、更有商业摄影 / 电影海报 / 游戏角色宣传图质感\n3. 避免低质感、廉价 cosplay、网红滤镜感、普通自拍感\n4. 保证人物、服装、场景、灯光、构图统一\n5. 保证提示词可以直接复制给生图模型使用\n6. 根据用户需求自动选择合适的画面方向，而不是机械堆词\n\n---\n\n## 二、输入理解规则\n\n当用户输入简单需求时，你需要先判断它属于哪一类：\n\n### 1. 真人写真类\n\n例如：美女写真、日系写真、杂志封面、港风写真、电影感人像。\n\n优化方向：\n\n* 高级摄影\n* 真实皮肤质感\n* 自然面部结构\n* 高端杂志封面\n* 商业布光\n* 真实服装材质\n* 情绪感与氛围感\n\n### 2. 动漫 / 二次元类\n\n例如：动漫少女、二次元女主、游戏角色、插画海报。\n\n优化方向：\n\n* 高质量二次元角色设计\n* 精致服饰\n* 角色身份感\n* 动态姿态\n* 游戏立绘 / 动漫海报\n* 光影与背景氛围\n\n### 3. 动漫转真人类\n\n例如：动漫角色转真人、真人COS海报、真人化角色。\n\n优化方向：\n\n* 保留角色识别度\n* 转化为真实人类质感\n* 电影级真人角色海报\n* 高预算 live-action adaptation\n* 避免廉价 cosplay\n* 强化服饰真实材质\n\n### 4. 服装 / 换装类\n\n例如：古风服装、洛丽塔、赛博朋克战衣、偶像舞台服。\n\n优化方向：\n\n* 服饰结构清晰\n* 材质高级\n* 颜色统一\n* 配饰完整\n* 服装与人物气质一致\n\n### 5. 海报 / 封面类\n\n例如：杂志封面、电影海报、游戏宣传图、角色海报。\n\n优化方向：\n\n* 强构图\n* 标题排版感\n* 高级图形设计\n* 人物与文字层次\n* 商业视觉完成度\n* 但不要强制生成大量准确文字\n\n---\n\n## 三、输出结构\n\n请按照以下格式输出：\n\n【优化理解】\n用简短中文说明你如何理解用户的需求，以及你准备把它优化成什么风格。\n\n【高级中文提示词】\n输出一段完整、自然、可直接使用的中文生图提示词。\n\n【英文提示词】\n输出一段完整、自然、可直接使用的英文生图提示词。\n\n【可选参数建议】\n给出画幅、镜头、构图、风格强度等建议。\n\n---\n\n## 四、提示词优化原则\n\n### 1. 主体清晰\n\n必须明确画面主体是谁。\n\n例如：\n\n* 一位具有高级东方美感的年轻女性\n* 一位电影级真人化动漫女主\n* 一位古风幻想世界中的女剑客\n* 一位赛博朋克都市中的女性主角\n* 一位高端杂志封面风格的写真模特\n\n### 2. 气质明确\n\n必须给人物设定清晰气质。\n\n可选方向：\n\n* 清冷\n* 温柔\n* 神秘\n* 高贵\n* 甜美\n* 慵懒\n* 英气\n* 危险感\n* 梦幻感\n* 电影女主感\n* 日系缪斯感\n* 高级疏离感\n* 强烈角色存在感\n\n### 3. 外貌描写真实但不过度\n\n可以描写：\n\n* 自然真实的皮肤质感\n* 清晰五官\n* 柔和面部光影\n* 细腻发丝\n* 明亮眼神\n* 精致妆容\n* 优雅颈线与肩颈线条\n\n避免过度低俗化描写，避免把人物完全物化。\n\n### 4. 服装必须服务画面风格\n\n根据用户输入自动选择服装：\n\n如果用户说“写真”：\n\n* 高级定制服装\n* 丝缎长裙\n* 简洁高质感服饰\n* 日系写真服装\n* 时尚杂志造型\n\n如果用户说“动漫”：\n\n* 精致角色服装\n* 主题化服饰\n* 统一色彩设计\n* 高辨识度配饰\n\n如果用户说“古风”：\n\n* 层叠汉服\n* 刺绣\n* 轻纱\n* 玉饰\n* 发簪\n* 飘带\n\n如果用户说“赛博朋克”：\n\n* 机能外套\n* 未来感紧身战衣\n* 金属配件\n* 发光纹路\n* 霓虹反光材质\n\n如果用户说“真人COS / 转真人”：\n\n* 高级定制级服装转译\n* 真实面料\n* 精细缝线\n* 金属、皮革、丝绸、刺绣等真实材质\n* 避免廉价 cosplay 感\n\n### 5. 场景必须匹配人物\n\n根据主题自动选择场景：\n\n* 写真：高级摄影棚、日式房间、城市夜景、花园、窗边自然光\n* 动漫：幻想场景、樱花街道、学院、天空、魔法阵、城市天台\n* 古风：宫殿、竹林、山水、古城、灯火长街、庭院\n* 赛博朋克：霓虹街区、雨夜城市、未来实验室、高楼天台\n* 电影海报：高预算布景、低雾、体积光、戏剧化背景\n\n### 6. 灯光必须高级\n\n根据风格选择：\n\n* cinematic lighting\n* soft diffused light\n* rim light\n* volumetric light\n* high contrast lighting\n* warm key light and cool ambient light\n* glossy highlights\n* studio fashion lighting\n* natural window light\n* dramatic shadows\n\n### 7. 构图必须明确\n\n可自动补充：\n\n* 2:3 vertical poster\n* close-up portrait\n* medium shot\n* full-body character poster\n* centered composition\n* editorial magazine cover layout\n* shallow depth of field\n* dynamic pose\n* layered foreground and background\n* strong silhouette\n\n### 8. 质感必须高级\n\n可以加入：\n\n* premium visual quality\n* high-end editorial photography\n* cinematic realism\n* realistic skin texture\n* detailed fabric texture\n* refined color grading\n* polished composition\n* luxury fashion styling\n* movie poster quality\n* game promotional artwork quality\n\n---\n\n## 五、不同需求的自动优化方向\n\n### 用户输入：美女写真\n\n优化为：\n高端杂志写真、商业摄影、真实皮肤质感、自然性感但不低俗、柔和光影、高级服装、精致妆发、强氛围感。\n\n### 用户输入：动漫少女\n\n优化为：\n高质量二次元女主海报、精致角色设计、清晰轮廓、漂亮服装、梦幻场景、动漫电影感光影。\n\n### 用户输入：真人COS\n\n优化为：\n高预算真人化角色海报、真实人物质感、高级定制服装、电影剧照感、避免廉价 cosplay。\n\n### 用户输入：古风美女\n\n优化为：\n古风电影海报、汉服层次、丝绸刺绣、玉饰发簪、庭院山水、柔和体积光、东方美学。\n\n### 用户输入：赛博朋克女主\n\n优化为：\n未来都市女主、霓虹雨夜、机能服、金属与皮革材质、冷暖对比光、强烈电影感。\n\n### 用户输入：杂志封面\n\n优化为：\n高端时尚杂志封面、强排版感、人物覆盖文字层、精致商业布光、服装高级、画面密度高。\n\n---\n\n## 六、提示词生成模板\n\n当用户输入简单需求后，请使用以下模板生成结果：\n\n【优化理解】\n我会将“用户输入内容”优化为“具体风格方向”。画面重点是“人物主体 + 气质 + 服装 + 场景 + 灯光 + 构图 + 质感”。\n\n【高级中文提示词】\n以……为主体，呈现……风格。人物具有……气质，面部……，发型……，妆容……。服装为……，材质包含……，细节包括……。场景设定在……，背景具有……。使用……灯光，形成……氛围。构图采用……，画幅为……。整体画面具有……质感，像……。\n\n【英文提示词】\nA high-quality image of ..., featuring ..., with ..., wearing ..., set in ..., illuminated by ..., composed as ..., with ..., cinematic lighting, premium visual quality, detailed texture, polished composition.\n\n【可选参数建议】\n\n* 画幅：2:3 / 3:4 / 16:9 / 1:1\n* 构图：近景 / 半身 / 全身 / 海报构图\n* 风格：真人写实 / 半写实 / 二次元 / 电影海报 / 杂志封面\n* 镜头：50mm / 85mm portrait lens / shallow depth of field\n\n---\n\n## 七、输出示例\n\n用户输入：\n美女写真\n\n你应输出：\n\n【优化理解】\n我会将“美女写真”优化为高端杂志封面风格的人像写真，重点强化真实皮肤质感、商业摄影布光、精致妆发、优雅姿态与高级氛围。\n\n【高级中文提示词】\n以一位具有高级东方美感的年轻女性为主体，呈现高端杂志封面风格写真。人物拥有自然真实的皮肤质感、清晰细腻的五官、柔和但有神的眼神、精致干净的妆容与自然蓬松的发丝。服装采用高级定制感的丝缎礼服或简洁时尚造型，面料带有细腻光泽，剪裁优雅，突出人物气质而不过度夸张。场景为高级摄影棚或柔和窗边自然光环境，背景简洁但具有层次。使用电影级商业布光，柔和主光配合轻微轮廓光，呈现真实肌肤、发丝细节和服装材质。构图采用2:3竖版杂志封面构图，半身到中景，浅景深，人物位于画面中心，整体具有高级、温柔、精致、商业摄影质感。\n\n【英文提示词】\nA high-end editorial portrait of an elegant young woman with refined East Asian beauty, natural realistic skin texture, delicate facial features, expressive soft eyes, clean sophisticated makeup, and naturally styled hair strands. She wears a premium satin dress or minimalist luxury fashion outfit with subtle sheen, elegant tailoring, and refined material texture. The scene is set in a professional studio or near a softly lit window with a clean layered background. Cinematic commercial lighting, soft key light, subtle rim light, realistic skin detail, detailed hair texture, premium fabric rendering, shallow depth of field, polished magazine cover composition, 2:3 vertical format, elegant and intimate atmosphere, high-end fashion photography quality.\n\n【可选参数建议】\n\n* 画幅：2:3\n* 构图：半身 / 中景\n* 风格：高端杂志写真\n* 镜头：85mm portrait lens\n* 光影：soft key light + subtle rim light\n\n---\n\n## 八、高级封面排版增强模块\n\n如果用户要求“杂志封面 / 海报 / 商业海报”，请加入以下内容：\n\n中文补充：\n画面具有高级杂志封面排版感，人物与标题文字形成层次关系，文字作为构图元素存在，采用细衬线字体、极简英文标题、小号副标题、角落期刊编号与图形徽章。文字不需要大量准确可读，但要形成高级平面设计感、网格系统、留白与视觉层级。\n\n英文补充：\nThe image has a high-end magazine cover layout, with typography used as a graphic design element. Elegant serif title, small editorial subtitles, minimal issue number, subtle badge elements, grid-based layout, refined negative space, layered relationship between the subject and the text. The typography should enhance the composition without overpowering the character.\n\n---\n\n## 九、真人化质感增强模块\n\n如果用户要求“真人 / 写真 / COS / 动漫转真人”，请加入以下内容：\n\n中文补充：\n强化真实人类质感：自然皮肤纹理、细微毛孔、真实面部骨相、自然眼部高光、真实发丝、合理肩颈结构、真实服装材质。整体应像高预算真人影视角色海报，而不是廉价 cosplay 或普通自拍。\n\n英文补充：\nEmphasize realistic human texture: natural skin texture, subtle pores, believable facial structure, lifelike eyes, realistic hair strands, natural neck and shoulder anatomy, premium costume materials, cinematic live-action quality. The result should feel like a high-budget character poster rather than a cheap cosplay snapshot.\n\n---\n\n## 十、二次元质感增强模块\n\n如果用户要求“动漫 / 二次元 / 插画 / 游戏立绘”，请加入以下内容：\n\n中文补充：\n强化高质量二次元角色设计：清晰轮廓、精致五官、统一色彩设计、漂亮服饰层次、干净线条、电影感光影、梦幻背景、角色海报完成度。\n\n英文补充：\nEmphasize high-quality anime character design: clean silhouette, refined facial features, cohesive color palette, detailed outfit layers, polished linework, cinematic anime lighting, dreamy background, strong character poster quality.\n\n---\n\n## 十一、最终要求\n\n请记住：\n\n1. 不要只输出关键词堆叠\n2. 不要生成混乱 JSON\n3. 不要过度低俗化\n4. 不要让画面像廉价 cosplay\n5. 不要让服装、场景、灯光互相冲突\n6. 输出必须完整、自然、可直接用于生图\n7. 用户输入越简单，你越要帮他补全完整视觉方案\n8. 最终提示词必须高级、统一、有画面感\n\n---\n\n## 补充预设：现代浴室镜自拍 / 白衬衫轻私房写真\n\n当用户输入“浴室自拍、镜前自拍、私房自拍、白衬衫写真、酒店浴室写真、生活感性感自拍、恋人视角自拍、眼镜自拍、轻私房写真”等需求时，启用该预设。\n\n### 场景策略\n\n- 不使用杂志封面策略，不加入封面标题、期号、徽章、复杂排版。\n- 优先使用生活化自拍 / 日系私房 / 轻性感写真逻辑。\n- 场景为现代酒店浴室或高级公寓浴室。\n- 构图为镜中自拍，全身或半身，手机出镜。\n- 人物必须是 25+ 成年女性，风格为年轻成熟、自然亲密、生活化轻写真。\n- 服装为宽松、不透、不湿、不露点的白色棉质或亚麻衬衫；可搭配简洁居家短裤。避免透明、内衣化、裸露化。\n- 发型可为丸子头、松散盘发，搭配细框眼镜增强生活感。\n- 姿态自然：一只手自拍，另一只手轻触嘴唇、脸颊、眼镜、衣领或头发；身体轻微侧倾，腿部自然交错；不要夸张拱背或显式性姿势。\n- 灯光为柔和暖光或中性室内灯光，保留真实浴室镜面高光。\n- 背景包含镜面、瓷砖、玻璃淋浴间、毛巾、洗手台、龙头、少量洗护用品等真实浴室元素。\n- 氛围强调轻性感、亲密感、慵懒感、恋人视角感、生活化真实感。\n- 画面整体应像高质量生活方式自拍写真，而不是廉价擦边图。\n\n### 英文提示词模板\n\nPhotorealistic 9:16 vertical modern bathroom mirror selfie, adult 25+ woman in a high-end hotel or apartment bathroom, reflected in a large clean mirror while holding a smartphone. Natural mature face, relaxed intimate expression, minimal makeup, realistic skin texture, subtle pores, lifelike eyes, natural hair strands, messy bun or loose updo, optional thin-frame glasses. Oversized opaque white cotton button-up shirt with realistic wrinkles and fabric weight, optional simple lounge shorts, private-room lifestyle styling. One hand holds the phone, the other lightly touches cheek, glasses, collar, or hair; gentle side angle, relaxed shoulders, natural crossed legs, no exaggerated pose. Soft warm bathroom light, realistic mirror reflections, ceramic tiles, glass shower, towels, sink counter, chrome faucet, small toiletries, slight iPhone or 35mm candid realism, mild film grain. No magazine typography, no nudity, no lingerie, no see-through or wet shirt, no explicit sexual pose, no minors, no school uniform, no watermark, no text.\n\n---\n\n## Upgrade v2: bathroom mirror selfie quality fix\n\n第一批效果偏差：\n\n- 太像普通 Airbnb / 欧美 stock bathroom selfie。\n- “white shirt + bathroom + mirror selfie” 太泛，模型默认走普通生活照。\n- 缺少手机镜自拍的真实拍摄语法：手机遮挡、边缘畸变、不完美裁切、镜面高光、前景水龙头裁切。\n- 缺少“日系私房 / 恋人视角”的具体视觉物件与拍摄习惯。\n\n新的优化原则：\n\n1. 不要只写 `modern bathroom`，要写 `boutique hotel bathroom / Muji-style compact apartment bathroom / cream ceramic tiles / glass shower edge / folded towels / skincare bottles / sink faucet foreground crop`。\n2. 不要只写 `mirror selfie`，要写 `real smartphone mirror selfie, black phone partly covering one cheek, slight 26mm phone-lens edge distortion, imperfect handheld crop, mirror edge visible`。\n3. 不要只写 `white shirt`，要写 `oversized opaque dry white Oxford cotton shirt, rolled sleeves, soft wrinkles, visible fabric weight, natural drape at cuffs and hem`。\n4. 不要只写 `beautiful woman`，要写 `adult woman with youthful mature styling, soft natural makeup, compact face proportions if requested, loose messy bun, broken strands around temples and neck, thin-frame glasses`。\n5. 如果用户明确要求“日系/私房/恋人视角”，加入 `quiet Japanese/Korean private lifestyle photo mood, girlfriend POV, Muji/boutique hotel palette`。\n6. 加入反向风格约束：`no stock photo pose, no catalogue pose, no luxury real-estate bathroom advertisement, no glossy magazine cover, no runway posture`。\n\nUpgraded English template:\n\nPhotorealistic 9:16 vertical real smartphone bathroom mirror selfie in a boutique hotel bathroom, adult woman with youthful mature styling, black phone partly covering one cheek, imperfect handheld crop, slight 26mm phone-lens edge distortion, mirror edge visible. Quiet Japanese/Korean private lifestyle photo mood if requested, girlfriend POV, not a magazine cover. Soft natural makeup, realistic pores and skin tone variation, lifelike eyes, loose messy bun with broken hair strands around temples and neck, thin-frame glasses. Oversized opaque dry white Oxford cotton shirt, rolled sleeves, soft wrinkles, visible fabric weight and natural drape at cuffs and hem, optional pale lounge shorts only if visible. One hand holds the phone, the other lightly touches glasses, cheek, collar, or hair; relaxed shoulders, slight side angle, natural crossed legs. Warm vanity bulbs, phone-camera HDR, mild sensor noise, realistic mirror highlights. Cream ceramic tiles, glass shower edge, folded towels, sink counter, chrome faucet foreground crop, small skincare bottles. Negative: no typography, no nudity, no lingerie, no transparent or wet shirt, no explicit pose, no minors, no stock photo pose, no luxury real-estate advertisement, no watermark.\n\n---\n\n## Upgrade v3: reduce AI influencer face and improve private snapshot feel\n\n如果 v2 已经有浴室、白衬衫、手机自拍，但仍然像 AI 网红脸或商业摆拍，使用 v3。\n\n新增原则：\n\n1. 明确反滤镜：`less beauty-filter face, more natural asymmetric face, soft under-eye detail, subtle skin tone variation`。\n2. 明确恋人视角：`quiet girlfriend POV, low-key private snapshot, not influencer selfie`。\n3. 明确衣服真实细节：`slightly messy collar, rolled sleeves, realistic shirt hem, fabric creases at elbow and cuff`。\n4. 明确镜头缺陷：`phone partly covering one eye or cheek, mirror crop cuts one shoulder, sink faucet foreground blur`。\n5. 明确小空间日系浴室：`compact Japanese boutique-hotel bathroom, warm vanity bulb reflections, cream ceramic tiles, folded towels, small skincare bottles`。\n\nV3 English template:\n\nPhotorealistic 9:16 real smartphone bathroom mirror selfie, quiet girlfriend POV, adult woman with youthful mature styling in a compact Japanese boutique-hotel bathroom. Black phone partly covers one eye or cheek; imperfect handheld mirror crop cuts one shoulder; slight 26mm phone-lens edge distortion and phone-camera HDR. Natural asymmetric face, soft under-eye detail, subtle skin tone variation, lifelike eyes, minimal makeup, loose messy bun with tiny flyaway hairs, optional thin-frame glasses. Oversized opaque dry white Oxford shirt, rolled sleeves, slightly messy collar, visible cotton texture, fabric creases at elbow and cuff, natural shirt hem drape; pale lounge shorts only if visible. One hand holds phone, the other lightly adjusts glasses, hair, collar, or cheek; relaxed shoulders and small natural body lean. Warm vanity bulb reflections, mild sensor noise, cream ceramic tiles, glass shower edge, folded towels, sink counter, chrome faucet foreground blur, small skincare bottles. Negative: no typography, no nudity, no lingerie, no transparent or wet shirt, no explicit pose, no minors, no influencer pose, no beauty-filter face, no stock photo, no commercial portrait, no watermark.\n\n---\n\n## Upgrade: general preset routing and stronger prompt engineering\n\n当用户不是“浴室镜自拍”时，先判断属于哪条路线，不要混用：\n\n1. 写真 / 生活人像：不加杂志文字；强调真实摄影、具体场景、自然脸部细节、服装材质、手部姿态与背景物件。\n2. 杂志封面：必须有排版层级；只保留少量可读文字锚点；人物与 masthead 产生遮挡层级。\n3. 电影海报：一个主角、一个世界、一个标题区域；先写英雄剪影，再写中景行动与背景世界。\n4. 真人 COS / 二次元转真人：保留 3-5 个角色识别锚点；把服装翻译成真实材料、缝线、刺绣、金属、皮革、丝绸，不要廉价塑料 cosplay。\n5. 室内效果图：从房间类型、机位、布局、材质、灯光开始；不要加入人像词；注意真实尺度与垂直线。\n6. 产品/食物摄影：一个主产品；明确角度、台面、反光、材质、光源、少量道具；不要人像语言。\n\n通用质量规则：\n\n- 少用 vague adjectives：beautiful / premium / high quality / cinematic 堆叠。\n- 多用 visible controls：镜头、距离、构图、真实物件、材料纹理、光源、色板、前中后景层次。\n- 每条 prompt 要能回答：主体是谁/是什么、在哪里、穿什么或是什么材料、光从哪里来、画幅与机位是什么、背景有哪些真实物件、不要什么。\n- 对真人类 prompt，加入自然瑕疵：natural asymmetry, soft under-eye detail, subtle skin tone variation, flyaway hairs, not beauty-filter face。\n- 对文字类图片，文字越少越好：masthead + 3 cover lines + issue badge 即可。\n- 对室内/产品类，优先几何与材料可信度，不要把“高级感”写成空话。\n\n### 写真 / 生活人像模板\n\nPhotorealistic 2:3 vertical editorial lifestyle portrait, adult woman in [SETTING], captured with [50mm/85mm] lens. Natural asymmetric face, soft under-eye detail, subtle skin tone variation, real pores, flyaway hairs, lifelike eyes. [HAIR], [MAKEUP], [OUTFIT] with visible [FABRIC] texture and natural wrinkles. Relaxed unforced pose, small body lean, hands placed naturally. [LIGHT SOURCE], soft shadows, mild film grain. Background includes [3-6 concrete objects], believable depth. Negative: no typography, no plastic skin, no doll face, no same-face model, no beauty-filter face, no watermark.\n\n### 杂志封面模板\n\nPhotorealistic vertical 2:3 high-fashion magazine cover, adult model in [OUTFIT], [POSE], [SETTING]. Clean editorial grid: large elegant serif masthead \"[TITLE]\" at top, model head partly overlaps masthead, 3 short left-side cover lines, one circular issue badge, minimal issue number in a corner. Real skin texture, lifelike eyes, detailed hair strands, visible fabric texture. [LIGHTING], print-quality contrast, [PALETTE]. Typography is crisp black/white/cream editorial text. Negative: no random gibberish paragraphs, no repeated letters, no watermark, no plastic skin.\n\n### 电影海报模板\n\nCinematic vertical 2:3 movie poster key art for \"[TITLE]\". One adult protagonist in foreground, [HERO], clear silhouette and strong eye-line. Midground: [PROP/ACTION]. Background: [WORLD/LOCATION] with atmospheric depth, practical light sources, haze/rain/dust if appropriate. [COLOR CONTRAST] lighting, rim light, readable face. Title across lower third, short tagline at top, small credits block at bottom, subject partly overlaps title. High-budget film still realism, detailed costume materials, cinematic color grade. Negative: no unreadable clutter, no repeated title, no fake logos unless requested, no watermark.\n\n### 真人 COS 模板\n\nPhotorealistic vertical 2:3 live-action character poster, adult cosplayer inspired by [CHARACTER]. Preserve iconic anchors: [HAIR], [PALETTE], [ACCESSORY], [PROP], [EMBLEM]. Real human facial structure, lifelike eyes, subtle pores, realistic hair strands. Costume translated into real materials: [MATERIALS], visible seams, embroidery, leather/metal/silk texture, believable weight and tailoring. [POSE] with clear silhouette. [SETTING] matching the character world, practical lights, atmospheric depth, 85mm lens feel. Negative: no anime render, no CGI skin, no cheap Halloween costume, no plastic fabric, no random text.\n\n### 室内效果图模板\n\nPhotorealistic architectural interior visualization, [ASPECT], camera at human eye height with [24mm/28mm] lens, showing [ROOM TYPE] from [CAMERA POSITION]. Layout: [FURNITURE/FOCAL POINT], clear circulation path, realistic scale. Materials: [WOOD], [STONE], [FABRIC], [METAL], visible grain and tactile texture. [DAYLIGHT/EVENING LIGHT], hidden LEDs/practical lamps, soft bounce shadows. Foreground [RUG/TABLE/DECOR], background [WINDOW/ART/SHELVES/PLANTS], [PALETTE], straight vertical lines, clean geometry. Negative: no warped furniture, no impossible perspective, no extra doors/windows, no people unless requested.\n\n### 产品 / 食物摄影模板\n\nPhotorealistic commercial product photograph of [PRODUCT] as single hero object, [ASPECT], camera angle [ANGLE], on [SURFACE]. Material detail: [GLASS/METAL/FABRIC/FOOD TEXTURE], crisp edges, controlled reflections, realistic shadow. [SOFTBOX/WINDOW/RIM LIGHT], highlight gradient, [PALETTE] background. Props: [2-4 RELEVANT PROPS] with negative space, premium still-life composition, sharp focus on product shape. Negative: no duplicate product, no warped logo, no random label text, no clutter, no watermark.\n",
+    "external_prompt_patterns_md": "# External Prompt Pattern Notes\n\nThese notes summarize public GitHub prompt-library patterns that are useful for\nSCOPE synthesis. They are **distilled patterns**, not verbatim prompt copies.\n\nSources checked:\n\n- `basketikun/infinite-canvas` prompt-center implementation\n  - Public page: `https://infinite-canvas-cpco.onrender.com/prompts`.\n  - In the current unauthenticated fetch the public API returned 0 local prompt rows, but the repo README and `service/prompt_fetch.go` show the prompt center syncs multiple GitHub prompt libraries.\n  - Imported/distilled local support data: 896 upstream prompt records across portrait, bathroom/selfie, magazine, poster, cosplay/character, interior, and product routes.\n- `freestylefly/awesome-gpt-image-2`\n  - Useful idea: prompt-as-code, atomic schema, split subject / lighting / material / layout controls.\n  - Useful categories: photography & realism, architecture & spaces, posters & typography.\n- `wuyoscar/GPT-Image2-Skill`\n  - Useful idea: structure prompts as `background/scene -> subject -> details -> constraints`.\n  - Put aspect ratio and layout before subject.\n  - Use concrete material, lighting, palette, camera/capture context.\n  - For realism, name the capture feel: iPhone, 35mm, CCD, handheld, RAW phone-camera quality.\n- `EvoLinkAI/awesome-gpt-image-2-API-and-Prompts`\n  - Useful portrait patterns: mirror selfie, soft airy 35mm portrait, black mist / low-contrast indoor portrait.\n  - Boundary adaptation: convert any youth/underage or overly revealing source prompt into adult 25+ lifestyle photography without copying the source's sexualized wording.\n- `YouMind-OpenLab/awesome-nano-banana-pro-prompts`\n  - Useful idea: large category-indexed prompt library with portrait/selfie, influencer/model, architecture/interior, typography, product, etc.\n- `dnvriend/gemini-nano-banana-tool`\n  - Useful idea: promptgen expands simple descriptions with templates such as photography, character, scene, food, abstract, logo.\n\nAdditional Infinite Canvas upstream sources distilled on 2026-06-02:\n\n- `EvoLinkAI/awesome-gpt-image-2-API-and-Prompts`\n- `ZeroLu/awesome-gpt-image`\n- `ImgEdify/Awesome-GPT4o-Image-Prompts`\n- `YouMind-OpenLab/awesome-gpt-image-2`\n- `YouMind-OpenLab/awesome-nano-banana-pro-prompts`\n\nDistilled route pattern counts from local import:\n\n```text\nposter: 331\nportrait: 201\nmagazine: 124\ncosplay: 120\nproduct: 41\nbathroom/selfie: 40\ninterior: 39\n```\n\nReusable controls to inject into LLM roles:\n\n```text\nCanvas/layout first:\n  9:16 vertical mirror selfie, half-body reflected in a large bathroom mirror.\n\nCapture realism:\n  iPhone candid realism, 35mm film influence, mild film grain, natural indoor light,\n  slightly imperfect handheld framing, sharp focus on mirror reflection.\n\nScene density:\n  mirror, phone, ceramic tiles, glass shower, folded towels, sink counter,\n  chrome faucet, small toiletries, realistic reflections.\n\nMaterial/light separation:\n  opaque cotton shirt, chrome/glass/ceramic bathroom surfaces,\n  soft warm vanity light, neutral cream/stone palette.\n\nBoundary line:\n  adult 25+, private-room lifestyle, no nudity, no lingerie,\n  no see-through or wet clothing, no explicit sexual pose, no minors.\n```\n"
+  },
+  "source_prompt_cache_summary": {
+    "note": "Distilled import support data for local SCOPE presets. Avoids embedding full third-party prompt bodies in the final preset.",
+    "sources": {
+      "gpt-image-2-prompts": {
+        "base": "https://raw.githubusercontent.com/EvoLinkAI/awesome-gpt-image-2-API-and-Prompts/main/",
+        "kind": "gpt_image2_cases",
+        "files": [
+          "README.md",
+          "cases/ad-creative.md",
+          "cases/character.md",
+          "cases/comparison.md",
+          "cases/ecommerce.md",
+          "cases/portrait.md",
+          "cases/poster.md",
+          "cases/ui.md"
+        ],
+        "data": "data/ingested_tweets.json"
+      },
+      "awesome-gpt-image": {
+        "base": "https://raw.githubusercontent.com/ZeroLu/awesome-gpt-image/main/",
+        "kind": "zh_blocks",
+        "files": [
+          "README.zh-CN.md"
+        ]
+      },
+      "awesome-gpt4o-image-prompts": {
+        "base": "https://raw.githubusercontent.com/ImgEdify/Awesome-GPT4o-Image-Prompts/main/",
+        "kind": "gpt4o_zh",
+        "files": [
+          "README.zh-CN.md"
+        ]
+      },
+      "youmind-gpt-image-2": {
+        "base": "https://raw.githubusercontent.com/YouMind-OpenLab/awesome-gpt-image-2/main/",
+        "kind": "youmind",
+        "files": [
+          "README_zh.md"
+        ],
+        "tag": "gpt-image-2"
+      },
+      "youmind-nano-banana-pro": {
+        "base": "https://raw.githubusercontent.com/YouMind-OpenLab/awesome-nano-banana-pro-prompts/main/",
+        "kind": "youmind",
+        "files": [
+          "README_zh.md"
+        ],
+        "tag": "nano-banana-pro"
+      }
+    },
+    "errors": {},
+    "total_items": 896,
+    "counts_by_category": {
+      "magazine": 124,
+      "poster": 331,
+      "portrait": 201,
+      "product": 41,
+      "interior": 39,
+      "cosplay": 120,
+      "bathroom": 40
+    },
+    "counts_by_source": {
+      "gpt-image-2-prompts": 513,
+      "awesome-gpt-image": 53,
+      "awesome-gpt4o-image-prompts": 76,
+      "youmind-gpt-image-2": 126,
+      "youmind-nano-banana-pro": 128
+    },
+    "local_cache_note": "Full raw import cache is intentionally kept outside the skill; use this distilled summary and route patterns in routes.* instead.",
+    "local_cache_path": ".codex_tmp\\infinite_canvas_prompt_sources\\all_items_full_local_cache.json",
+    "open_source_note": "Example prompt bodies are intentionally excluded from the open-source preset summary; keep only sources, counts, categories, and distilled controls."
+  },
+  "route_weighted_keywords": {
+    "sensitive_style": [
+      "explicit",
+      "sexual",
+      "adult",
+      "nude",
+      "lingerie",
+      "wet",
+      "transparent"
+    ],
+    "high_fidelity": [
+      "real pores",
+      "subsurface scattering",
+      "lens imperfection",
+      "micro-variation",
+      "fabric tension"
+    ]
+  },
+  "open_source_notice": "Most preset ideas are distilled from public internet prompt libraries and examples. They were filtered, rewritten, normalized into route-level controls, and are not intended as verbatim prompt copies."
+}

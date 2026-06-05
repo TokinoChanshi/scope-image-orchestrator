@@ -1,0 +1,4 @@
+﻿interface:
+  display_name: "SCOPE Image Orchestrator"
+  short_description: "Use 生图优化 to enter command mode for SCOPE-style image prompt optimization, generation, audit, repair, presets, and batch runs."
+  default_prompt: "生图优化"

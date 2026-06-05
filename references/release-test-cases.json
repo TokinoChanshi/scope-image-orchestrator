@@ -1,0 +1,150 @@
+{
+  "schema_version": "scope-release-tests-v1",
+  "notes": "Offline release gate inputs. These cases build request payloads, exercise response extraction, and run dry-run prompt routing without calling real APIs.",
+  "adapter_payload_cases": [
+    {
+      "id": "openai-chat-json",
+      "kind": "text",
+      "adapter": "openai-chat",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-5.5",
+      "expect_endpoint_contains": "/chat/completions",
+      "expect_payload_keys": ["model", "messages", "response_format"]
+    },
+    {
+      "id": "openai-responses-json",
+      "kind": "text",
+      "adapter": "openai-responses",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-5.5",
+      "expect_endpoint_contains": "/responses",
+      "expect_payload_keys": ["model", "input"]
+    },
+    {
+      "id": "google-gemini-json",
+      "kind": "text",
+      "adapter": "google-gemini",
+      "base_url": "https://generativelanguage.googleapis.com/v1beta",
+      "model": "gemini-3-pro",
+      "env": {"SCOPE_GOOGLE_API_KEY_AUTH": "header"},
+      "expect_endpoint_contains": ":generateContent",
+      "expect_payload_keys": ["contents", "systemInstruction", "generationConfig"]
+    },
+    {
+      "id": "openai-responses-vision",
+      "kind": "vision",
+      "adapter": "openai-responses",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-5.5",
+      "expect_endpoint_contains": "/responses",
+      "expect_payload_keys": ["model", "input"]
+    },
+    {
+      "id": "generic-vision-json",
+      "kind": "vision",
+      "adapter": "generic-vision-json",
+      "base_url": "https://example.test/vision",
+      "model": "custom-vision",
+      "env": {"SCOPE_VISION_ENDPOINT_URL": "https://example.test/vision", "SCOPE_GENERIC_AUTH_MODE": "bearer"},
+      "expect_endpoint_contains": "/vision",
+      "expect_payload_keys": ["model", "prompt", "messages", "images", "image"]
+    },
+    {
+      "id": "openai-images",
+      "kind": "image",
+      "adapter": "openai-images",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-image-2",
+      "env": {"SCOPE_IMAGE_SIZE": "1024x1536", "SCOPE_IMAGE_QUALITY": "high"},
+      "expect_endpoint_contains": "/images/generations",
+      "expect_payload_keys": ["model", "prompt", "size", "quality"],
+      "forbid_payload_keys": ["response_format"]
+    },
+    {
+      "id": "openai-responses-image",
+      "kind": "image",
+      "adapter": "openai-responses-image",
+      "base_url": "https://api.openai.com/v1",
+      "model": "gpt-5.5",
+      "expect_endpoint_contains": "/responses",
+      "expect_payload_keys": ["model", "input", "tools"]
+    },
+    {
+      "id": "google-gemini-image",
+      "kind": "image",
+      "adapter": "google-gemini-image",
+      "base_url": "https://generativelanguage.googleapis.com/v1beta",
+      "model": "gemini-3-pro-image",
+      "env": {"SCOPE_GOOGLE_API_KEY_AUTH": "header"},
+      "expect_endpoint_contains": ":generateContent",
+      "expect_payload_keys": ["contents", "generationConfig"]
+    },
+    {
+      "id": "generic-image-json",
+      "kind": "image",
+      "adapter": "generic-image-json",
+      "base_url": "https://example.test/image",
+      "model": "custom-image",
+      "env": {"SCOPE_IMAGE_ENDPOINT_URL": "https://example.test/image", "SCOPE_GENERIC_AUTH_MODE": "bearer", "SCOPE_IMAGE_RESPONSE_FORMAT": "b64_json"},
+      "expect_endpoint_contains": "/image",
+      "expect_payload_keys": ["model", "prompt", "n", "response_format"]
+    },
+    {
+      "id": "legacy-image-json",
+      "kind": "image",
+      "adapter": "openai-images-legacy",
+      "base_url": "https://example.test/v1",
+      "model": "gpt-image-2",
+      "env": {"SCOPE_IMAGE_RESPONSE_FORMAT": "b64_json"},
+      "expect_endpoint_contains": "/images/generations",
+      "expect_payload_keys": ["model", "prompt", "n", "response_format"]
+    }
+  ],
+  "dry_run_prompts": [
+    {"id": "portrait-basic", "route": "portrait", "prompt": "美女写真，半身人像，自然窗光，真实摄影质感"},
+    {"id": "bathroom-selfie", "route": "bathroom", "prompt": "白衬衫酒店浴室镜前自拍，生活方式写真，暖色室内灯光"},
+    {"id": "poster-cyberpunk", "route": "poster", "prompt": "赛博朋克电影海报，雨夜女侦探，高对比霓虹灯光"},
+    {"id": "product-perfume", "route": "product", "prompt": "商业产品摄影，香水瓶，白底静物，柔和阴影"},
+    {"id": "interior-living-room", "route": "interior", "prompt": "室内效果图，现代侘寂风客厅，自然材质与隐藏灯带"},
+    {"id": "magazine-cover", "route": "magazine", "prompt": "高端时尚杂志封面，精致排版，棚拍人像"},
+    {"id": "cosplay-character", "route": "cosplay", "prompt": "真人cosplay电影海报，幻想游戏角色，高级定制服装"}
+  ],
+  "response_extraction_cases": [
+    {
+      "id": "openai-data-b64",
+      "body": {"data": [{"b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="}]},
+      "expected_count": 1,
+      "expected_field": "b64"
+    },
+    {
+      "id": "openai-data-url",
+      "body": {"data": [{"url": "https://example.test/image.png"}]},
+      "expected_count": 1,
+      "expected_field": "url"
+    },
+    {
+      "id": "generic-images-base64",
+      "body": {"images": [{"base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=", "mimeType": "image/png"}]},
+      "expected_count": 1,
+      "expected_field": "b64"
+    },
+    {
+      "id": "generic-image-data-url",
+      "body": {"image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="},
+      "expected_count": 1,
+      "expected_field": "b64"
+    },
+    {
+      "id": "responses-image-output",
+      "body": {"output": [{"type": "image_generation_call", "result": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="}]},
+      "expected_count": 1,
+      "expected_field": "b64"
+    },
+    {
+      "id": "gemini-inline-data",
+      "body": {"candidates": [{"content": {"parts": [{"inlineData": {"mimeType": "image/png", "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="}}]}}]},
+      "expected_count": 1,
+      "expected_field": "b64"
+    }
+  ]
+}
