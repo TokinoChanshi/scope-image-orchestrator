@@ -8,14 +8,6 @@ It turns an image request into structured semantic commitments, optimizes the pr
 
 > This is an independent practical adaptation inspired by the SCOPE paper. It is not the official implementation.
 
-## Community
-
-QQ group: `1107570994`
-
-Scan to join:
-
-<img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">
-
 ## Paper
 
 - **SCOPE: Structured Decomposition and Conditional Skill Orchestration for Complex Image Generation**
@@ -47,7 +39,9 @@ See the generated sample gallery:
 
 Preview:
 
-![Generated sample overview](docs/assets/gallery/overview-contact-sheet.jpg)
+| Poster | Product | Interior |
+| --- | --- | --- |
+| ![poster sample](docs/assets/gallery/poster-neon-protocol.jpg) | ![product sample](docs/assets/gallery/product-perfume.jpg) | ![interior sample](docs/assets/gallery/interior-oriental-living.jpg) |
 
 ## Command mode
 
@@ -322,3 +316,11 @@ private generated images
 local caches with third-party prompt bodies
 personal account data
 ```
+
+## Community
+
+QQ group: `1107570994`
+
+Scan to join:
+
+<img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">

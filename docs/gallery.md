@@ -6,10 +6,6 @@ These are compressed showcase images from local SCOPE Image Orchestrator test ru
 
 这些图片来自本地 SCOPE Image Orchestrator 测试运行，已压缩后用于公开展示。
 
-## Overview / 总览
-
-![Generated sample overview](assets/gallery/overview-contact-sheet.jpg)
-
 ## Route examples / 路由样例
 
 | Route | Sample |

@@ -8,14 +8,6 @@
 
 > 这是一个受 SCOPE 论文启发的独立实践改造版本，不是论文作者的官方实现。
 
-## 社区交流
-
-QQ 群：`1107570994`
-
-扫码加入：
-
-<img src="docs/assets/qq-group.png" alt="QQ 群 1107570994" width="360">
-
 ## 论文来源
 
 - **SCOPE: Structured Decomposition and Conditional Skill Orchestration for Complex Image Generation**
@@ -47,7 +39,9 @@ QQ 群：`1107570994`
 
 预览：
 
-![生成样例总览](docs/assets/gallery/overview-contact-sheet.jpg)
+| 海报 | 产品 | 室内 |
+| --- | --- | --- |
+| ![海报样例](docs/assets/gallery/poster-neon-protocol.jpg) | ![产品样例](docs/assets/gallery/product-perfume.jpg) | ![室内样例](docs/assets/gallery/interior-oriental-living.jpg) |
 
 ## 命令模式
 
@@ -316,3 +310,11 @@ __pycache__/
 包含第三方提示词原文的本地缓存
 个人账号数据
 ```
+
+## 社区交流
+
+QQ 群：`1107570994`
+
+扫码加入：
+
+<img src="docs/assets/qq-group.png" alt="QQ 群 1107570994" width="360">
