@@ -4,11 +4,11 @@
 
 A Codex skill for structured image-generation orchestration.
 
-It helps turn an image request into explicit requirements, optimized prompts,
+It converts image requests into explicit constraints, route-aware optimization,
 generation calls, visual checks, repair attempts, and reproducible artifacts.
 
-> Independent practical adaptation inspired by the SCOPE paper. This repository
-> is not the authors' official implementation.
+> Independent practical adaptation inspired by the SCOPE paper. This repository is
+> not the authors' official implementation.
 
 ## Highlights
 
@@ -93,16 +93,16 @@ The unified preset library is:
 references/scope-preset-library.json
 ```
 
-Preset ideas are distilled from public prompt examples and rewritten into
-compact route-level controls. The repository is not intended to redistribute
-verbatim third-party prompt bodies.
+Preset ideas are distilled from public prompt examples and rewritten into compact
+route-level controls. The repository is not intended to redistribute verbatim
+third-party prompt bodies.
 
 ## Validation
 
 Run the offline release check before publishing changes:
 
 ```bash
-python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks
 ```
 
 This check is local only and does not call real APIs.
@@ -127,6 +127,5 @@ scope_runs/<task>/
 
 QQ group: `1107570994`
 
-Scan to join:
-
 <img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">
+

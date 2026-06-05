@@ -1,12 +1,10 @@
 [English](../README.md) | [简体中文](../README.zh-CN.md)
 
-# Sample gallery / 样例图库
+# Sample Gallery
 
-Compressed sample outputs from local test runs.
+Sample outputs from local runs (representative only).
 
-本页展示本地测试运行产生的压缩样例图。
-
-## Examples / 示例
+## Examples
 
 | Route | Sample |
 | --- | --- |
@@ -18,12 +16,8 @@ Compressed sample outputs from local test runs.
 | `product` | ![product sample](assets/gallery/product-perfume.jpg) |
 | `bathroom` | ![bathroom sample](assets/gallery/bathroom-mirror.jpg) |
 
-## Notes / 说明
+## Note
 
-- The images are sample outputs, not benchmark guarantees.
-- Prompts and model behavior may change across providers and model versions.
-- Keep private outputs and real API keys out of the repository.
-
-- 图片仅作为样例输出，不代表固定 benchmark 保证。
-- 不同服务商、不同模型版本下，提示词与模型行为可能变化。
-- 不要把私有生成结果或真实 API key 提交到仓库。
+- 这些图片仅用于说明链路效果，不构成质量保证。
+- 实际效果会随模型、版本与参数变化而变化。
+- 请勿提交私有输出、私钥或真实端点到公开仓库。

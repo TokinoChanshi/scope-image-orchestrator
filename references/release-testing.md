@@ -1,38 +1,41 @@
 # Release testing
 
-This file describes the publish-time test matrix for SCOPE Image Orchestrator.
+This document defines the publish-time checks for SCOPE Image Orchestrator.
 
-The default release checks are **offline**. They do not call real APIs and do
-not require real API keys.
+The release gate is offline by default and does not call real APIs.
 
 ## Run the release gate
 
-From the skill root:
-
 ```bash
-python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks
 ```
 
-Fast variant without prompt dry-runs:
+Fast mode (skip dry-run prompts):
 
 ```bash
-python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks --skip-dry-run
+python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks --skip-dry-run
 ```
 
-Expected final line:
+If the environment blocks compile output, use:
+
+```bash
+python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks --skip-compile
+```
+
+Expected success line:
 
 ```text
 [OK] release checks passed
 ```
 
-## What is covered
+## Coverage
 
-The release gate checks:
+The gate validates:
 
-1. Python syntax for every script in `scripts/`.
-2. `references/provider-config.example.json` structure.
-3. Provider-role payload rendering for every configured role.
-4. A sample SCOPE specification with `validate_scope_spec.py`.
+1. Python script syntax/buildability (or compile skip mode).
+2. `references/provider-config.example.json` validity.
+3. Provider role payload rendering across all adapter families.
+4. `validate_scope_spec.py` against a sample scope spec.
 5. Required preset routes in `references/scope-preset-library.json`.
 6. Adapter payload construction for:
    - `openai-chat`
@@ -45,23 +48,20 @@ The release gate checks:
    - `generic-vision-json`
    - `generic-image-json`
    - `openai-images-legacy`
-7. Response extraction for common image response shapes:
-   - OpenAI `data[].b64_json`
-   - OpenAI `data[].url`
-   - generic `images[].base64`
-   - generic `image` data URL
-   - Responses `output[].result`
-   - Gemini `inlineData.data`
-8. Dry-run prompt cases for:
-   - portrait
-   - bathroom
-   - poster
-   - product
-   - interior
-   - magazine
-   - cosplay
+7. Response extraction for common response shapes:
+   - OpenAI: `data[].b64_json` / `data[].url`
+   - Generic: `images[].base64`, `image`, `output[].result`
+   - Gemini: `candidates[].content.parts[].inlineData.data`
+8. Dry-run routing for representative routes:
+   - `portrait`
+   - `bathroom`
+   - `poster`
+   - `product`
+   - `interior`
+   - `magazine`
+   - `cosplay`
 
-The concrete cases live in:
+Test case definitions are in:
 
 ```text
 references/release-test-cases.json
@@ -69,10 +69,7 @@ references/release-test-cases.json
 
 ## Optional live smoke tests
 
-Live smoke tests are intentionally separate from the release gate because they
-spend API quota and require private credentials.
-
-Before publishing a new adapter or model-routing change, optionally run:
+Live tests are intentionally separate from the offline gate:
 
 ```bash
 python scripts/generate_single_v2.py \
@@ -84,7 +81,7 @@ python scripts/generate_single_v2.py \
   --max-generation-attempts 1
 ```
 
-Also test one reference-image request if the release changed reference handling:
+Reference-image smoke test:
 
 ```bash
 python scripts/scope_commands.py reference-run \
@@ -92,18 +89,16 @@ python scripts/scope_commands.py reference-run \
   --vision-env-file <vision.env> \
   --reference-image <reference.png> \
   --reference-mode style \
-  --user-prompt "参考图片氛围，生成现代浴室室内生活方式人像摄影" \
+  --user-prompt "lifestyle mirror-selfie prompt: realistic skin, warm vanity light, private bedroom bathroom, candid composition" \
   --out-dir scope_runs/live_reference_smoke
 ```
 
-Do not commit real env files, private output images, or private endpoint URLs.
-
 ## Pre-publish checklist
 
-- [ ] `python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks` passes.
-- [ ] `README.md` examples still match the supported adapters.
-- [ ] `SKILL.md` stays concise and points to reference files for details.
+- [ ] `python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks` passes.
+- [ ] `README.md` and `README.zh-CN.md` samples are still valid.
+- [ ] `SKILL.md` remains a short usage guide and points to reference docs.
 - [ ] `references/provider-config.example.json` contains no real endpoints or keys.
 - [ ] `references/.env.example` contains placeholders only.
-- [ ] `references/scope-preset-library.json` avoids verbatim third-party prompt bodies.
-- [ ] Generated outputs, `.env` files, `.codex_tmp/`, `__pycache__/`, and `*.pyc` are not committed.
+- [ ] `references/scope-preset-library.json` contains distilled controls, not verbatim prompt libraries.
+- [ ] No private credentials, private outputs, `.env`, or raw cache artifacts are committed.

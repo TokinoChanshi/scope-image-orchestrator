@@ -2,47 +2,41 @@
 
 # SCOPE Image Orchestrator
 
-一个用于结构化图像生成编排的 Codex skill。
+SCOPE Image Orchestrator 是一套用于图像生成流程编排的 Codex skill。  
+它将用户输入转成明确可执行的约束，按路由依次走“解析 → 提示词优化 → 生成 → 可选审核 → 定向修复”。
 
-它可以把图像请求转化为明确需求、优化后的提示词、生成调用、视觉检查、修复尝试和可复现产物。
+支持 OpenAI / Gemini / 自定义通用 JSON 适配，适合在本地或自有网关环境复用。
 
-> 本项目是受 SCOPE 论文启发的独立实践改造版本，不是论文作者的官方实现。
+## 核心能力
 
-## 特性
+- 结构化分解与条件编排
+- 路由感知提示词优化（portrait / magazine / poster / cosplay / interior / product / bathroom）
+- 多模型角色分离（文本模型、视觉模型、图像模型）
+- 参考图分析与参考引导（含镜子自拍、场景参考等）
+- 批量执行、命令入口与可复现 dry-run
 
-- 结构化提示词拆解。
-- 按场景路由的提示词优化。
-- 多 Provider API adapter 层。
-- 可选参考图分析。
-- 可选视觉审核与定向修复循环。
-- 支持批量运行与 dry-run 测试。
-
-## 论文
+## 论文映射
 
 - **SCOPE: Structured Decomposition and Conditional Skill Orchestration for Complex Image Generation**
 - arXiv: https://arxiv.org/abs/2605.08043
 - HTML: https://arxiv.org/html/2605.08043v1
 - Project: https://nopnor.github.io/SCOPE/
 
-## 样例
+本仓库是论文思路的实践化版本（非官方实现）。
 
-查看生成样例图库：
+## 示例画廊
 
-- [样例图库](docs/gallery.md)
-
-| 海报 | 产品 | 室内 |
-| --- | --- | --- |
-| ![海报样例](docs/assets/gallery/poster-neon-protocol.jpg) | ![产品样例](docs/assets/gallery/product-perfume.jpg) | ![室内样例](docs/assets/gallery/interior-oriental-living.jpg) |
+- [Sample gallery](docs/gallery.md)
 
 ## 快速开始
 
-复制环境变量模板，并填写自己的 endpoint 和 key：
+复制环境模板并填写你自己的 endpoint 与 key：
 
 ```bash
 cp references/.env.example .env
 ```
 
-不调用图像 API 的 dry-run：
+Dry-run（不调用真实图像 API）：
 
 ```bash
 python scripts/generate_single_v2.py \
@@ -52,7 +46,7 @@ python scripts/generate_single_v2.py \
   --dry-run
 ```
 
-生成一张图：
+正式生成：
 
 ```bash
 python scripts/generate_single_v2.py \
@@ -61,53 +55,60 @@ python scripts/generate_single_v2.py \
   --out-dir scope_runs/example
 ```
 
-查看命令帮助：
+查看命令：
 
 ```bash
 python scripts/scope_commands.py commands
 ```
 
-## 配置
+## 配置与适配
 
-使用 `references/.env.example` 作为公开配置模板。
+使用 `references/.env.example` 作为公开配置起点。
 
-支持的 adapter 类型：
+支持的适配器类型：
 
-- OpenAI-compatible 文本与图像 API。
-- Google Gemini-compatible 文本、视觉与图像 API。
-- 通用 JSON 包装接口。
-- 旧版 OpenAI-compatible 图像 JSON 接口。
+- OpenAI-compatible 文本 / 视觉 / 图像 API
+- Google Gemini 文本 / 视觉 / 图像 API
+- 通用 JSON 包装（generic-text-json / generic-vision-json / generic-image-json）
 
-详细请求格式见：
+详细请求形状见：
 
 - `references/api-providers.md`
 - `references/provider-config.example.json`
 
-## 预设
+## 统一预设库
 
-统一预设库：
+全部路由统一维护在：
 
-```text
+```
 references/scope-preset-library.json
 ```
 
-预设思路来自公开提示词示例，并经过重写与蒸馏，整理成紧凑的路由级控制项。本项目不用于分发第三方提示词原文。
+预设来源于公开提示词库和互联网案例，经过蒸馏后保留可执行控制项，故不直接复刻第三方原始长提示词。
 
-## 验证
+## 发布前检查（离线）
 
-发布修改前运行离线检查：
+默认不调用真实 API：
 
 ```bash
-python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks
 ```
 
-该检查只在本地运行，不会调用真实 API。
+快速变更可加速：
 
-## 输出产物
+```bash
+python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks --skip-dry-run
+```
 
-典型输出：
+如需绕过执行环境限制，可跳过编译检查：
 
-```text
+```bash
+python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks --skip-compile
+```
+
+## 产物目录
+
+```
 scope_runs/<task>/
   user_request.txt
   route.json
@@ -119,10 +120,9 @@ scope_runs/<task>/
   final_summary.json
 ```
 
-## 社区交流
+## 社区
 
 QQ 群：`1107570994`
 
-扫码加入：
+<img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">
 
-<img src="docs/assets/qq-group.png" alt="QQ 群 1107570994" width="360">

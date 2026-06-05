@@ -16,6 +16,7 @@ import base64
 import json
 import pathlib
 import py_compile
+import tempfile
 import shutil
 import subprocess
 import sys
@@ -74,7 +75,12 @@ def write_tiny_png(path: pathlib.Path) -> None:
 def compile_scripts(failures: list[str]) -> None:
     for path in sorted(SCRIPT_ROOT.glob("*.py")):
         try:
-            py_compile.compile(str(path), doraise=True)
+            with tempfile.TemporaryDirectory() as td:
+                py_compile.compile(
+                    str(path),
+                    doraise=True,
+                    cfile=str(pathlib.Path(td) / f"{path.stem}.pyc"),
+                )
         except Exception as exc:  # noqa: BLE001
             fail(failures, f"compile failed: {path.name}: {exc}")
     if not failures:
@@ -265,13 +271,17 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run offline release checks for SCOPE Image Orchestrator.")
     parser.add_argument("--out-dir", required=True, type=pathlib.Path, help="Directory for temporary release-check artifacts.")
     parser.add_argument("--skip-dry-run", action="store_true", help="Skip generate_single_v2.py dry-run prompt cases.")
+    parser.add_argument("--skip-compile", action="store_true", help="Skip Python compilation checks.")
     args = parser.parse_args(argv)
 
     out_dir = args.out_dir.resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
     failures: list[str] = []
 
-    compile_scripts(failures)
+    if args.skip_compile:
+        ok("script compilation check skipped")
+    else:
+        compile_scripts(failures)
     validate_provider_config(failures)
     validate_spec_sample(out_dir, failures)
     validate_presets(failures)
