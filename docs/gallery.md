@@ -1,6 +1,6 @@
-[English](../README.md) | [简体中文](../README.zh-CN.md)
+﻿[English](../README.md) | [中文](../README.zh-CN.md)
 
-# Sample Gallery
+# 示例图集
 
 Sample outputs from local runs (representative only).
 
@@ -18,6 +18,6 @@ Sample outputs from local runs (representative only).
 
 ## Note
 
-- 这些图片仅用于说明链路效果，不构成质量保证。
-- 实际效果会随模型、版本与参数变化而变化。
-- 请勿提交私有输出、私钥或真实端点到公开仓库。
+- 样例图仅供风格演示，不承诺任何单张结果完全一致。
+- 文档与脚本仅用于工程复现与方法验证。
+- 对照 `generation_prompt.txt` 与 `final_summary.json` 可复盘每次调用的生成链路。

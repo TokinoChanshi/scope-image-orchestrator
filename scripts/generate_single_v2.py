@@ -512,24 +512,31 @@ def infer_route(user_prompt: str, forced: str = "auto", presets: dict[str, Any] 
 
     raw = user_prompt
     prompt = user_prompt.lower()
-    route_candidates = []
+    route_candidates: list[tuple[str, int]] = []
+    route_hits: dict[str, list[str]] = {}
     for route in route_keys:
         cfg = _route_preset(route, presets)
         keywords = _as_str_list(cfg.get("route_keywords"))
         if not keywords:
             continue
-        weighted = []
+        matched_weight = 0
+        hits: list[str] = []
         for trig in keywords:
             trig_clean = trig.strip()
             if not trig_clean:
                 continue
-            weighted.append(trig_clean)
-            weighted.append(trig_clean.lower())
-        route_candidates.append((route, weighted))
-
-    for route, keyword_list in route_candidates:
-        if any((keyword in raw) or (keyword.lower() in prompt) for keyword in keyword_list):
-            return route
+            if trig_clean in raw or trig_clean.lower() in prompt:
+                matched_weight += max(1, len(trig_clean))
+                hits.append(trig_clean)
+        route_candidates.append((route, matched_weight))
+        if hits:
+            route_hits[route] = hits
+    route_candidates = [(route, score) for route, score in route_candidates if score > 0]
+    if route_candidates:
+        # Prefer the route with stronger keyword coverage.
+        best_route, best_score = max(route_candidates, key=lambda item: (item[1], len(route_hits.get(item[0], [])), item[0]))
+        if best_score > 0:
+            return best_route
     return "portrait"
 
 
@@ -541,14 +548,25 @@ def local_prompt_hint(user_prompt: str, route: str, presets: dict[str, Any] | No
     """
     cfg = _route_preset(route, presets)
     keyword_map = {
+        "写实": "documentary realism",
+        "真实照片": "photographic real-life look",
+        "实拍": "camera-candid real-photo texture",
+        "微距": "macro close-up detail",
+        "低饱和度": "low saturation documentary palette",
+        "浅景深": "shallow depth of field",
+        "仰视角": "slight low-angle perspective",
+        "俯视角": "slight high-angle perspective",
         "生活方式服饰": "white light-balance shirt with visible texture",
         "生活方式人像": "white-shirt mirror selfie",
         "镜前自拍": "smartphone mirror selfie",
         "镜子自拍": "smartphone mirror selfie",
+        "自拍": "smartphone mirror selfie",
         "短发": "short hair",
         "丸子头": "messy bun or ponytail",
         "一边卷发": "loose ponytail",
         "眼镜": "thin-frame glasses",
+        "薄纱": "sheer fabric with visible weave",
+        "白衬衫": "clean-collared casual shirt",
         "室内场景": "boutique hotel bathroom",
         "客厅": "living room scene",
         "卧室": "bedroom scene",
@@ -569,6 +587,8 @@ def local_prompt_hint(user_prompt: str, route: str, presets: dict[str, Any] | No
         "人像摄影": "editorial lifestyle portrait",
         "写真": "lifestyle portrait",
         "人像": "adult portrait subject",
+        "网红": "lifestyle portrait",
+        "美女": "lifestyle portrait",
         "爱情": "intimate lifestyle mood",
     }
 

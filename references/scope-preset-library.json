@@ -72,7 +72,9 @@
         "人像摄影",
         "生活方式人像",
         "高级人像",
+        "美女",
         "照片感",
+        "网红",
         "girlfriend photo",
         "photography"
       ]
@@ -110,6 +112,9 @@
         "editorial cover",
         "封面",
         "杂志",
+        "杂志封面",
+        "时尚封面",
+        "high-fashion",
         "luxe",
         "cover"
       ]
@@ -147,7 +152,9 @@
         "key art",
         "one-sheet",
         "海报",
-        "电影海报"
+        "电影海报",
+        "关键视觉",
+        "主图"
       ]
     },
     "interior": {
@@ -180,6 +187,9 @@
         "interior render",
         "室内",
         "室内效果图",
+        "室内场景",
+        "室内效果",
+        "家居",
         "客厅",
         "卧室",
         "厨房",
@@ -216,6 +226,9 @@
         "product",
         "product photo",
         "commercial still",
+        "产品",
+        "商品",
+        "商业图",
         "perfume",
         "handbag",
         "watch",
@@ -226,7 +239,6 @@
         "drinks",
         "shoe",
         "鞋",
-        "产品",
         "产品图"
       ]
     },
@@ -276,6 +288,8 @@
         "indoor lifestyle image",
         "private-room lifestyle image",
         "现代酒店浴室",
+        "镜前自拍",
+        "镜子自拍",
         "室内镜前自拍",
         "情侣视角",
         "partner pov"
@@ -311,10 +325,10 @@
         "character styling",
         "live-action character",
         "character poster",
+        "角色写真",
         "真人cos",
         "游戏角色",
         "角色",
-        "角色写真",
         "character"
       ]
     }
