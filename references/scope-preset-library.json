@@ -21,7 +21,7 @@
     }
   },
   "global_rules": {
-    "negative_anchor": "Negative: no minors, no nudity, no sexual acts, no watermark.",
+    "negative_anchor": "Negative: no watermark, no random paragraphs, no gibberish text, no logo corruption.",
     "short_prompt_english_only": "Keep final production prompts in compact clean English.",
     "text_principles": [
       "Prefer concrete camera/light/material controls before abstract adjectives.",
@@ -40,15 +40,15 @@
       "aspect_ratio": "2:3",
       "negative": "Negative: no cartoon look, no beauty-filter face, no plastic skin, no repeated random text, no watermark.",
       "booster_lines": [
-        "one concrete scene anchor from request and 2 nearby props",
-        "natural pose imbalance: imperfect hand placement and shoulder weight",
-        "distinct face geometry and hair silhouette",
-        "micro texture on skin/hair/fabric, avoid over-filtering"
+        "include one concrete scene anchor + one texture anchor",
+        "keep one clear identity anchor and one nearby environment detail",
+        "add natural asymmetry in hands/shoulders/face",
+        "skin microtexture with visible pores, subtle oil sheen, and believable imperfections"
       ],
       "style_blocks": [
-        "real photography style: 35mm/50mm/85mm or equivalent framing",
-        "one practical indoor or outdoor setting with 2-3 supporting props",
-        "natural asymmetry in hands, mouth, shoulders and eyes"
+        "real photography with 35/50/85mm style framing",
+        "soft practical key light with natural shadow falloff",
+        "body and hand micro-asymmetry for candid motion"
       ],
       "composition_patterns": [
         "vertical portrait framing with clear subject focus",
@@ -87,23 +87,25 @@
       "aspect_ratio": "2:3",
       "negative": "Negative: no repeated text paragraphs, no fake logos unless requested, no gibberish blocks, no random letters, no watermark, no minors.",
       "booster_lines": [
-        "respect typography order: masthead -> headlines -> feature line -> issue marker",
-        "one readable model-over-masthead composition",
-        "text blocks are short and legible"
+        "avoid long unreadable text and repeated random glyphs",
+        "place issue marker clearly without covering face",
+        "keep title and subtitles short and legible",
+        "limit total text density to one coherent editorial block"
       ],
       "composition_patterns": [
         "2:3 vertical cover grid",
         "one headline zone, one subtitle zone, one badge/number zone"
       ],
       "external_patterns": [
-        "clean fashion cover hierarchy with short lines only",
-        "model integrated with title and cover lines",
-        "print-like contrast with controlled grain"
+        "clean magazine rhythm with model-over-title composition",
+        "high-contrast type with controlled print contrast",
+        "no fake brand logos unless explicitly requested"
       ],
       "quality_controls": [
-        "text density low and hierarchical",
-        "model and typography do not overlap awkwardly",
-        "no gibberish or random punctuation clusters"
+        "text hierarchy is readable and short",
+        "no gibberish glyph clusters",
+        "masthead/lines/issue marker remain separated",
+        "no logo/issue marker overlap with face"
       ],
       "route_keywords": [
         "magazine",
@@ -117,6 +119,11 @@
         "high-fashion",
         "luxe",
         "cover"
+      ],
+      "style_blocks": [
+        "cover-first typography hierarchy: masthead, headline, subtitle, badge",
+        "short readable Japanese/English title phrases only",
+        "clean negative space and print-ready contrast"
       ]
     },
     "poster": {
@@ -127,9 +134,9 @@
       "aspect_ratio": "2:3",
       "negative": "Negative: no repeated title, no fake logos unless requested, no unreadable clutter, no random text, no watermark.",
       "booster_lines": [
-        "title zone must stay short and readable",
-        "minimal but clear graphic hierarchy",
-        "avoid poster-noise textures and random overlays"
+        "readable title and tagline size must remain prominent",
+        "avoid poster-noise textures and random overlays",
+        "keep composition readable at thumbnail scale"
       ],
       "composition_patterns": [
         "one hero anchor + one support anchor + readable environment cue",
@@ -141,9 +148,9 @@
         "genre palette remains controlled and simple"
       ],
       "quality_controls": [
-        "title block readability remains high",
-        "one hero action and one hero prop",
-        "no clutter in title/subtitle/credits zones"
+        "title/credits must remain legible",
+        "hero focus remains dominant",
+        "no unreadable clutter around text blocks"
       ],
       "route_keywords": [
         "poster",
@@ -155,6 +162,11 @@
         "电影海报",
         "关键视觉",
         "主图"
+      ],
+      "style_blocks": [
+        "cinematic hero composition with compact title zone",
+        "one title line + one short tagline only",
+        "light hierarchy from hard key source and controlled haze"
       ]
     },
     "interior": {
@@ -164,9 +176,10 @@
       "aspect_ratio": "16:9",
       "negative": "Negative: no warped furniture, no impossible perspective, no melted materials, no extra doors/windows, no people unless requested, no watermark.",
       "booster_lines": [
-        "keep straight verticals and realistic room footprints",
-        "add scale anchors every 2-3m in scene",
-        "material boundaries and reflections should be physically plausible"
+        "keep scale anchors every 2-3 meters (sofa, table, lamp)",
+        "reflective surfaces use realistic intensity and roughness",
+        "avoid warped furniture edges or impossible openings",
+        "material boundaries and edge contacts remain physically plausible"
       ],
       "style_blocks": [
         "camera should show circulation and room function",
@@ -178,9 +191,9 @@
         "clean edges and physically plausible openings"
       ],
       "quality_controls": [
-        "no impossible perspective or wall drift",
-        "consistent scale between floor/wall/furniture",
-        "materials should show directional specular behavior"
+        "straight verticals and stable vanishing geometry",
+        "consistent room proportions and object scale",
+        "glass/stone/metal reflections match material roughness and light angle"
       ],
       "route_keywords": [
         "interior",
@@ -195,6 +208,11 @@
         "厨房",
         "archviz",
         "architecture"
+      ],
+      "external_patterns": [
+        "physical composition-first layout then materials and props",
+        "soft practical bounce lighting",
+        "no duplicated furniture or distorted edges"
       ]
     },
     "product": {
@@ -204,23 +222,23 @@
       "aspect_ratio": "4:5",
       "negative": "Negative: no duplicate hero object, no warped logo/label, no random label text, no clutter, no watermark.",
       "booster_lines": [
-        "hero object remains the first visual anchor",
-        "preserve material boundary and contact edges",
-        "minimal props only"
+        "single hero item remains dominant, no competing objects",
+        "real material boundaries for glass/ceramic/metal",
+        "no edge distortion on labels or bottle rims"
       ],
       "composition_patterns": [
         "hero object, contact shadow, controlled support props",
         "one clean light direction and readable negative space"
       ],
       "external_patterns": [
-        "macro texture detail for glass, cloth, ceramic, metal, leather",
-        "clear silhouette and crisp product edge",
-        "labels kept clean and non-distracting"
+        "macro-level material response for edges, seams, glass, fabric",
+        "keep background minimal and neutral",
+        "clean silhouette with controlled highlights"
       ],
       "quality_controls": [
-        "single focal hero object",
-        "logo and label are concise and non-distorted",
-        "no random props competing with hero"
+        "contact shadows are coherent",
+        "reflections are physically plausible",
+        "single hero focus and readable label shape"
       ],
       "route_keywords": [
         "product",
@@ -249,30 +267,29 @@
       "aspect_ratio": "9:16",
       "negative": "Negative: no wet or transparent shirt, no stock-photo posture, no influencer pose, no sexual poses, no watermark, no minors.",
       "booster_lines": [
-        "include practical mirror edge and phone crop asymmetry",
-        "one nearby lifestyle prop (towel/skin-care/soap)",
-        "small shoulder, collar, hand and body asymmetry",
-        "natural skin texture without heavy beauty retouching"
+        "mirror reflection must follow realistic phone geometry",
+        "include at least two concrete bathroom anchors (towel, tile, towel rack, toiletries, chrome faucet)",
+        "one hand and one face adjustment action for candidness",
+        "fabric folds and collar texture should read softly"
       ],
       "style_blocks": [
         "modern hotel or compact apartment bathroom",
-        "warm vanity light and neutral indoor fill",
-        "girlfriend POV composition, half-body or three-quarter",
-        "mirror reflection as part of narrative"
+        "half-body or three-quarter mirror selfie, phone-crop asymmetry",
+        "warm vanity lights plus neutral fill; no harsh studio look"
       ],
       "composition_patterns": [
         "lifestyle realism first, cover-style layout second",
         "clean frame with one subject, no editorial title blocks"
       ],
       "external_patterns": [
-        "white shirt or light shirt option with collar folds",
-        "sensor grain, mirror highlights, natural lighting spill",
-        "private-room bathroom setting with believable material detail"
+        "real shower/vanity/ceramic context with subtle environmental cues",
+        "porcelain and glass reflections physically consistent",
+        "no exaggerated anatomy or unrealistic hand distortion"
       ],
       "quality_controls": [
-        "mirror edge present and readable",
-        "phone-held perspective visible",
-        "hand-to-face or collar touch looks casual"
+        "mirror edge readable and geometrically aligned",
+        "phone perspective feels handheld and casual",
+        "no stiff pose; natural shoulder/hand asymmetry"
       ],
       "route_keywords": [
         "bathroom",
@@ -302,8 +319,10 @@
       "aspect_ratio": "2:3",
       "negative": "Negative: no anime render, no CGI skin, no cheap costume materials, no random text, no explicit sexual pose, no watermark, no minors.",
       "booster_lines": [
-        "anchor one hairstyle and one key prop first",
-        "translate costume into believable fabric and hardware behavior"
+        "preserve one identity anchor and one costume material anchor",
+        "costume fabric/metal should have realistic weight, seams, and edge behavior",
+        "face/eyes maintain human asymmetry and natural expression",
+        "pose keeps body weight and shoulder shift"
       ],
       "composition_patterns": [
         "hero stance with one clear action line",
@@ -316,9 +335,9 @@
         "costume detail prioritized over unreal effects"
       ],
       "quality_controls": [
-        "identity anchors consistent with request",
-        "material hierarchy clear: cloth, leather, metal",
-        "pose natural and anatomically stable"
+        "costume texture looks non-CGI and material-dense",
+        "no obvious expression rigidity",
+        "hair strands and metal/cloth transitions remain coherent"
       ],
       "route_keywords": [
         "cosplay",

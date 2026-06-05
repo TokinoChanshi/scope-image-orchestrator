@@ -93,6 +93,26 @@ python scripts/scope_commands.py reference-run \
   --out-dir scope_runs/live_reference_smoke
 ```
 
+### Local live smoke log (example)
+
+Use one clean output dir per route. Representative command:
+
+```bash
+python scripts/generate_single_v2.py --env-file .codex_tmp/scope_publish_chatgpt2_live.env --llm-model gpt-5.5 --vision-model grok-4.3 --image-model gpt-image-2 --user-prompt "<route prompt>" --out-dir scope_runs/<route>_test --max-generation-attempts 2
+```
+
+Observed in a recent run:
+
+- `portrait`: `pass`
+- `magazine`: `needs_repair`
+- `poster`: `failed`
+- `cosplay`: `needs_repair`
+- `interior`: `failed`
+- `product`: `needs_repair`
+- `bathroom`: `failed`
+
+These outcomes are used as regression seeds for prompt tuning and are re-ran after preset updates.
+
 ## Pre-publish checklist
 
 - [ ] `python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks` passes.
