@@ -58,170 +58,111 @@ TRANSIENT_ERROR_PATTERNS = (
 
 VISION_UNSTABLE_MARK = "vision_unstable"
 
-DEFAULT_PRESET_LIBRARY = {
-    "schema_version": "scope-inline-preset-v1",
-    "global_rules": {
-        "negative_anchor": PEOPLE_NEG,
-    "text_principles": [
-            "Prefer concrete camera/light/material terms before style adjectives.",
-            "Keep negative boundaries concise and direct.",
-            "Use one distinct scene noun cluster per variant.",
-        ],
-    },
-    "routes": {
-        "portrait": {
-            "route_hint": "editorial lifestyle portrait, no typography, distinct real face, concrete setting, real skin/hair/fabric details",
-            "route_keywords": [
-                "人像摄影",
-                "人像",
-                "生活写真",
-                "日系写真",
-                "女性写真",
-                "lifestyle portrait",
-                "editorial portrait",
-                "portrait",
-                "girlfriend photo",
-            ],
-            "fallback_prompt": "Photorealistic 2:3 vertical editorial lifestyle portrait, adult subject, based on: {subject}. {camera_phrase}. Natural asymmetry, soft under-eye detail, subtle skin tone variation, realistic pores, tiny flyaway hairs, natural neck and shoulder anatomy. Real fabric texture, relaxed unforced pose, practical scene details, no text overlays unless requested.",
-            "camera_phrase": "85mm portrait lens, practical indoor/window light, mild natural roll-off",
-            "aspect_ratio": "2:3",
-            "negative": "Negative: no typography, no plastic skin, no beauty-filter face, no random repeated text, no watermark.",
-            "booster_lines": [
-                "distinct face geometry and hair profile per variant",
-                "small body asymmetry and imperfect hand placement",
+
+def _merge_for_defaults(base: dict[str, Any], override: dict[str, Any]) -> dict[str, Any]:
+    merged: dict[str, Any] = dict(base)
+    for key, value in override.items():
+        if isinstance(value, dict) and isinstance(merged.get(key), dict):
+            merged[key] = _merge_for_defaults(merged[key], value)
+        elif value is not None:
+            merged[key] = value
+    return merged
+
+
+def _load_default_preset_library() -> dict[str, Any]:
+    fallback: dict[str, Any] = {
+        "schema_version": "scope-inline-preset-v1",
+        "global_rules": {
+            "negative_anchor": PEOPLE_NEG,
+            "text_principles": [
+                "Prefer concrete camera/light/material terms before style adjectives.",
+                "Keep negative boundaries concise and direct.",
+                "Use one distinct scene noun cluster per variant.",
             ],
         },
-        "magazine": {
-            "route_hint": "high-fashion magazine cover, short masthead, 2-3 cover lines, one badge, clean grid, crisp typography",
-            "route_keywords": [
-                "杂志封面",
-                "fashion cover",
-                "editorial cover",
-                "magazine cover",
-                "luxe",
-                "high-end cover",
-                "Vogue-like",
-                "fashion cover",
-            ],
-            "fallback_prompt": "Photorealistic 2:3 high-fashion magazine cover, adult model, based on: {subject}. Clean editorial grid with masthead, short cover lines, one badge, one issue number. {light_phrase}. Layout and typography first, then subject/scene detail.",
-            "camera_phrase": "85mm portrait look, practical studio/window blend, controlled contrast",
-            "light_phrase": "cool ambient plus warm key, print-quality edge control",
-            "aspect_ratio": "2:3",
-            "negative": "Negative: no random paragraphs, no repeated letters, no unreadable text, no random gibberish blocks, no watermark.",
+        "routes": {
+            "portrait": {
+                "route_hint": "editorial or lifestyle portrait route, explicit identity anchor, realistic skin/fabric, candid body language.",
+                "fallback_prompt": "Photorealistic 2:3 vertical editorial portrait, adult subject: {subject}. {camera_phrase}. Natural facial asymmetry, realistic skin tone variation, visible pores, tiny flyaway hair, subtle shoulder and neck anatomy.",
+                "camera_phrase": "85mm portrait lens, practical indoor/window light, realistic skin-friendly exposure",
+                "aspect_ratio": "2:3",
+                "negative": "Negative: no random text overlays, no beauty-filter face, no plastic skin, no duplicate watermarks.",
+                "route_keywords": ["portrait", "editorial portrait", "lifestyle portrait", "human portrait", "photoshoot"],
+                "booster_lines": [
+                    "keep one clear identity anchor and one concrete scene anchor",
+                    "include natural asymmetry in hands and shoulders",
+                ],
+            },
+            "magazine": {
+                "route_hint": "high-fashion or luxury magazine cover route with layout-first composition and readable text hierarchy.",
+                "fallback_prompt": "Photorealistic 2:3 high-fashion magazine cover, adult model: {subject}. Layout-first masthead, short cover lines, clear hierarchy, one issue badge and clean title block.",
+                "camera_phrase": "high-contrast 85mm editorial look with controlled print-like contrast",
+                "light_phrase": "cool ambient plus warm key with print-quality tonal separation",
+                "aspect_ratio": "2:3",
+                "negative": "Negative: no repeated text paragraphs, no fake logos unless requested, no gibberish blocks, no watermark.",
+                "route_keywords": ["magazine", "magazine cover", "editorial cover", "cover", "fashion cover", "editorial print"],
+            },
+            "poster": {
+                "route_hint": "cinematic key-art poster route with hero focus, atmosphere, and readable title block.",
+                "fallback_prompt": "Cinematic 2:3 movie-poster key art, based on: {subject}. Hero focus and one practical prop, readable title zone, short tagline, compact credits block.",
+                "camera_phrase": "cinematic composition with clear foreground-midground-background separation",
+                "light_phrase": "cold/warm split palette with practical contrast and subtle haze",
+                "aspect_ratio": "2:3",
+                "negative": "Negative: no repeated title, no fake logos unless requested, no unreadable clutter, no random text, no watermark.",
+                "route_keywords": ["poster", "movie poster", "cinematic poster", "key art", "visual poster", "poster design"],
+            },
+            "cosplay": {
+                "route_hint": "live-action character or cosplay route with identity anchors and believable costume materials.",
+                "fallback_prompt": "Photorealistic 2:3 live-action character styling shot, inspired by: {subject}. Keep one hairstyle, one key prop, and one costume anchor. realistic costume texture with visible seams, embroidery, and hardware.",
+                "camera_phrase": "practical mixed light, slight handheld movement, controlled depth and mild imperfection",
+                "aspect_ratio": "2:3",
+                "negative": "Negative: no anime render, no CGI skin, no cheap costume plastics, no explicit sexual pose, no watermark.",
+                "route_keywords": ["cosplay", "character styling", "live-action character", "character shoot", "costume", "character"],
+            },
+            "interior": {
+                "route_hint": "architectural interior visualization route: physical geometry, scale, and material truth first.",
+                "fallback_prompt": "Photorealistic architectural interior visualization: {subject}. Eye-height with practical interior lens, realistic circulation path, proper room geometry and furniture scale.",
+                "camera_phrase": "24-28mm wide-angle interior lens",
+                "aspect_ratio": "16:9",
+                "negative": "Negative: no warped furniture, no impossible perspective, no melted materials, no extra doors/windows, no people unless requested.",
+                "route_keywords": ["interior", "interior render", "room design", "architectural interior", "room layout", "archviz"],
+            },
+            "product": {
+                "route_hint": "commercial packshot route: one hero product, realistic material, clean support geometry.",
+                "fallback_prompt": "Photorealistic commercial product still life of {subject}. One hero object, controlled reflections, realistic shadow, clean background.",
+                "camera_phrase": "single-object studio or window-light composition",
+                "aspect_ratio": "4:5",
+                "negative": "Negative: no duplicate hero object, no warped logo/label, no random label text, no clutter, no watermark.",
+                "route_keywords": ["product", "product photo", "commercial still", "commercial still life", "perfume", "food", "drink", "headphones", "watch", "bag", "lotion"],
+            },
+            "bathroom": {
+                "route_hint": "real smartphone mirror selfie route in hotel or compact apartment bathroom, life-style realism over cover look.",
+                "fallback_prompt": "Photorealistic 9:16 smartphone mirror selfie, adult subject in hotel or compact apartment bathroom. One hand holds phone, mirror edge visible, subtle framing asymmetry, natural tile/glass/chrome materials.",
+                "camera_phrase": "26mm-equivalent smartphone perspective, slightly asymmetrical handheld framing",
+                "aspect_ratio": "9:16",
+                "negative": "Negative: no wet or transparent shirt, no stock-photo posture, no commercial cover style, no sexual poses, no watermark.",
+                "route_keywords": ["bathroom", "mirror selfie", "hotel bathroom", "apartment bathroom", "private room selfie", "white shirt", "mirror selfie"],
+            },
         },
-        "poster": {
-            "route_hint": "cinematic movie poster, hero silhouette, title zone, tagline/credits, layered foreground-midground-background",
-            "route_keywords": [
-                "电影海报",
-                "poster",
-                "movie poster",
-                "cinematic poster",
-                "cyberpunk poster",
-                "key art",
-                "one-sheet",
-            ],
-            "fallback_prompt": "Cinematic 2:3 movie poster key art based on: {subject}. Hero silhouette first, one core prop in midground, readable title zone, short tagline, compact credits block, layered composition. Realistic atmosphere and practical light logic.",
-            "camera_phrase": "cinematic composition, layered foreground-midground-background",
-            "aspect_ratio": "2:3",
-            "negative": "Negative: no repeated title, no fake logos unless requested, no unreadable clutter, no watermark.",
-        },
-        "cosplay": {
-            "route_hint": "live-action character/cosplay poster, real human texture with natural skin imperfections, iconic anchors, premium costume materials, practical lighting, not anime render",
-            "route_keywords": [
-                "真人cos",
-                "cosplay",
-                "角色",
-                "character poster",
-                "anime to real",
-                "二次元转真人",
-                "游戏角色",
-                "live-action character",
-            ],
-            "fallback_prompt": "Photorealistic 2:3 live-action character/cosplay poster, adult-inspired, preserve iconic anchors from: {subject}. Real fabrics and materials, visible seams, embroidery, leather and metal tension, practical mixed lighting, realistic hair and skin micro-detail, natural hand asymmetry.",
-            "camera_phrase": "practical mixed real-world lighting, visible body sway and subtle pose imperfection",
-            "aspect_ratio": "2:3",
-            "negative": "Negative: no anime render, no CGI skin, no cheap cosplay, no random text, no sexual poses, no watermark.",
-            "booster_lines": [
-                "keep one clear character anchor: hairstyle, palette, accessory",
-                "use character materials instead of literal costume plastics",
-            ],
-        },
-        "interior": {
-            "route_hint": "architectural interior visualization, room layout, camera position, real scale, material texture, straight verticals",
-            "route_keywords": [
-                "室内",
-                "室内效果图",
-                "interior",
-                "室内设计",
-                "客厅",
-                "卧室",
-                "厨房",
-                "architecture",
-                "interior render",
-            ],
-            "fallback_prompt": "Photorealistic architectural interior visualization, {subject}. Eye-height layout from practical camera position, 24mm/28mm interior lens, clear circulation, straight verticals, realistic furniture scale. Material realism includes wood grain, fabric weave, stone veining, metal reflections. Light: {light_phrase}.",
-            "camera_phrase": "human eye-height 24mm/28mm interior lens",
-            "light_phrase": "natural or warm artificial practical lighting with gentle bounce",
-            "aspect_ratio": "16:9",
-            "negative": "Negative: no warped furniture, no impossible perspective, no melted objects, no extra doors/windows, no people unless requested, no watermark.",
-        },
-        "product": {
-            "route_hint": "commercial product still life, one hero object, material behavior, controlled reflections, minimal props",
-            "route_keywords": [
-                "产品图",
-                "产品",
-                "product photo",
-                "commercial still",
-                "product",
-                "香水",
-                "手表",
-                "耳机",
-                "饮料",
-                "食品",
-                "food",
-            ],
-            "fallback_prompt": "Photorealistic commercial product still life, hero product: {subject}. Clean commercial background, controlled reflections, realistic shadow, premium material detail and geometric composition.",
-            "camera_phrase": "single-product focus, eye-level controlled angle",
-            "aspect_ratio": "4:5",
-            "negative": "Negative: no duplicate hero object, no warped logo/label, no random label text, no clutter, no watermark.",
-        },
-        "bathroom": {
-            "route_hint": "real smartphone bathroom mirror selfie, private lifestyle photo, phone visible, compact hotel/apartment bathroom",
-            "route_keywords": [
-                "室内生活方式",
-                "镜前自拍",
-                "镜子自拍",
-                "bathroom selfie",
-                "生活方式人像",
-                "室内场景写真",
-                "生活感吸引力自拍",
-                "生活方式人像",
-                "恋人视角自拍",
-                "眼镜自拍",
-                "轻生活方式人像",
-                "室内场景",
-                "private room selfie",
-                "mirror selfie",
-                "white shirt selfie",
-                "生活方式服饰",
-            ],
-            "fallback_prompt": "Photorealistic 9:16 real smartphone mirror selfie, adult woman in a compact hotel or apartment bathroom, based on: {subject}. Handheld smartphone perspective with slight edge distortion, imperfect mirror crop, mirror reflections and real indoor light. Shirt, towel, sink, chrome faucet, glass shower edge, skincare bottles, tiled details.",
-            "camera_phrase": "26mm equivalent smartphone lens behavior, slight handheld asymmetry",
-            "style_blocks": [
-                "boutique hotel or compact apartment bathroom",
-                "warm vanity bulb practical light, soft natural ambient light",
-                "natural everyday intimacy, quiet girlfriend POV",
-            ],
-            "aspect_ratio": "9:16",
-            "negative": "Negative: no wet shirt, no transparent shirt, no influencer pose, no commercial cover look, no watermark, no minors, no sexual poses.",
-            "booster_lines": [
-                "less stock photo, more private smartphone realism",
-                "small mirror edge and phone crop asymmetry",
-                "tiny fabric wrinkles, shoulder shift, realistic skin texture",
-            ],
-        },
-    },
-}
+    }
+    if not DEFAULT_PRESET_FILE.exists():
+        return fallback
+    try:
+        raw = DEFAULT_PRESET_FILE.read_text(encoding="utf-8-sig", errors="ignore")
+        loaded = __import__('json').loads(raw)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[WARN] failed to load inline fallback preset from {DEFAULT_PRESET_FILE}: {repr(exc)}", flush=True)
+        return fallback
+    if not isinstance(loaded, dict):
+        return fallback
+    runtime = loaded.get("runtime_presets")
+    if isinstance(runtime, dict):
+        preset = _merge_for_defaults(fallback, runtime)
+        return _merge_for_defaults(preset, loaded)
+    return _merge_for_defaults(fallback, loaded)
+
+
+DEFAULT_PRESET_LIBRARY = _load_default_preset_library()
 
 ROUTE_KEYS: tuple[str, ...] = tuple(DEFAULT_PRESET_LIBRARY["routes"].keys())
 ROUTE_HINTS = {route: cfg["route_hint"] for route, cfg in DEFAULT_PRESET_LIBRARY["routes"].items()}

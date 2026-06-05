@@ -1,14 +1,13 @@
-[English](README.md) | [简体中文](README.zh-CN.md)
+﻿[English](README.md) | [中文](README.zh-CN.md)
 
 # SCOPE Image Orchestrator
 
 A Codex skill for structured image-generation orchestration.
 
 It converts image requests into explicit constraints, route-aware optimization,
-generation calls, visual checks, repair attempts, and reproducible artifacts.
+generation calls, optional visual checks, targeted repair loops, and reproducible artifacts.
 
-> Independent practical adaptation inspired by the SCOPE paper. This repository is
-> not the authors' official implementation.
+This is an independent practical adaptation inspired by the SCOPE paper.
 
 ## Highlights
 
@@ -25,16 +24,6 @@ generation calls, visual checks, repair attempts, and reproducible artifacts.
 - arXiv: https://arxiv.org/abs/2605.08043
 - HTML: https://arxiv.org/html/2605.08043v1
 - Project: https://nopnor.github.io/SCOPE/
-
-## Samples
-
-See the generated sample gallery:
-
-- [Sample gallery](docs/gallery.md)
-
-| Poster | Product | Interior |
-| --- | --- | --- |
-| ![poster sample](docs/assets/gallery/poster-neon-protocol.jpg) | ![product sample](docs/assets/gallery/product-perfume.jpg) | ![interior sample](docs/assets/gallery/interior-oriental-living.jpg) |
 
 ## Quick start
 
@@ -75,10 +64,9 @@ Use `references/.env.example` as the public configuration template.
 
 Supported adapter families:
 
-- OpenAI-compatible text and image APIs.
+- OpenAI-compatible text, vision, and image APIs.
 - Google Gemini-compatible text, vision, and image APIs.
 - Generic JSON wrapper endpoints.
-- Legacy OpenAI-compatible image JSON endpoints.
 
 For detailed request shapes, see:
 
@@ -108,8 +96,6 @@ python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks
 This check is local only and does not call real APIs.
 
 ## Output artifacts
-
-Typical run output:
 
 ```text
 scope_runs/<task>/

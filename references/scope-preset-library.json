@@ -1,7 +1,7 @@
-{
+﻿{
   "schema_version": "scope-unified-preset-library-v1",
-  "description": "Single preset entrypoint for the SCOPE Image Orchestrator skill. Runtime route presets, route keyword maps, optimizer guides, external prompt-pattern notes, and import summaries live here to avoid scattered preset files.",
-  "updated_at": "2026-06-02",
+  "description": "Single preset entrypoint for the SCOPE Image Orchestrator: all route presets, distilled control templates, and route-level source notes are kept in one file.",
+  "updated_at": "2026-06-06",
   "runtime_schema_version": "scope-prompt-presets-v2",
   "compatibility": {
     "primary_file": "references/scope-preset-library.json",
@@ -22,299 +22,315 @@
   },
   "global_rules": {
     "negative_anchor": "Negative: no minors, no nudity, no sexual acts, no watermark.",
-    "short_prompt_english_only": "Keep final production prompt in compact clean English.",
+    "short_prompt_english_only": "Keep final production prompts in compact clean English.",
     "text_principles": [
       "Prefer concrete camera/light/material controls before abstract adjectives.",
-      "Use 2-4 distinct scene anchors and avoid long safety-flavored filler words.",
-      "Keep hard constraints in negative_prompt, not in main descriptive tone.",
-      "Add route-specific detail if the request is generic."
+      "Use 2-4 concrete scene anchors and avoid long safety fillers.",
+      "Put hard constraints in negative_prompt.",
+      "Add route-specific detail when request is generic."
     ],
-    "model_comparison_note": "Prompt optimization and repair should stay compact, deterministic, and easy to parse.",
-    "external_library_usage": "When route_preset_brief.external_patterns is present, use it as distilled inspiration: keep camera/layout/material controls, but do not copy long third-party prompt text verbatim. Prefer compact route-specific production English."
+    "model_comparison_note": "Prompt optimization stays deterministic, compact, and parseable for unstable endpoints.",
+    "external_library_usage": "Public prompt inspirations are distilled to short camera/material/composition controls; do not copy full third-party prompts verbatim."
   },
   "routes": {
     "portrait": {
-      "route_hint": "editorial / lifestyle portrait, real face identity, concrete setting, capture realism, skin/hair/fabric microtexture, not beauty-filter glamour",
-      "fallback_prompt": "Photorealistic 2:3 vertical editorial portrait, adult subject based on: {subject}. Scene first: {style_blocks}. {camera_phrase}. Real skin micro-texture, natural face asymmetry, realistic neck and shoulder anatomy, subtle under-eye variation, tiny flyaway hairs, visible fabric texture. Relaxed practical pose with realistic hands and gentle body shift.",
-      "camera_phrase": "85mm portrait lens, practical indoor/window light, natural falloff",
+      "route_hint": "editorial or lifestyle portrait route, explicit person identity anchors, realistic skin/hair/fabric micro-texture, candid body language.",
+      "fallback_prompt": "Photorealistic 2:3 vertical editorial portrait, adult subject: {subject}. Scene-first composition with {style_blocks}. {camera_phrase}. Natural facial asymmetry, realistic skin variation, visible pores, tiny flyaway hair, subtle shoulder and neck anatomy.",
+      "camera_phrase": "85mm portrait lens, practical indoor/window light, natural falloff and skin-friendly exposure",
       "aspect_ratio": "2:3",
       "negative": "Negative: no cartoon look, no beauty-filter face, no plastic skin, no repeated random text, no watermark.",
       "booster_lines": [
-        "one concrete scene anchor from the request and 2 nearby props",
-        "micro texture details on skin and hair only, not over-posed filters",
-        "distinct face geometry and hair silhouette per variant",
-        "micro texture on skin/hair/fabric without plastic smoothing",
-        "avoid over-posed stock-photo posture"
+        "one concrete scene anchor from request and 2 nearby props",
+        "natural pose imbalance: imperfect hand placement and shoulder weight",
+        "distinct face geometry and hair silhouette",
+        "micro texture on skin/hair/fabric, avoid over-filtering"
       ],
       "style_blocks": [
-        "real camera capture: 35mm/50mm/85mm, phone candid, CCD/film influence only when requested",
-        "one everyday location anchor with 2-3 props, not an empty studio unless requested",
-        "natural pose asymmetry: imperfect hand placement, shoulder weight, tiny expression imbalance"
+        "real photography style: 35mm/50mm/85mm or equivalent framing",
+        "one practical indoor or outdoor setting with 2-3 supporting props",
+        "natural asymmetry in hands, mouth, shoulders and eyes"
+      ],
+      "composition_patterns": [
+        "vertical portrait framing with clear subject focus",
+        "face and hands stay in one coherent composition plane"
       ],
       "external_patterns": [
-        "soft airy 35mm portrait with natural window light and mild film grain",
-        "iPhone candid realism with imperfect crop, natural face geometry, visible pores and flyaway hair",
-        "black mist / low-contrast indoor portrait, practical lamp glow, subtle under-eye variation",
-        "editorial lifestyle portrait with environment-first composition and realistic fabric folds"
+        "phone-candid realism with mild imperfections",
+        "soft realistic falloff from practical key light",
+        "editorial lifestyle look with real-life texture"
+      ],
+      "quality_controls": [
+        "face integrity: no distortion, realistic jaw/chin structure",
+        "anatomy integrity: realistic shoulder and neck alignment",
+        "texture integrity: pores, fibers, fine skin micro-shine visible"
       ],
       "route_keywords": [
-        "人像",
-        "人像摄影",
-        "人像摄影",
-        "生活方式人像",
         "portrait",
         "editorial portrait",
         "lifestyle portrait",
-        "高端人像",
+        "人像",
+        "人像摄影",
         "生活方式人像",
+        "高级人像",
+        "照片感",
         "girlfriend photo",
-        "photography",
-        "journalist portrait"
+        "photography"
       ]
     },
     "magazine": {
-      "route_hint": "fashion / editorial magazine cover, layout-first, one masthead, 2-3 short cover lines, clean typography hierarchy, model integrated with text",
-      "fallback_prompt": "Photorealistic 2:3 high-fashion magazine cover, adult model based on: {subject}. Compose by layout-first with masthead, clean short cover lines, small issue badge and one issue number. Keep text density concise and readable. {light_phrase}. Model and scene are integrated with strong composition depth.",
-      "camera_phrase": "cinematic still look with subtle paper-like contrast",
-      "light_phrase": "cool ambient plus warm key, print-quality contrast control",
+      "route_hint": "high-fashion or luxury magazine cover route with layout-first composition and readable text hierarchy.",
+      "fallback_prompt": "Photorealistic 2:3 high-fashion magazine cover, adult model: {subject}. Layout-first masthead, 2-3 short cover lines, clean typography hierarchy, subtle issue badge, one issue number. {light_phrase}.",
+      "camera_phrase": "high-contrast 85mm editorial look with controlled paper-like contrast",
+      "light_phrase": "cool ambient plus warm key with print-quality tonal separation",
       "aspect_ratio": "2:3",
-      "negative": "Negative: no repeated text paragraphs, no unreadable gibberish, no fake logos unless requested, no watermark, no minors, no messy text clutter.",
+      "negative": "Negative: no repeated text paragraphs, no fake logos unless requested, no gibberish blocks, no random letters, no watermark, no minors.",
       "booster_lines": [
-        "prioritize layout hierarchy over extra adjectives",
-        "one readable model-over-masthead composition"
-      ],
-      "external_patterns": [
-        "masthead at top, subject overlaps part of masthead, 2-3 readable cover lines on grid",
-        "one circular badge or issue mark, short serif/sans hierarchy, no paragraph clutter",
-        "cover lines frame the body rather than floating randomly; text zones must stay readable",
-        "premium print contrast, paper-like finish, controlled color palette and negative space"
+        "respect typography order: masthead -> headlines -> feature line -> issue marker",
+        "one readable model-over-masthead composition",
+        "text blocks are short and legible"
       ],
       "composition_patterns": [
-        "2:3 vertical cover, model center or side-offset, clear top masthead zone",
-        "short text blocks: masthead, subtitle, feature line, small issue marker"
+        "2:3 vertical cover grid",
+        "one headline zone, one subtitle zone, one badge/number zone"
+      ],
+      "external_patterns": [
+        "clean fashion cover hierarchy with short lines only",
+        "model integrated with title and cover lines",
+        "print-like contrast with controlled grain"
+      ],
+      "quality_controls": [
+        "text density low and hierarchical",
+        "model and typography do not overlap awkwardly",
+        "no gibberish or random punctuation clusters"
       ],
       "route_keywords": [
-        "杂志",
-        "封面",
         "magazine",
         "magazine cover",
         "fashion cover",
         "editorial cover",
-        "高端封面",
+        "封面",
+        "杂志",
         "luxe",
-        "vogue",
         "cover"
       ]
     },
     "poster": {
-      "route_hint": "cinematic/key-art poster, title-zone discipline, one hero focus, practical atmosphere, layered foreground-midground-background",
-      "fallback_prompt": "Cinematic 2:3 movie poster key art based on: {subject}. Hero silhouette and core prop in center-forward, readable title zone, short tagline, compact credits block. Build practical atmospheric background with real light direction and depth layers. ",
-      "camera_phrase": "cinematic composition with layered foreground-midground-background and controlled depth",
-      "light_phrase": "cold/warm split palette with controlled haze and practical reflections",
+      "route_hint": "cinematic key-art poster route with hero focus, atmosphere, and readable title block.",
+      "fallback_prompt": "Cinematic 2:3 movie-poster key art, based on: {subject}. Hero focus in center-forward, one practical prop, readable title zone, short tagline, compact credits block. Build layered depth with controlled atmosphere and reflections.",
+      "camera_phrase": "cinematic composition with clear foreground-midground-background separation",
+      "light_phrase": "cold/warm split palette with practical contrast and subtle haze",
       "aspect_ratio": "2:3",
       "negative": "Negative: no repeated title, no fake logos unless requested, no unreadable clutter, no random text, no watermark.",
       "booster_lines": [
-        "keep title and graphic zones clear and short",
-        "no poster texture pseudo-noise"
-      ],
-      "external_patterns": [
-        "one hero silhouette or face focus, one core prop, practical rain/fog/dust/flare lighting",
-        "clear title zone in lower third or center, one short tagline, compact credits block",
-        "poster composition has graphic negative space and depth layers, not random cinematic clutter",
-        "genre palette: cyberpunk neon rain, desert signal dust, noir station red, fantasy gate fog"
+        "title zone must stay short and readable",
+        "minimal but clear graphic hierarchy",
+        "avoid poster-noise textures and random overlays"
       ],
       "composition_patterns": [
-        "foreground texture, midground hero, background world cue, readable typography layer",
-        "title and credits occupy dedicated zones; keep wording short and legible"
+        "one hero anchor + one support anchor + readable environment cue",
+        "title and tagline placed in clear negative-space zones"
+      ],
+      "external_patterns": [
+        "light-driven mood direction with practical reflections",
+        "rain/smoke/fog only as plausible atmosphere",
+        "genre palette remains controlled and simple"
+      ],
+      "quality_controls": [
+        "title block readability remains high",
+        "one hero action and one hero prop",
+        "no clutter in title/subtitle/credits zones"
       ],
       "route_keywords": [
-        "海报",
         "poster",
-        "电影海报",
         "movie poster",
         "cinematic poster",
         "key art",
-        "one-sheet"
+        "one-sheet",
+        "海报",
+        "电影海报"
       ]
     },
     "interior": {
-      "route_hint": "architectural interior visualization, lens/geometry/material first, straight verticals, true room scale, realistic lighting",
-      "fallback_prompt": "Photorealistic architectural interior visualization of: {subject}. Eye-height {camera_phrase}, straight verticals, realistic circulation path, proper room geometry and furniture scale. Materials show wood grain, fabric weave, stone veining, and metal reflections. Lighting is realistic practical, with gentle bounce and scene depth.",
+      "route_hint": "architectural interior visualization route: physical geometry, scale, and material truth first.",
+      "fallback_prompt": "Photorealistic architectural interior visualization: {subject}. Eye-height {camera_phrase}, realistic circulation path, proper room geometry and furniture scale. Materials with wood grain, fabric weave, stone veining, glass reflections and realistic shadow behavior.",
       "camera_phrase": "24-28mm wide-angle interior lens",
       "aspect_ratio": "16:9",
       "negative": "Negative: no warped furniture, no impossible perspective, no melted materials, no extra doors/windows, no people unless requested, no watermark.",
       "booster_lines": [
-        "one scale anchor every 2-3 meters in scene",
-        "materials should be physically plausible with shadow and reflections",
-        "scale anchors every few meters",
-        "straight vertical lines and realistic furniture footprints"
+        "keep straight verticals and realistic room footprints",
+        "add scale anchors every 2-3m in scene",
+        "material boundaries and reflections should be physically plausible"
       ],
-      "external_patterns": [
-        "eye-height 24-28mm lens, straight verticals, believable room circulation and furniture scale",
-        "material separation: wood grain, stone veining, fabric weave, brushed metal, glass reflections",
-        "one architectural style anchor plus 3-5 physical objects for scale, no impossible geometry",
-        "practical daylight or lamp glow with soft bounce, not over-rendered glossy showroom lighting"
+      "style_blocks": [
+        "camera should show circulation and room function",
+        "one architectural style cue with 3-5 scale objects",
+        "soft practical light with ambient bounce"
       ],
       "composition_patterns": [
-        "camera position and room function first, then materials, furniture, light, small props",
-        "keep walls, floor, ceiling and openings physically consistent"
+        "room-first layout, then materials, then props",
+        "clean edges and physically plausible openings"
+      ],
+      "quality_controls": [
+        "no impossible perspective or wall drift",
+        "consistent scale between floor/wall/furniture",
+        "materials should show directional specular behavior"
       ],
       "route_keywords": [
-        "室内",
-        "室内效果图",
         "interior",
         "interior render",
+        "室内",
+        "室内效果图",
         "客厅",
         "卧室",
         "厨房",
-        "architecture",
-        "lounge",
-        "gallery",
-        "office",
-        "archviz"
+        "archviz",
+        "architecture"
       ]
     },
     "product": {
-      "route_hint": "commercial product still life / ad creative, one hero object, material behavior, controlled reflections, clean background",
-      "fallback_prompt": "Photorealistic commercial product still life, hero object from: {subject}. Single main object with controlled reflections and realistic shadow. Clean background with minimal helpers for scale. Camera style: {camera_phrase}.",
-      "camera_phrase": "single-product studio or window-light style, moderate close-up control",
+      "route_hint": "commercial packshot route: one hero product, realistic material, clean support geometry.",
+      "fallback_prompt": "Photorealistic commercial product still life of {subject}. One hero object, controlled reflections, realistic shadow, clean background, 1 hero + 2-3 scale helpers.",
+      "camera_phrase": "single-object studio or window-light composition",
       "aspect_ratio": "4:5",
       "negative": "Negative: no duplicate hero object, no warped logo/label, no random label text, no clutter, no watermark.",
       "booster_lines": [
-        "keep 1 hero object and 2–3 scale elements",
-        "preserve material boundary between object and base"
-      ],
-      "external_patterns": [
-        "single hero product on simple base, controlled softbox/window reflection, realistic contact shadow",
-        "macro material detail: glass transparency, brushed steel, leather grain, condensation, stitching, crumbs",
-        "advertising composition with negative space and 2-3 supporting props, no duplicate hero object",
-        "label/text should be blank or exact and short; avoid warped logos and random label text"
+        "hero object remains the first visual anchor",
+        "preserve material boundary and contact edges",
+        "minimal props only"
       ],
       "composition_patterns": [
-        "hero product first, camera angle second, material/reflection third, props last",
-        "clear silhouette and contact shadow; no clutter around the main object"
+        "hero object, contact shadow, controlled support props",
+        "one clean light direction and readable negative space"
+      ],
+      "external_patterns": [
+        "macro texture detail for glass, cloth, ceramic, metal, leather",
+        "clear silhouette and crisp product edge",
+        "labels kept clean and non-distracting"
+      ],
+      "quality_controls": [
+        "single focal hero object",
+        "logo and label are concise and non-distorted",
+        "no random props competing with hero"
       ],
       "route_keywords": [
-        "产品",
-        "产品图",
         "product",
         "product photo",
         "commercial still",
         "perfume",
-        "香水",
-        "手表",
-        "耳机",
+        "handbag",
+        "watch",
+        "头盔",
         "食物",
         "food",
-        "drink",
         "饮料",
-        "sneaker",
-        "鞋"
+        "drinks",
+        "shoe",
+        "鞋",
+        "产品",
+        "产品图"
       ]
     },
     "bathroom": {
-      "route_hint": "real smartphone mirror composition in modern hotel/compact apartment bathroom, private lifestyle feel, natural intimacy, not cover/magazine layout",
-      "fallback_prompt": "Photorealistic 9:16 real smartphone mirror composition, adult woman in modern hotel or compact apartment bathroom, based on: {subject}. Half-body or three-quarter composition, one hand holding phone, one hand with soft natural adjustment to face, hair, or neckline. Slight 26mm smartphone lens edge distortion and imperfect mirror crop for realism. Scene includes tiled surfaces, glass shower edge, folded towels, sink counter, chrome fixtures, skincare bottles, natural mirror reflections.",
-      "camera_phrase": "26mm equivalent smartphone perspective, slightly asymmetrical handheld angle, mild sensor grain",
-      "style_blocks": [
-        "modern hotel/compact apartment bathroom",
-        "soft warm vanity bulb and ambient indoor fill",
-        "quiet girlfriend POV style",
-        "subtle, natural intimacy, no studio cover mood",
-        "modern hotel or compact apartment bathroom",
-        "soft warm vanity bulb and neutral indoor fill",
-        "quiet girlfriend POV / private lifestyle snapshot",
-        "half-body or three-quarter reflected composition with phone visible"
-      ],
+      "route_hint": "real smartphone mirror selfie route in hotel or compact apartment bathroom, life-style intimacy without explicit pose-heavy style.",
+      "fallback_prompt": "Photorealistic 9:16 smartphone mirror selfie. Adult subject in hotel or compact apartment bathroom, private-lifestyle feel, one hand holding phone, one hand adjusting expression or clothes naturally. Slight 26mm asymmetry, mirror edge visible, realistic tile/glass/chrome surfaces.",
+      "camera_phrase": "26mm equivalent smartphone perspective, slightly asymmetrical handheld framing, mild sensor grain",
       "aspect_ratio": "9:16",
-      "negative": "Negative: no stock-photo posture, no influencer/advertising pose, no wet or transparent shirt, no sexual poses, no watermark, no minors.",
+      "negative": "Negative: no wet or transparent shirt, no stock-photo posture, no influencer pose, no sexual poses, no watermark, no minors.",
       "booster_lines": [
-        "include practical mirror edge in frame",
-        "small hand, shoulder and collar asymmetry",
-        "realistic fabric folds and collar behavior",
-        "natural skin texture, no beauty-filter face",
         "include practical mirror edge and phone crop asymmetry",
-        "small shoulder, collar, hand and leg asymmetry",
-        "real bathroom material separation: ceramic, chrome, glass, cotton"
+        "one nearby lifestyle prop (towel/skin-care/soap)",
+        "small shoulder, collar, hand and body asymmetry",
+        "natural skin texture without heavy beauty retouching"
       ],
-      "external_patterns": [
-        "9:16 phone mirror composition, slight 26mm edge distortion, imperfect crop, mirror edge visible",
-        "phone partly covers cheek/face; one hand adjusts glasses, hair, collar, or face naturally",
-        "bathroom props: cream tile, glass shower edge, folded towels, chrome faucet, sink counter, skincare bottles",
-        "opaque oversized white Oxford shirt or homewear with realistic cotton folds and collar behavior",
-        "sensor grain, mirror highlights, warm vanity bulbs, natural skin texture without beauty-filter face"
+      "style_blocks": [
+        "modern hotel or compact apartment bathroom",
+        "warm vanity light and neutral indoor fill",
+        "girlfriend POV composition, half-body or three-quarter",
+        "mirror reflection as part of narrative"
       ],
       "composition_patterns": [
-        "do not use magazine cover strategy or typography",
-        "prioritize lived-in smartphone realism over polished studio lighting"
+        "lifestyle realism first, cover-style layout second",
+        "clean frame with one subject, no editorial title blocks"
+      ],
+      "external_patterns": [
+        "white shirt or light shirt option with collar folds",
+        "sensor grain, mirror highlights, natural lighting spill",
+        "private-room bathroom setting with believable material detail"
+      ],
+      "quality_controls": [
+        "mirror edge present and readable",
+        "phone-held perspective visible",
+        "hand-to-face or collar touch looks casual"
       ],
       "route_keywords": [
+        "bathroom",
+        "mirror selfie",
         "室内生活方式",
-        "室内生活方式",
-        "室内生活方式",
-        "生活方式服饰人像摄影",
-        "生活方式服饰",
-        "室内场景",
-        "生活方式人像",
-        "生活化真实感",
+        "室内生活方式自拍",
+        "白衬衫",
+        "白色衬衫",
+        "白衬衫写真",
         "生活方式",
-        "亲近视角",
-        "亲近视角",
-        "室内生活方式",
-        "indoor lifestyle image",
-        "mirror composition",
-        "interior lifestyle setting",
         "生活方式服饰",
-        "hotel indoor lifestyle image",
-        "private-room lifestyle image"
+        "hotel bathroom selfie",
+        "indoor lifestyle image",
+        "private-room lifestyle image",
+        "现代酒店浴室",
+        "室内镜前自拍",
+        "情侣视角",
+        "partner pov"
       ]
     },
     "cosplay": {
-      "route_hint": "live-action character/character styling poster, preserve iconic anchors, premium real-material translation, adult real human texture, not anime/CGI",
-      "fallback_prompt": "Photorealistic 2:3 live-action character/character styling poster, adult-inspired, preserve iconic anchors from: {subject}. Real human face structure and realistic hair strands. Costume becomes premium real materials with visible seams, embroidery, leather, metal, and silk layers. Practical mixed lighting, natural lens imperfection, natural body sway and subtle hand asymmetry.",
-      "camera_phrase": "practical mixed light, subtle handheld imperfection",
+      "route_hint": "live-action character or cosplay route: preserve identity anchors and convert costume texture to real materials.",
+      "fallback_prompt": "Photorealistic 2:3 live-action character styling shot, inspired by: {subject}. Keep one hairstyle, one signature accessory, and one costume anchor. Realistic costume texture with visible seams, embroidery, fabric tension, leather and metal balance.",
+      "camera_phrase": "practical mixed light, subtle handheld movement, controlled depth and mild imperfection",
       "aspect_ratio": "2:3",
       "negative": "Negative: no anime render, no CGI skin, no cheap costume materials, no random text, no explicit sexual pose, no watermark, no minors.",
       "booster_lines": [
-        "anchor one hairstyle/color and one signature accessory first",
-        "prioritize costume weight, seams, and fabric tension"
-      ],
-      "external_patterns": [
-        "translate character into real couture/costume materials: seams, embroidery, leather, metal, silk, fabric tension",
-        "keep one hairstyle/color anchor and one signature accessory before adding atmosphere",
-        "practical mixed light, natural lens imperfection, real pores, eyelashes, hair strands, believable jawline",
-        "hero pose with natural shoulder imbalance and hand asymmetry, not rigid 3D render pose"
+        "anchor one hairstyle and one key prop first",
+        "translate costume into believable fabric and hardware behavior"
       ],
       "composition_patterns": [
-        "2:3 vertical live-action character poster, one hero action, practical set background",
-        "costume weight and material boundaries must read clearly at first glance"
+        "hero stance with one clear action line",
+        "realistic face/body proportion and weight shift",
+        "supporting set reinforces character context"
+      ],
+      "external_patterns": [
+        "human-like skin texture and believable hair strands",
+        "practical mixed light, no toy-like plastic shine",
+        "costume detail prioritized over unreal effects"
+      ],
+      "quality_controls": [
+        "identity anchors consistent with request",
+        "material hierarchy clear: cloth, leather, metal",
+        "pose natural and anatomically stable"
       ],
       "route_keywords": [
+        "cosplay",
         "character styling",
-        "cos",
-        "真人cos",
-        "角色",
-        "游戏角色",
-        "character",
-        "character poster",
         "live-action character",
-        "胡桃",
-        "cosplay"
+        "character poster",
+        "真人cos",
+        "游戏角色",
+        "角色",
+        "角色写真",
+        "character"
       ]
     }
   },
   "external_prompt_sources": {
-    "note": "Source prompt libraries were reviewed as public inspiration and distilled; URLs and raw prompt bodies are omitted from the public preset library."
+    "note": "Source prompt libraries were reviewed as public inspiration and distilled; raw prompt bodies and URLs are intentionally omitted."
   },
   "optimizer_guides": {
-    "prompt_presets_md": "# Prompt Presets\n\nUse route presets as compact inspiration only. Keep final prompts concise, concrete, and suitable for the selected route. Do not copy third-party prompt bodies verbatim.",
-    "prompt_optimizer_compact_md": "# Prompt Optimizer Compact Guide\n\nReturn a short production prompt plus concise negative constraints. Prefer visible controls: subject, setting, composition, lighting, material, camera/crop, and exclusions.",
-    "prompt_optimizer_engineering_md": "# Prompt Optimizer Engineering Guide\n\nClassify the request, preserve user constraints, choose one route, synthesize a compact prompt, and avoid long nested JSON-like prose unless a structured output is explicitly requested.",
-    "external_prompt_patterns_md": "# External Prompt Pattern Notes\n\nPublic prompt examples were used only as high-level inspiration. Keep distilled route controls and avoid redistributing source prompt text."
+    "prompt_presets_md": "# Prompt Presets\n\nUse route presets as compact inspiration only. Keep final prompts concise, concrete, and suitable for the selected route. Do not copy any third-party prompt bodies verbatim.",
+    "prompt_optimizer_compact_md": "# Prompt Optimizer Compact Guide\n\nReturn one compact production prompt plus concise negatives. Prefer explicit control terms: subject, scene, composition, camera, lighting, material, and exclusions.",
+    "prompt_optimizer_engineering_md": "# Prompt Optimizer Engineering Guide\n\nClassify the request, preserve user constraints, choose one route, synthesize a compact prompt, and avoid long nested JSON-like prose unless explicitly requested.",
+    "external_prompt_patterns_md": "# External Prompt Pattern Notes\n\nPublic examples are used only as high-level inspiration. Keep distilled controls and avoid redistributing original prompt libraries."
   },
   "source_prompt_cache_summary": {
-    "note": "Public prompt examples were distilled into compact route controls. Full third-party prompt bodies are intentionally not included.",
-    "policy": "Do not add verbatim third-party prompt libraries or private local caches to this repository."
+    "note": "Public prompt examples were distilled into route controls. Full third-party prompt bodies are intentionally omitted.",
+    "policy": "Do not include verbatim public prompt libraries or private caches in this repository."
   },
   "route_weighted_keywords": {
     "sensitive_style": [
@@ -328,25 +344,25 @@
     ],
     "high_fidelity": [
       "real pores",
-      "subsurface scattering",
       "lens imperfection",
+      "material tension",
       "micro-variation",
-      "fabric tension"
+      "specular falloff"
     ]
   },
-  "open_source_notice": "Most preset ideas are distilled from public internet prompt libraries and examples. They were filtered, rewritten, normalized into route-level controls, and are not intended as verbatim prompt copies.",
+  "open_source_notice": "Most preset ideas are distilled from public internet prompt libraries and examples, then normalized into route-level controls; they are not intended as verbatim copies.",
   "image_model_prompting_influence": [
     "layout before atmosphere",
     "explicit scene + subject + lens + material order",
-    "short constraints, long constraints go to negative",
-    "if text is required, specify exact hierarchy and keep visible wording short",
-    "for unstable endpoints, keep the final prompt under 900-1100 characters and avoid nested JSON-like prompt prose"
+    "short constraints in positives, long ones in negatives",
+    "for unstable endpoints, keep final prompt compact under 900-1100 chars"
   ],
   "image_prompting_influence": {
     "core_idea": [
       "replace mood words with measurable controls",
       "split prompt into scene, lens, material, and composition blocks",
-      "anchor style with practical physical details first"
+      "for human scenes, add capture imperfections before beauty adjectives",
+      "for commercial scenes, keep one primary hero and 2-3 support anchors"
     ],
     "supported_templates": [
       "photography",
@@ -356,10 +372,9 @@
       "interior"
     ],
     "distilled_from_infinite_canvas_sources": [
-      "treat the prompt as a physical shot plan, not as keyword spam",
-      "separate subject, environment, camera, material, lighting, and post-processing controls",
-      "for human scenes, add ordinary capture imperfections before beauty adjectives",
-      "for commercial scenes, keep one primary hero and 2-3 supporting anchors"
+      "treat prompt as physical shot plan",
+      "separate subject, environment, lens, light, material, and post-processing",
+      "prefer practical micro-details over abstract adjectives"
     ]
   }
 }
