@@ -79,7 +79,7 @@ python scripts/generate_single_v2.py \
   --env-file <image.env> \
   --llm-env-file <llm.env> \
   --vision-env-file <vision.env> \
-  --user-prompt "商业产品摄影，香水瓶，白底静物，柔和阴影" \
+  --user-prompt "commercial product packshot, clean background, soft realistic shadow" \
   --out-dir scope_runs/live_product_smoke \
   --max-generation-attempts 1
 ```
@@ -92,7 +92,7 @@ python scripts/scope_commands.py reference-run \
   --vision-env-file <vision.env> \
   --reference-image <reference.png> \
   --reference-mode style \
-  --user-prompt "参考图片氛围，生成现代浴室镜前自拍写真" \
+  --user-prompt "参考图片氛围，生成现代浴室室内生活方式人像摄影" \
   --out-dir scope_runs/live_reference_smoke
 ```
 

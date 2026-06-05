@@ -1,12 +1,12 @@
 [English](../README.md) | [简体中文](../README.zh-CN.md)
 
-# Generated sample gallery / 生成样例图库
+# Sample gallery / 样例图库
 
-These are compressed showcase images from local SCOPE Image Orchestrator test runs.
+Compressed sample outputs from local test runs.
 
-这些图片来自本地 SCOPE Image Orchestrator 测试运行，已压缩后用于公开展示。
+本页展示本地测试运行产生的压缩样例图。
 
-## Route examples / 路由样例
+## Examples / 示例
 
 | Route | Sample |
 | --- | --- |

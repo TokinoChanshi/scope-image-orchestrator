@@ -145,7 +145,7 @@ Chinese command aliases used by the skill:
 - 单张跑 / 跑图 <prompt>: run generate_single_v2.py once
 - 严格链路 <prompt>: use run_scope_pipeline.py
 - 回归测试: use run_v2_route_regression.py
-- 审核 <image_root>: use audit_generated_images_with_grok.py
+- 审核 <image_root>: use audit_generated_images_with_vision.py
 - 退出生图优化: leave command mode
 """)
     return 0

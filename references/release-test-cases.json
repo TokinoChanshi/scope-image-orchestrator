@@ -7,7 +7,7 @@
       "kind": "text",
       "adapter": "openai-chat",
       "base_url": "https://api.openai.com/v1",
-      "model": "gpt-5.5",
+      "model": "text-model",
       "expect_endpoint_contains": "/chat/completions",
       "expect_payload_keys": ["model", "messages", "response_format"]
     },
@@ -16,7 +16,7 @@
       "kind": "text",
       "adapter": "openai-responses",
       "base_url": "https://api.openai.com/v1",
-      "model": "gpt-5.5",
+      "model": "text-model",
       "expect_endpoint_contains": "/responses",
       "expect_payload_keys": ["model", "input"]
     },
@@ -25,7 +25,7 @@
       "kind": "text",
       "adapter": "google-gemini",
       "base_url": "https://generativelanguage.googleapis.com/v1beta",
-      "model": "gemini-3-pro",
+      "model": "gemini-vision-model",
       "env": {"SCOPE_GOOGLE_API_KEY_AUTH": "header"},
       "expect_endpoint_contains": ":generateContent",
       "expect_payload_keys": ["contents", "systemInstruction", "generationConfig"]
@@ -35,7 +35,7 @@
       "kind": "vision",
       "adapter": "openai-responses",
       "base_url": "https://api.openai.com/v1",
-      "model": "gpt-5.5",
+      "model": "text-model",
       "expect_endpoint_contains": "/responses",
       "expect_payload_keys": ["model", "input"]
     },
@@ -54,7 +54,7 @@
       "kind": "image",
       "adapter": "openai-images",
       "base_url": "https://api.openai.com/v1",
-      "model": "gpt-image-2",
+      "model": "image-model",
       "env": {"SCOPE_IMAGE_SIZE": "1024x1536", "SCOPE_IMAGE_QUALITY": "high"},
       "expect_endpoint_contains": "/images/generations",
       "expect_payload_keys": ["model", "prompt", "size", "quality"],
@@ -65,7 +65,7 @@
       "kind": "image",
       "adapter": "openai-responses-image",
       "base_url": "https://api.openai.com/v1",
-      "model": "gpt-5.5",
+      "model": "text-model",
       "expect_endpoint_contains": "/responses",
       "expect_payload_keys": ["model", "input", "tools"]
     },
@@ -74,7 +74,7 @@
       "kind": "image",
       "adapter": "google-gemini-image",
       "base_url": "https://generativelanguage.googleapis.com/v1beta",
-      "model": "gemini-3-pro-image",
+      "model": "gemini-vision-model-image",
       "env": {"SCOPE_GOOGLE_API_KEY_AUTH": "header"},
       "expect_endpoint_contains": ":generateContent",
       "expect_payload_keys": ["contents", "generationConfig"]
@@ -94,20 +94,20 @@
       "kind": "image",
       "adapter": "openai-images-legacy",
       "base_url": "https://example.test/v1",
-      "model": "gpt-image-2",
+      "model": "image-model",
       "env": {"SCOPE_IMAGE_RESPONSE_FORMAT": "b64_json"},
       "expect_endpoint_contains": "/images/generations",
       "expect_payload_keys": ["model", "prompt", "n", "response_format"]
     }
   ],
   "dry_run_prompts": [
-    {"id": "portrait-basic", "route": "portrait", "prompt": "美女写真，半身人像，自然窗光，真实摄影质感"},
-    {"id": "bathroom-selfie", "route": "bathroom", "prompt": "白衬衫酒店浴室镜前自拍，生活方式写真，暖色室内灯光"},
-    {"id": "poster-cyberpunk", "route": "poster", "prompt": "赛博朋克电影海报，雨夜女侦探，高对比霓虹灯光"},
-    {"id": "product-perfume", "route": "product", "prompt": "商业产品摄影，香水瓶，白底静物，柔和阴影"},
-    {"id": "interior-living-room", "route": "interior", "prompt": "室内效果图，现代侘寂风客厅，自然材质与隐藏灯带"},
-    {"id": "magazine-cover", "route": "magazine", "prompt": "高端时尚杂志封面，精致排版，棚拍人像"},
-    {"id": "cosplay-character", "route": "cosplay", "prompt": "真人cosplay电影海报，幻想游戏角色，高级定制服装"}
+    {"id": "portrait-basic", "route": "portrait", "prompt": "editorial portrait, half body, natural window light, realistic photography"},
+    {"id": "lifestyle-interior", "route": "bathroom", "prompt": "indoor lifestyle portrait, mirror composition, warm practical light"},
+    {"id": "poster-cinematic", "route": "poster", "prompt": "cinematic movie poster, night city atmosphere, high contrast lighting"},
+    {"id": "product-packshot", "route": "product", "prompt": "commercial product packshot, clean background, soft realistic shadow"},
+    {"id": "interior-living-room", "route": "interior", "prompt": "modern living room interior visualization, natural materials and hidden lighting"},
+    {"id": "magazine-cover", "route": "magazine", "prompt": "high-end fashion magazine cover, refined layout, studio portrait"},
+    {"id": "character-poster", "route": "cosplay", "prompt": "live-action character poster, fantasy costume, cinematic environment"}
   ],
   "response_extraction_cases": [
     {

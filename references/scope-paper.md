@@ -124,12 +124,12 @@ Each route has multiple prompt cases. Regression is used to catch preset drift, 
 Open-source docs should name model strings only and avoid private endpoint/channel names. Depending on availability, the workflow can use model names such as:
 
 ```text
-gpt-5.5
-gpt-image-2
-grok-4.3
-GPT-5.4
-Nano Banana Pro
-Gemini 3-Pro
+text-model
+image-model
+vision-model
+text-model
+image-model
+vision-model
 ```
 
 The role assignment is more important than the exact model:

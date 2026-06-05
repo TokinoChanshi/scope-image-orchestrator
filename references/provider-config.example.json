@@ -4,35 +4,35 @@
   "roles": {
     "decomposer": {
       "provider": "llm_openai_responses",
-      "model": "gpt-5.5"
+      "model": "text-model"
     },
     "reasoner": {
       "provider": "llm_openai_responses",
-      "model": "gpt-5.5"
+      "model": "text-model"
     },
     "retrieval_corrector": {
       "provider": "llm_openai_chat",
-      "model": "grok-4.3"
+      "model": "vision-model"
     },
     "prompt_optimizer": {
       "provider": "llm_openai_responses",
-      "model": "gpt-5.5"
+      "model": "text-model"
     },
     "verifier": {
       "provider": "vision_gemini",
-      "model": "gemini-3.5-flash"
+      "model": "gemini-vision-model"
     },
     "repair_planner": {
       "provider": "llm_openai_responses",
-      "model": "gpt-5.5"
+      "model": "text-model"
     },
     "image_generator": {
       "provider": "image_openai",
-      "model": "gpt-image-2"
+      "model": "image-model"
     },
     "image_generator_gemini": {
       "provider": "image_gemini",
-      "model": "gemini-3-pro-image"
+      "model": "gemini-vision-model-image"
     },
     "prompt_optimizer_generic": {
       "provider": "llm_generic",
@@ -48,7 +48,7 @@
     },
     "image_generator_legacy": {
       "provider": "image_legacy",
-      "model": "gpt-image-2"
+      "model": "image-model"
     }
   },
   "providers": {
@@ -57,8 +57,8 @@
       "base_url_env": "SCOPE_LLM_BASE_URL",
       "api_key_env": "SCOPE_LLM_API_KEY",
       "models": [
-        "gpt-5.5",
-        "grok-4.3"
+        "text-model",
+        "vision-model"
       ],
       "default_options": {
         "temperature": 0.25,
@@ -72,7 +72,7 @@
       "base_url_env": "SCOPE_LLM_BASE_URL",
       "api_key_env": "SCOPE_LLM_API_KEY",
       "models": [
-        "gpt-5.5"
+        "text-model"
       ],
       "default_options": {
         "temperature": 0.25
@@ -83,8 +83,8 @@
       "base_url_env": "SCOPE_VISION_BASE_URL",
       "api_key_env": "SCOPE_VISION_API_KEY",
       "models": [
-        "gpt-5.5",
-        "grok-4.3"
+        "text-model",
+        "vision-model"
       ],
       "default_options": {
         "temperature": 0
@@ -95,8 +95,8 @@
       "base_url_env": "SCOPE_VISION_BASE_URL",
       "api_key_env": "SCOPE_VISION_API_KEY",
       "models": [
-        "gemini-3.5-flash",
-        "gemini-3-pro"
+        "gemini-vision-model",
+        "gemini-vision-model"
       ],
       "default_options": {
         "generationConfig": {
@@ -111,7 +111,7 @@
       "generations_url_env": "SCOPE_IMAGE_GENERATIONS_URL",
       "api_key_env": "SCOPE_IMAGE_API_KEY",
       "models": [
-        "gpt-image-2"
+        "image-model"
       ],
       "default_options": {
         "size": "1024x1536",
@@ -123,7 +123,7 @@
       "base_url_env": "SCOPE_IMAGE_BASE_URL",
       "api_key_env": "SCOPE_IMAGE_API_KEY",
       "models": [
-        "gpt-5.5"
+        "text-model"
       ],
       "default_options": {
         "tools": [
@@ -138,9 +138,9 @@
       "base_url_env": "SCOPE_IMAGE_BASE_URL",
       "api_key_env": "SCOPE_IMAGE_API_KEY",
       "models": [
-        "gemini-3.1-flash-image",
-        "gemini-3-pro-image",
-        "gemini-2.5-flash-image"
+        "gemini-image-model",
+        "gemini-vision-model-image",
+        "gemini-image-model"
       ],
       "default_options": {
         "generationConfig": {
@@ -191,7 +191,7 @@
       "generations_url_env": "SCOPE_IMAGE_GENERATIONS_URL",
       "api_key_env": "SCOPE_IMAGE_API_KEY",
       "models": [
-        "gpt-image-2"
+        "image-model"
       ],
       "default_options": {
         "n": 1,

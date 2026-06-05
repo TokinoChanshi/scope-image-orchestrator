@@ -43,7 +43,7 @@ Request:
 
 ```json
 {
-  "model": "gpt-image-2",
+  "model": "image-model",
   "prompt": "compact production prompt",
   "n": 1,
   "response_format": "b64_json"
@@ -54,7 +54,7 @@ Fallback request:
 
 ```json
 {
-  "model": "gpt-image-2",
+  "model": "image-model",
   "prompt": "compact production prompt",
   "n": 1,
   "response_format": "url"
@@ -95,7 +95,7 @@ or:
 
 ```json
 {
-  "model": "gpt-5.5",
+  "model": "text-model",
   "messages": [
     {"role": "system", "content": "..."},
     {"role": "user", "content": "..."}
@@ -111,7 +111,7 @@ Text:
 
 ```json
 {
-  "model": "gpt-5.5",
+  "model": "text-model",
   "input": [
     {"role": "developer", "content": [{"type": "input_text", "text": "..."}]},
     {"role": "user", "content": [{"type": "input_text", "text": "..."}]}
@@ -124,7 +124,7 @@ Vision:
 
 ```json
 {
-  "model": "gpt-5.5",
+  "model": "text-model",
   "input": [{
     "role": "user",
     "content": [
@@ -141,7 +141,7 @@ Default public path:
 
 ```json
 {
-  "model": "gpt-image-2",
+  "model": "image-model",
   "prompt": "compact production prompt",
   "size": "1024x1536",
   "quality": "high"
@@ -161,7 +161,7 @@ intentionally select `SCOPE_IMAGE_FORMAT=openai-images-legacy`.
 
 ```json
 {
-  "model": "gpt-5.5",
+  "model": "text-model",
   "input": "Generate a cinematic poster...",
   "tools": [{"type": "image_generation"}]
 }
@@ -171,7 +171,7 @@ With reference image:
 
 ```json
 {
-  "model": "gpt-5.5",
+  "model": "text-model",
   "input": [{
     "role": "user",
     "content": [
