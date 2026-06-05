@@ -91,19 +91,19 @@ references/scope-preset-library.json
 默认不调用真实 API：
 
 ```bash
-python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks
 ```
 
 快速变更可加速：
 
 ```bash
-python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks --skip-dry-run
+python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks --skip-dry-run
 ```
 
 如需绕过执行环境限制，可跳过编译检查：
 
 ```bash
-python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks --skip-compile
+python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks --skip-compile
 ```
 
 ## 产物目录
@@ -125,4 +125,3 @@ scope_runs/<task>/
 QQ 群：`1107570994`
 
 <img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">
-

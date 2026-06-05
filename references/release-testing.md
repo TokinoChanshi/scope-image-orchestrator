@@ -7,19 +7,19 @@ The release gate is offline by default and does not call real APIs.
 ## Run the release gate
 
 ```bash
-python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks
 ```
 
 Fast mode (skip dry-run prompts):
 
 ```bash
-python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks --skip-dry-run
+python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks --skip-dry-run
 ```
 
 If the environment blocks compile output, use:
 
 ```bash
-python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks --skip-compile
+python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks --skip-compile
 ```
 
 Expected success line:
@@ -95,7 +95,7 @@ python scripts/scope_commands.py reference-run \
 
 ## Pre-publish checklist
 
-- [ ] `python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks` passes.
+- [ ] `python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks` passes.
 - [ ] `README.md` and `README.zh-CN.md` samples are still valid.
 - [ ] `SKILL.md` remains a short usage guide and points to reference docs.
 - [ ] `references/provider-config.example.json` contains no real endpoints or keys.

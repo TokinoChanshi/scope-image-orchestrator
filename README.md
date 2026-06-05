@@ -102,7 +102,7 @@ third-party prompt bodies.
 Run the offline release check before publishing changes:
 
 ```bash
-python scripts/run_release_checks.py --out-dir D:/tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks
 ```
 
 This check is local only and does not call real APIs.
@@ -128,4 +128,3 @@ scope_runs/<task>/
 QQ group: `1107570994`
 
 <img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">
-
