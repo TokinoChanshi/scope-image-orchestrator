@@ -1173,8 +1173,19 @@ def main() -> int:
         parser.error(f"unsupported --route value: {args.route}. Allowed: {', '.join(route_keys)}")
 
     image_env = load_env_file(args.env_file)
-    llm_env = load_env_file(args.llm_env_file) if args.llm_env_file else {}
-    vision_env = load_env_file(args.vision_env_file) if args.vision_env_file else {}
+    # Use the image env file as a default source for llm/vision credentials and
+    # model configuration when dedicated files are not supplied. This keeps the
+    # command ergonomic for one-env-file setups and avoids silently falling back
+    # to hard-coded defaults.
+    llm_env = load_env_file(args.llm_env_file) if args.llm_env_file else image_env
+    vision_env = load_env_file(args.vision_env_file) if args.vision_env_file else image_env
+
+    if not args.llm_env_file and image_env.get("SCOPE_LLM_API_KEY"):
+        args.llm_model = image_env.get("SCOPE_LLM_MODEL", args.llm_model)
+    if not args.vision_env_file and image_env.get("SCOPE_VISION_API_KEY"):
+        args.vision_model = image_env.get("SCOPE_VISION_MODEL", args.vision_model)
+    if image_env.get("SCOPE_IMAGE_MODEL"):
+        args.image_model = image_env.get("SCOPE_IMAGE_MODEL")
     reference_image: pathlib.Path | None = None
     working_prompt = args.user_prompt
     if args.reference_image:
