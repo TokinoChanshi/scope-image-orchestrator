@@ -102,6 +102,10 @@ python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks
 python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks --skip-dry-run
 ```
 
+发布可复现性证据：
+
+- [release-readiness-2026-06-06.md](docs/release-readiness-2026-06-06.md)
+
 ## 输出产物
 
 ```text
