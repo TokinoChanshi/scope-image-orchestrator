@@ -21,7 +21,7 @@
     }
   },
   "global_rules": {
-    "negative_anchor": "Negative: no random text paragraphs, no gibberish/placeholder lettering, no watermark, no CGI-plastic skin.",
+    "negative_anchor": "Negative: no repeated gibberish text, no random paragraph blocks, no watermark, no CGI-plastic skin, no unrealistic anatomy.",
     "short_prompt_english_only": "Keep final production prompts in compact clean English.",
     "text_principles": [
       "Prefer concrete camera/light/material controls before abstract adjectives.",
@@ -71,15 +71,13 @@
         "portrait",
         "editorial portrait",
         "lifestyle portrait",
-        "人像",
-        "人像摄影",
-        "生活方式人像",
-        "高级人像",
-        "美女",
-        "照片感",
-        "网红",
-        "girlfriend photo",
-        "photography"
+        "headshot",
+        "beauty portrait",
+        "candid portrait",
+        "closeup portrait",
+        "photography",
+        "photo",
+        "close portrait"
       ]
     },
     "magazine": {
@@ -202,16 +200,15 @@
       "route_keywords": [
         "interior",
         "interior render",
-        "室内",
-        "室内效果图",
-        "室内场景",
-        "室内效果",
-        "家居",
-        "客厅",
-        "卧室",
-        "厨房",
-        "archviz",
-        "architecture"
+        "interior photography",
+        "3d interior",
+        "architectural interior",
+        "residential interior",
+        "home interior",
+        "architecture",
+        "living room",
+        "commercial interior",
+        "room scene"
       ],
       "external_patterns": [
         "physical composition-first layout then materials and props",
@@ -299,22 +296,17 @@
       "route_keywords": [
         "bathroom",
         "mirror selfie",
-        "室内生活方式",
-        "室内生活方式自拍",
-        "白衬衫",
-        "白色衬衫",
-        "白衬衫写真",
-        "生活方式",
-        "生活方式服饰",
         "hotel bathroom selfie",
+        "mirror room selfie",
+        "private room selfie",
+        "lifestyle mirror photo",
+        "indoor mirror selfie",
+        "white shirt selfie",
+        "shower room selfie",
+        "bathroom mirror",
+        "intimate partner pov",
         "indoor lifestyle image",
-        "private-room lifestyle image",
-        "现代酒店浴室",
-        "镜前自拍",
-        "镜子自拍",
-        "室内镜前自拍",
-        "情侣视角",
-        "partner pov"
+        "intimate lifestyle photo"
       ]
     },
     "cosplay": {
