@@ -21,7 +21,7 @@
     }
   },
   "global_rules": {
-    "negative_anchor": "Negative: no random text paragraphs, no gibberish/placeholder lettering, no watermark.",
+    "negative_anchor": "Negative: no random text paragraphs, no gibberish/placeholder lettering, no watermark, no CGI-plastic skin.",
     "short_prompt_english_only": "Keep final production prompts in compact clean English.",
     "text_principles": [
       "Prefer concrete camera/light/material controls before abstract adjectives.",
