@@ -20,6 +20,7 @@ import pathlib
 import random
 import re
 import shutil
+import tempfile
 import time
 import unicodedata
 from typing import Any
@@ -257,6 +258,36 @@ def _env_bool(name: str, default: bool) -> bool:
     if v in {"0", "false", "off", "no", "n"}:
         return False
     return default
+
+
+def ensure_writable_out_dir(requested: pathlib.Path) -> pathlib.Path:
+    """Try a few candidate directories and return the first writable output path."""
+    candidates: list[pathlib.Path] = []
+    p = requested.expanduser()
+    if p.is_absolute():
+        candidates.append(p)
+    else:
+        candidates.append(pathlib.Path.cwd() / p)
+        candidates.append(pathlib.Path("scope_runs") / p)
+    # always include absolute variant to avoid cwd surprises
+    if not p.is_absolute():
+        candidates.append(p.resolve())
+    fallback_base = pathlib.Path(tempfile.gettempdir()) / "scope_image_runs"
+    fallback_name = p.name if p.name else "run"
+    candidates.append(fallback_base / fallback_name)
+
+    seen: set[str] = set()
+    for candidate in candidates:
+        key = str(candidate.resolve())
+        if key in seen:
+            continue
+        seen.add(key)
+        try:
+            candidate.mkdir(parents=True, exist_ok=True)
+            return candidate.resolve()
+        except OSError:
+            continue
+    raise RuntimeError(f"cannot create writable output directory for {requested}")
 
 
 def is_transient_error(error: str | None) -> bool:
@@ -552,10 +583,10 @@ def local_prompt_hint(user_prompt: str, route: str, presets: dict[str, Any] | No
         "真实照片": "photographic real-life look",
         "实拍": "camera-candid real-photo texture",
         "微距": "macro close-up detail",
-        "低饱和度": "low saturation documentary palette",
+        "低饱和": "low saturation documentary palette",
         "浅景深": "shallow depth of field",
-        "仰视角": "slight low-angle perspective",
-        "俯视角": "slight high-angle perspective",
+        "仰视": "slight low-angle perspective",
+        "俯视": "slight high-angle perspective",
         "生活方式服饰": "white light-balance shirt with visible texture",
         "生活方式人像": "white-shirt mirror selfie",
         "镜前自拍": "smartphone mirror selfie",
@@ -590,6 +621,20 @@ def local_prompt_hint(user_prompt: str, route: str, presets: dict[str, Any] | No
         "网红": "lifestyle portrait",
         "美女": "lifestyle portrait",
         "爱情": "intimate lifestyle mood",
+        "纪录片": "documentary realism",
+        "普通相机拍摄": "ordinary camera capture",
+        "冷色调": "cool-neutral color grading",
+        "自然光": "natural daylight",
+        "即时战略": "top-down real-time strategy scene",
+        "上帝视角": "god-view strategy framing",
+        "不要UI": "clean frame without interface",
+        "虚幻引擎5": "premium game-render realism",
+        "成语": "symbolic idiom tableau",
+        "张艺谋电影风格": "stylized Chinese cinema mood",
+        "黑色背景": "near-black theatrical background",
+        "80年代胶片": "1980s film texture",
+        "赛璐璐平涂": "clean cel-shaded finish",
+        "日本动画风格": "premium anime stylization",
     }
 
     prompt_lower = user_prompt.lower()
@@ -1163,7 +1208,7 @@ def main() -> int:
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    args.out_dir.mkdir(parents=True, exist_ok=True)
+    args.out_dir = ensure_writable_out_dir(args.out_dir)
     (args.out_dir / "user_request.txt").write_text(args.user_prompt, encoding="utf-8")
 
     args.route = str(args.route).strip().lower()

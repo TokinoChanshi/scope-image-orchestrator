@@ -113,10 +113,10 @@
         "magazine cover",
         "fashion cover",
         "editorial cover",
-        "封面",
         "杂志",
         "杂志封面",
         "时尚封面",
+        "高端时尚",
         "high-fashion",
         "luxe",
         "cover"
@@ -159,6 +159,8 @@
         "cinematic poster",
         "key art",
         "one-sheet",
+        "visual poster",
+        "one-sheet poster",
         "海报",
         "电影海报",
         "关键视觉",
@@ -245,20 +247,21 @@
         "product",
         "product photo",
         "commercial still",
+        "commercial still life",
         "产品",
         "商品",
-        "商业图",
+        "护肤品",
+        "护肤",
         "perfume",
         "handbag",
         "watch",
-        "头盔",
-        "食物",
         "food",
-        "饮料",
-        "drinks",
         "shoe",
-        "鞋",
-        "产品图"
+        "drinks",
+        "头戴",
+        "耳机",
+        "包",
+        "鞋"
       ]
     },
     "bathroom": {
@@ -306,7 +309,12 @@
         "bathroom mirror",
         "intimate partner pov",
         "indoor lifestyle image",
-        "intimate lifestyle photo"
+        "intimate lifestyle photo",
+        "镜前自拍",
+        "酒店浴室",
+        "生活化自拍",
+        "白衬衫",
+        "高阶镜像自拍"
       ]
     },
     "cosplay": {
@@ -343,14 +351,207 @@
         "character poster",
         "角色写真",
         "真人cos",
-        "游戏角色",
         "角色",
+        "游戏角色",
         "character"
+      ]
+    },
+    "idiom_cinema": {
+      "route_hint": "stylized Chinese-cinema tableau route for mythic or idiom-driven scenes: low saturation, controlled theatrical staging, dramatic action silhouette, and 1980s film texture.",
+      "fallback_prompt": "Stylized cinematic tableau inspired by a Chinese idiom or myth: {subject}. Low-saturation palette, black or near-black background, dramatic low-angle composition, shallow depth of field, selective motion blur, and tactile 1980s film-grain realism.",
+      "camera_phrase": "low-angle wide lens with exaggerated perspective and foreground blur",
+      "light_phrase": "theatrical contrast with restrained color and localized practical highlights",
+      "aspect_ratio": "2:3",
+      "negative": "Negative: no flat poster layout, no cartoon simplification, no oversaturated neon, no random text, no watermark, no plastic faces or melted anatomy.",
+      "booster_lines": [
+        "treat the frame like a staged film still, not a poster board",
+        "preserve one decisive symbolic prop and one dynamic gesture",
+        "use low saturation, deep blacks, and selective practical highlights",
+        "foreground blur and motion streaks should enhance story tension, not hide anatomy"
+      ],
+      "style_blocks": [
+        "Chinese cinematic tableau with myth/idiom storytelling focus",
+        "black or near-black environment with controlled practical detail",
+        "1980s film-camera texture, shallow depth, dramatic perspective exaggeration"
+      ],
+      "composition_patterns": [
+        "one mythic action beat or symbolic gesture dominates the frame",
+        "foreground blur + midground subject + sparse but meaningful background cue",
+        "silhouette readability stays strong at thumbnail size"
+      ],
+      "external_patterns": [
+        "low-saturation art-film mood with tactile grain",
+        "dynamic low-angle staging and selective motion blur",
+        "prop-driven symbolism instead of decorative clutter"
+      ],
+      "quality_controls": [
+        "subject anatomy remains readable despite motion and blur",
+        "one symbolic prop and one decisive action remain clear",
+        "black background still contains controlled depth cues and separation"
+      ],
+      "route_keywords": [
+        "成语",
+        "成语画面",
+        "张艺谋电影风格",
+        "黑色背景",
+        "低饱和",
+        "80年代胶片相机拍摄的电影",
+        "仰视角度",
+        "神话电影感",
+        "idiom cinema",
+        "myth tableau",
+        "stylized chinese cinema"
+      ]
+    },
+    "documentary": {
+      "route_hint": "documentary or candid reportage route: real-camera feel, off-center composition, cool-natural tonality, and scene credibility before spectacle.",
+      "fallback_prompt": "Photorealistic documentary-style scene: {subject}. Real-camera capture feel, off-center composition, natural lens imperfections, cool or neutral tonality, story-first environmental detail, and believable human/material texture.",
+      "camera_phrase": "observational handheld or practical still-photography framing",
+      "aspect_ratio": "3:2",
+      "negative": "Negative: no poster composition, no glamour retouching, no centered brochure layout, no random text, no fake UI, no waxy skin, no watermark.",
+      "booster_lines": [
+        "prioritize one believable story beat over spectacle",
+        "keep the subject slightly off-center with foreground or edge occlusion",
+        "allow minor lens imperfection, natural blur falloff, and candid body language",
+        "environmental evidence should explain the scene without overfilling the frame"
+      ],
+      "style_blocks": [
+        "BBC/reportage realism with candid observational distance",
+        "ordinary camera look, not commercial poster polish",
+        "cool-neutral grade with tactile real-world clutter kept under control"
+      ],
+      "composition_patterns": [
+        "non-centered subject placement with environmental storytelling",
+        "foreground soft obstruction or edge blur allowed when it improves realism",
+        "one strong action or interaction anchors the scene"
+      ],
+      "external_patterns": [
+        "award-photo composition rather than ad composition",
+        "human texture and lived-in materials over glossy stylization",
+        "credible microdrama captured mid-action"
+      ],
+      "quality_controls": [
+        "scene should read as a real captured moment, not staged poster art",
+        "faces/hands/materials remain grounded and non-waxy",
+        "background clutter supports narrative without dominating subject"
+      ],
+      "route_keywords": [
+        "BBC纪录片",
+        "纪录片质感",
+        "纪实摄影",
+        "抓拍",
+        "非海报",
+        "不是海报",
+        "普通相机拍摄",
+        "自然光",
+        "冷色调",
+        "纪实场景",
+        "documentary",
+        "reportage",
+        "candid realism"
+      ]
+    },
+    "strategy_overhead": {
+      "route_hint": "top-down strategy or miniature god-view route: readable units, terrain logic, high-end game-render look, and no UI overlay.",
+      "fallback_prompt": "High-end top-down strategy scene: {subject}. God-view or steep overhead perspective, readable unit silhouettes, terrain hierarchy, cinematic game-render realism, and zero interface elements.",
+      "camera_phrase": "steep overhead or isometric strategy-camera framing",
+      "aspect_ratio": "16:9",
+      "negative": "Negative: no UI, no HUD, no minimap, no menu text, no poster title, no muddy unreadable crowding, no toy-like proportions unless requested.",
+      "booster_lines": [
+        "every major unit group should remain readable from a distance",
+        "terrain and props should support gameplay logic and scale comprehension",
+        "keep spectacle secondary to tactical silhouette clarity",
+        "avoid clutter that obscures command paths or focal conflict"
+      ],
+      "style_blocks": [
+        "UE5/PS5-scale real-time strategy presentation without interface",
+        "high-end lighting and terrain readability from overhead view",
+        "miniature war-table or battlefield legibility with cinematic rendering"
+      ],
+      "composition_patterns": [
+        "one main conflict cluster plus secondary support clusters",
+        "clear terrain lanes, fortifications, or environmental boundaries",
+        "visual hierarchy remains legible at map-like viewing distance"
+      ],
+      "external_patterns": [
+        "overhead strategy readability first, spectacle second",
+        "rendered like a premium game screenshot without HUD",
+        "micro-unit silhouettes and terrain scale remain coherent"
+      ],
+      "quality_controls": [
+        "units do not melt into terrain at distance",
+        "no fake UI or menu artifacts appear",
+        "camera angle clearly communicates top-down tactical view"
+      ],
+      "route_keywords": [
+        "即时战略",
+        "RTS",
+        "上帝视角",
+        "上帝俯视视角",
+        "俯视战场",
+        "微缩视角",
+        "微缩视角战场",
+        "PS5游戏大作",
+        "虚幻引擎5",
+        "不要UI",
+        "无UI战场",
+        "strategy overhead",
+        "god view strategy",
+        "isometric battle"
+      ]
+    },
+    "anime_cel": {
+      "route_hint": "clean cel-shaded anime character or concept route: simple structure, readable silhouette, restrained texture complexity, and polished flat-shaded rendering.",
+      "fallback_prompt": "Clean cel-shaded anime concept of {subject}. Full-body or key-shot silhouette, restrained detail density, elegant shape design, polished line economy, and flat-shaded premium animation finish.",
+      "camera_phrase": "full-body concept framing or clean medium shot with silhouette priority",
+      "aspect_ratio": "2:3",
+      "negative": "Negative: no oil painting texture, no thick painterly smears, no muddy gradients, no random typography, no 3D plastic skin, no overdesigned accessories.",
+      "booster_lines": [
+        "favor strong silhouette and shape language over tiny texture detail",
+        "keep material rendering clean and cel-shaded, not painterly",
+        "use controlled accent details rather than busy ornament everywhere",
+        "pose and costume structure must read clearly in one glance"
+      ],
+      "style_blocks": [
+        "premium cel-shaded anime finish with disciplined detail density",
+        "shape-first character design with clean value separation",
+        "animation-studio presentation rather than poster typography"
+      ],
+      "composition_patterns": [
+        "full-body turnaround-like clarity or one clean hero pose",
+        "clear contour breaks and controlled negative space",
+        "costume props do not overwhelm body readability"
+      ],
+      "external_patterns": [
+        "MAPPA-like cleanliness without copying any exact IP style",
+        "flat-shaded premium animation surfaces",
+        "minimal but intentional structure changes and accent shapes"
+      ],
+      "quality_controls": [
+        "silhouette remains readable at thumbnail size",
+        "no muddy gradient banding or pseudo-oil textures",
+        "proportions stay intentional and stable"
+      ],
+      "route_keywords": [
+        "赛璐璐平涂",
+        "MAPPA风格",
+        "日本动画风格",
+        "角色设定图",
+        "动画角色立绘",
+        "不要复杂纹理",
+        "anime cel",
+        "cel-shaded anime",
+        "character concept flat shade"
       ]
     }
   },
   "external_prompt_sources": {
-    "note": "Source prompt libraries were reviewed as public inspiration and distilled; raw prompt bodies and URLs are intentionally omitted."
+    "note": "Source prompt libraries were reviewed as public inspiration and distilled; raw prompt bodies and URLs are intentionally omitted.",
+    "distilled_bundles": [
+      "public internet prompt collections for editorial / product / lifestyle scenes",
+      "public prompt examples from Infinite Canvas prompt boards",
+      "user-supplied SSS0625 prompt corpus distilled into category-level controls only"
+    ]
   },
   "optimizer_guides": {
     "prompt_presets_md": "# Prompt Presets\n\nUse route presets as compact inspiration only. Keep final prompts concise, concrete, and suitable for the selected route. Do not copy any third-party prompt bodies verbatim.",
@@ -399,7 +600,11 @@
       "character",
       "scene",
       "product",
-      "interior"
+      "interior",
+      "documentary",
+      "strategy_overhead",
+      "idiom_cinema",
+      "anime_cel"
     ],
     "distilled_from_infinite_canvas_sources": [
       "treat prompt as physical shot plan",

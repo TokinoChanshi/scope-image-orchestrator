@@ -72,7 +72,8 @@ Most preset ideas were derived from public internet prompt libraries and prompt 
 Current routes:
 
 ```text
-portrait, magazine, poster, cosplay, interior, product, bathroom
+portrait, magazine, poster, cosplay, interior, product, bathroom,
+idiom_cinema, documentary, strategy_overhead, anime_cel
 ```
 
 ## Quick Workflow
@@ -83,7 +84,7 @@ portrait, magazine, poster, cosplay, interior, product, bathroom
    - `constraints`: atomic attribute, relation, layout, style, text, or factual requirements.
    - `unknowns`: missing facts or reference details tied to an entity, constraint, or prompt.
 3. **Resolve unknowns only when needed** using retrieval, reasoning, or a vision/text model.
-4. **Route the request** to a preset family: portrait, magazine, poster, cosplay, interior, product, or bathroom.
+4. **Route the request** to a preset family: portrait, magazine, poster, cosplay, interior, product, bathroom, idiom_cinema, documentary, strategy_overhead, or anime_cel.
 5. **Optimize the prompt** with a text model such as `text-model` or `vision-model`.
 6. **Generate the image** with an image model such as `image-model`.
 7. **Verify item by item** with a vision-capable model such as `vision-model`.

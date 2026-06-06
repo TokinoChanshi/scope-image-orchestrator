@@ -21,6 +21,7 @@ import os
 import random
 import re
 import time
+import tempfile
 import unicodedata
 from pathlib import Path
 from typing import Any
@@ -224,6 +225,23 @@ def extract_json(text: str) -> Any:
         if m:
             return json.loads(m.group(0))
     raise ValueError("No JSON object found in model output")
+
+
+def ensure_writable_out_dir(requested: Path) -> Path:
+    requested = requested.expanduser()
+    candidates = [requested, (Path.cwd() / requested).resolve(), (Path("scope_runs") / requested).resolve(), (Path(tempfile.gettempdir()) / "scope_image_runs" / requested.name).resolve()]
+    seen: set[str] = set()
+    for candidate in candidates:
+        normalized = candidate.resolve()
+        if str(normalized) in seen:
+            continue
+        seen.add(str(normalized))
+        try:
+            normalized.mkdir(parents=True, exist_ok=True)
+            return normalized
+        except OSError:
+            continue
+    raise RuntimeError(f"cannot create writable output directory: {requested}")
 
 
 def openai_compatible_url(base: str, path: str) -> str:
@@ -650,7 +668,7 @@ def main() -> int:
 
     env = load_env_file(args.env_file)
     llm_env = load_env_file(args.llm_env_file) if args.llm_env_file else env
-    args.out_dir.mkdir(parents=True, exist_ok=True)
+    args.out_dir = ensure_writable_out_dir(args.out_dir)
     (args.out_dir / "user_request.txt").write_text(args.user_prompt, encoding="utf-8")
 
     print("[1/6] decompose", flush=True)

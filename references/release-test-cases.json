@@ -9,7 +9,11 @@
       "base_url": "https://api.openai.com/v1",
       "model": "text-model",
       "expect_endpoint_contains": "/chat/completions",
-      "expect_payload_keys": ["model", "messages", "response_format"]
+      "expect_payload_keys": [
+        "model",
+        "messages",
+        "response_format"
+      ]
     },
     {
       "id": "openai-responses-json",
@@ -18,7 +22,10 @@
       "base_url": "https://api.openai.com/v1",
       "model": "text-model",
       "expect_endpoint_contains": "/responses",
-      "expect_payload_keys": ["model", "input"]
+      "expect_payload_keys": [
+        "model",
+        "input"
+      ]
     },
     {
       "id": "google-gemini-json",
@@ -26,9 +33,15 @@
       "adapter": "google-gemini",
       "base_url": "https://generativelanguage.googleapis.com/v1beta",
       "model": "gemini-vision-model",
-      "env": {"SCOPE_GOOGLE_API_KEY_AUTH": "header"},
+      "env": {
+        "SCOPE_GOOGLE_API_KEY_AUTH": "header"
+      },
       "expect_endpoint_contains": ":generateContent",
-      "expect_payload_keys": ["contents", "systemInstruction", "generationConfig"]
+      "expect_payload_keys": [
+        "contents",
+        "systemInstruction",
+        "generationConfig"
+      ]
     },
     {
       "id": "openai-responses-vision",
@@ -37,7 +50,10 @@
       "base_url": "https://api.openai.com/v1",
       "model": "text-model",
       "expect_endpoint_contains": "/responses",
-      "expect_payload_keys": ["model", "input"]
+      "expect_payload_keys": [
+        "model",
+        "input"
+      ]
     },
     {
       "id": "generic-vision-json",
@@ -45,9 +61,18 @@
       "adapter": "generic-vision-json",
       "base_url": "https://example.test/vision",
       "model": "custom-vision",
-      "env": {"SCOPE_VISION_ENDPOINT_URL": "https://example.test/vision", "SCOPE_GENERIC_AUTH_MODE": "bearer"},
+      "env": {
+        "SCOPE_VISION_ENDPOINT_URL": "https://example.test/vision",
+        "SCOPE_GENERIC_AUTH_MODE": "bearer"
+      },
       "expect_endpoint_contains": "/vision",
-      "expect_payload_keys": ["model", "prompt", "messages", "images", "image"]
+      "expect_payload_keys": [
+        "model",
+        "prompt",
+        "messages",
+        "images",
+        "image"
+      ]
     },
     {
       "id": "openai-images",
@@ -55,10 +80,20 @@
       "adapter": "openai-images",
       "base_url": "https://api.openai.com/v1",
       "model": "image-model",
-      "env": {"SCOPE_IMAGE_SIZE": "1024x1536", "SCOPE_IMAGE_QUALITY": "high"},
+      "env": {
+        "SCOPE_IMAGE_SIZE": "1024x1536",
+        "SCOPE_IMAGE_QUALITY": "high"
+      },
       "expect_endpoint_contains": "/images/generations",
-      "expect_payload_keys": ["model", "prompt", "size", "quality"],
-      "forbid_payload_keys": ["response_format"]
+      "expect_payload_keys": [
+        "model",
+        "prompt",
+        "size",
+        "quality"
+      ],
+      "forbid_payload_keys": [
+        "response_format"
+      ]
     },
     {
       "id": "openai-responses-image",
@@ -67,7 +102,11 @@
       "base_url": "https://api.openai.com/v1",
       "model": "text-model",
       "expect_endpoint_contains": "/responses",
-      "expect_payload_keys": ["model", "input", "tools"]
+      "expect_payload_keys": [
+        "model",
+        "input",
+        "tools"
+      ]
     },
     {
       "id": "google-gemini-image",
@@ -75,9 +114,14 @@
       "adapter": "google-gemini-image",
       "base_url": "https://generativelanguage.googleapis.com/v1beta",
       "model": "gemini-vision-model-image",
-      "env": {"SCOPE_GOOGLE_API_KEY_AUTH": "header"},
+      "env": {
+        "SCOPE_GOOGLE_API_KEY_AUTH": "header"
+      },
       "expect_endpoint_contains": ":generateContent",
-      "expect_payload_keys": ["contents", "generationConfig"]
+      "expect_payload_keys": [
+        "contents",
+        "generationConfig"
+      ]
     },
     {
       "id": "generic-image-json",
@@ -85,9 +129,18 @@
       "adapter": "generic-image-json",
       "base_url": "https://example.test/image",
       "model": "custom-image",
-      "env": {"SCOPE_IMAGE_ENDPOINT_URL": "https://example.test/image", "SCOPE_GENERIC_AUTH_MODE": "bearer", "SCOPE_IMAGE_RESPONSE_FORMAT": "b64_json"},
+      "env": {
+        "SCOPE_IMAGE_ENDPOINT_URL": "https://example.test/image",
+        "SCOPE_GENERIC_AUTH_MODE": "bearer",
+        "SCOPE_IMAGE_RESPONSE_FORMAT": "b64_json"
+      },
       "expect_endpoint_contains": "/image",
-      "expect_payload_keys": ["model", "prompt", "n", "response_format"]
+      "expect_payload_keys": [
+        "model",
+        "prompt",
+        "n",
+        "response_format"
+      ]
     },
     {
       "id": "legacy-image-json",
@@ -95,54 +148,152 @@
       "adapter": "openai-images-legacy",
       "base_url": "https://example.test/v1",
       "model": "image-model",
-      "env": {"SCOPE_IMAGE_RESPONSE_FORMAT": "b64_json"},
+      "env": {
+        "SCOPE_IMAGE_RESPONSE_FORMAT": "b64_json"
+      },
       "expect_endpoint_contains": "/images/generations",
-      "expect_payload_keys": ["model", "prompt", "n", "response_format"]
+      "expect_payload_keys": [
+        "model",
+        "prompt",
+        "n",
+        "response_format"
+      ]
     }
   ],
   "dry_run_prompts": [
-    {"id": "portrait-basic", "route": "portrait", "prompt": "editorial portrait, half body, natural window light, realistic photography"},
-    {"id": "lifestyle-interior", "route": "bathroom", "prompt": "indoor lifestyle portrait, mirror composition, warm practical light"},
-    {"id": "poster-cinematic", "route": "poster", "prompt": "cinematic movie poster, night city atmosphere, high contrast lighting"},
-    {"id": "product-packshot", "route": "product", "prompt": "commercial product packshot, clean background, soft realistic shadow"},
-    {"id": "interior-living-room", "route": "interior", "prompt": "modern living room interior visualization, natural materials and hidden lighting"},
-    {"id": "magazine-cover", "route": "magazine", "prompt": "high-end fashion magazine cover, refined layout, studio portrait"},
-    {"id": "character-poster", "route": "cosplay", "prompt": "live-action character poster, fantasy costume, cinematic environment"}
+    {
+      "id": "portrait-basic",
+      "route": "portrait",
+      "prompt": "editorial portrait, half body, natural window light, realistic photography"
+    },
+    {
+      "id": "lifestyle-interior",
+      "route": "bathroom",
+      "prompt": "indoor lifestyle portrait, mirror composition, warm practical light"
+    },
+    {
+      "id": "poster-cinematic",
+      "route": "poster",
+      "prompt": "cinematic movie poster, night city atmosphere, high contrast lighting"
+    },
+    {
+      "id": "product-packshot",
+      "route": "product",
+      "prompt": "commercial product packshot, clean background, soft realistic shadow"
+    },
+    {
+      "id": "interior-living-room",
+      "route": "interior",
+      "prompt": "modern living room interior visualization, natural materials and hidden lighting"
+    },
+    {
+      "id": "magazine-cover",
+      "route": "magazine",
+      "prompt": "high-end fashion magazine cover, refined layout, studio portrait"
+    },
+    {
+      "id": "character-poster",
+      "route": "cosplay",
+      "prompt": "live-action character poster, fantasy costume, cinematic environment"
+    },
+    {
+      "id": "documentary-candid",
+      "route": "documentary",
+      "prompt": "BBC documentary-style candid scene, off-center composition, cool neutral grading, real camera texture"
+    },
+    {
+      "id": "strategy-overhead",
+      "route": "strategy_overhead",
+      "prompt": "top-down real-time strategy battlefield, readable unit clusters, no UI, premium game-render look"
+    },
+    {
+      "id": "idiom-cinema-scene",
+      "route": "idiom_cinema",
+      "prompt": "low-saturation mythic Chinese cinematic tableau, black background, low-angle dramatic symbolism"
+    },
+    {
+      "id": "anime-cel-character",
+      "route": "anime_cel",
+      "prompt": "clean cel-shaded anime character concept, full-body silhouette, restrained details, premium flat shading"
+    }
   ],
   "response_extraction_cases": [
     {
       "id": "openai-data-b64",
-      "body": {"data": [{"b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="}]},
+      "body": {
+        "data": [
+          {
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="
+          }
+        ]
+      },
       "expected_count": 1,
       "expected_field": "b64"
     },
     {
       "id": "openai-data-url",
-      "body": {"data": [{"url": "https://example.test/image.png"}]},
+      "body": {
+        "data": [
+          {
+            "url": "https://example.test/image.png"
+          }
+        ]
+      },
       "expected_count": 1,
       "expected_field": "url"
     },
     {
       "id": "generic-images-base64",
-      "body": {"images": [{"base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=", "mimeType": "image/png"}]},
+      "body": {
+        "images": [
+          {
+            "base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=",
+            "mimeType": "image/png"
+          }
+        ]
+      },
       "expected_count": 1,
       "expected_field": "b64"
     },
     {
       "id": "generic-image-data-url",
-      "body": {"image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="},
+      "body": {
+        "image": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="
+      },
       "expected_count": 1,
       "expected_field": "b64"
     },
     {
       "id": "responses-image-output",
-      "body": {"output": [{"type": "image_generation_call", "result": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="}]},
+      "body": {
+        "output": [
+          {
+            "type": "image_generation_call",
+            "result": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="
+          }
+        ]
+      },
       "expected_count": 1,
       "expected_field": "b64"
     },
     {
       "id": "gemini-inline-data",
-      "body": {"candidates": [{"content": {"parts": [{"inlineData": {"mimeType": "image/png", "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="}}]}}]},
+      "body": {
+        "candidates": [
+          {
+            "content": {
+              "parts": [
+                {
+                  "inlineData": {
+                    "mimeType": "image/png",
+                    "data": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
       "expected_count": 1,
       "expected_field": "b64"
     }

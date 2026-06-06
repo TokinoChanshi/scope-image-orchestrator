@@ -4,7 +4,7 @@
 
 这是一个用于图像生成协同流程的开源 Skill：
 
-- 对请求进行路由到专用场景（portrait、magazine、poster、cosplay、interior、product、bathroom）
+- 对请求进行路由到专用场景（portrait、magazine、poster、cosplay、interior、product、bathroom、idiom_cinema、documentary、strategy_overhead、anime_cel）
 - 将请求映射为可执行的提示词控制项（人物、场景、镜头、材质、灯光、否定约束）
 - 调用 LLM 做提示词优化（可选）
 - 发送图像生成请求（可配置多种适配器）
@@ -85,6 +85,7 @@ references/scope-preset-library.json
 预设与风格来源说明：
 
 - 本仓库中的提示词思路来自公开可见的互联网创作模板进行蒸馏与重构，
+- 也吸收了用户自有提示词语料的共性模式，并只保留类别级控制项，
 - 仅保留场景-镜头-材质-构图等可执行控制项，
 - 不在仓库中原样分发第三方完整提示词。
 

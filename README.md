@@ -85,6 +85,13 @@ Preset ideas are distilled from public prompt examples and rewritten into compac
 route-level controls. The repository is not intended to redistribute verbatim
 third-party prompt bodies.
 
+Current route families include:
+
+```text
+portrait, magazine, poster, cosplay, interior, product, bathroom,
+idiom_cinema, documentary, strategy_overhead, anime_cel
+```
+
 ## Validation
 
 Run the offline release check before publishing changes:

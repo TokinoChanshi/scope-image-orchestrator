@@ -12,6 +12,7 @@ import json
 import subprocess
 import sys
 import time
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -70,11 +71,41 @@ CASES: list[tuple[str, str, str]] = [
     ("bathroom", "04_partner_pov", "Photorealistic 9:16 girlfriend POV bathroom mirror selfie, black phone partly covering one cheek, soft private-room mood, minimal makeup, realistic pores and hair strands, natural mirror highlights."),
     ("bathroom", "05_no_showy_text", "Photorealistic 9:16 mirror selfie with private lifestyle mood, folded towel and skincare bottles visible, subtle realistic wetness-free skin, candid pose, no cover-style typography."),
     ("bathroom", "06_soft_bathroom", "Photorealistic 9:16 private bathroom mirror selfie, natural cross-leg lean and hand placement, warm neutral interior light, chrome faucet and stone tile edges, imperfect smartphone framing."),
+    ("documentary", "01_archaeology_robot", "Photorealistic BBC documentary-style archaeology scene, an archaeologist carefully brushing soil away from a small weathered robot half-buried in earth, natural daylight, cool neutral grading, off-center composition, believable dirt texture, ordinary camera realism, no poster layout."),
+    ("documentary", "02_rooftop_survivors", "Photorealistic documentary scene at dusk, two exhausted people sitting near the edge of a ruined rooftop garden while a decayed city stretches below, candid reportage framing, natural ambient light, off-center composition, real materials, no poster styling."),
+    ("strategy_overhead", "01_tanks_village", "Premium UE5-style real-time strategy overhead scene, god-view camera, two tanks attacking a village, readable terrain lanes, smoke and impact effects, no UI, no HUD, miniature battlefield logic remains clear."),
+    ("strategy_overhead", "02_fleet_vs_kraken", "High-end top-down strategy scene, modern warships and older sail ships jointly fighting a giant sea creature, readable unit silhouettes, ocean lanes and scale clarity, cinematic but no user interface."),
+    ("idiom_cinema", "01_dot_dragon_eye", "Low-saturation Chinese cinematic tableau, black background, shallow depth of field, dramatic low-angle view, over-the-shoulder scholar painting the white eye of a realistic dragon with a brush, symbolic mythic staging, 1980s film texture."),
+    ("idiom_cinema", "02_repair_the_fold", "Low-saturation Chinese cinematic tableau, black background and selective practical highlights, a weathered scholar repairing a broken fence while a sheep escapes, dramatic low-angle framing, shallow depth, symbolic story-first staging."),
+    ("anime_cel", "01_beijing_opera_warrior", "Clean cel-shaded anime character concept of a Beijing opera martial-role performer, full-body hero pose, restrained detail density, readable silhouette, premium flat shading, no text, no painterly texture."),
+    ("anime_cel", "02_old_inn_waiter", "Clean cel-shaded anime full-body concept of an ordinary ancient-Chinese inn waiter, simple costume structure, strong silhouette, restrained ornament, premium animation-ready flat shading, no text or poster layout."),
 ]
 
 
 def split_csv(value: str | None) -> set[str]:
     return {x.strip() for x in (value or "").replace(";", ",").split(",") if x.strip()}
+
+
+def ensure_writable_out_dir(requested: Path) -> Path:
+    requested = requested.expanduser()
+    candidates: list[Path] = [requested]
+    if not requested.is_absolute():
+        candidates.append((Path.cwd() / requested).resolve())
+        candidates.append((Path("scope_runs") / requested).resolve())
+    candidates.append((Path(tempfile.gettempdir()) / "scope_runs" / requested.name).resolve())
+
+    seen: set[str] = set()
+    for candidate in candidates:
+        normalized = candidate.resolve()
+        if str(normalized) in seen:
+            continue
+        seen.add(str(normalized))
+        try:
+            normalized.mkdir(parents=True, exist_ok=True)
+            return normalized
+        except OSError:
+            continue
+    raise RuntimeError(f"cannot create writable out directory: {requested}")
 
 
 def run_one(args: argparse.Namespace, category: str, code: str, prompt: str, out_root: Path) -> dict[str, Any]:
@@ -160,7 +191,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--env-file", required=True, type=Path, help="Image provider env file.")
     parser.add_argument("--llm-env-file", type=Path, help="Prompt optimizer env. Defaults to --env-file.")
     parser.add_argument("--vision-env-file", type=Path, help="Vision verifier env.")
-    parser.add_argument("--out-dir", type=Path, default=WORKSPACE_ROOT / "scope_runs" / datetime.now().strftime("scope_v2_regression_%Y%m%d_%H%M%S"))
+    parser.add_argument(
+        "--out-dir",
+        type=Path,
+        default=Path("scope_runs") / datetime.now().strftime("scope_v2_regression_%Y%m%d_%H%M%S"),
+    )
     parser.add_argument("--llm-model", default="gpt-5.5")
     parser.add_argument("--vision-model", default="grok-4.3")
     parser.add_argument("--image-model", default="gpt-image-2")
@@ -183,7 +218,7 @@ def main() -> int:
     args = parse_args()
     if not args.env_file.exists():
         raise SystemExit(f"missing --env-file: {args.env_file}")
-    args.out_dir.mkdir(parents=True, exist_ok=True)
+    args.out_dir = ensure_writable_out_dir(args.out_dir)
 
     cats = split_csv(args.only_categories)
     cases = split_csv(args.only_cases)

@@ -60,6 +60,10 @@ The gate validates:
    - `interior`
    - `magazine`
    - `cosplay`
+   - `documentary`
+   - `strategy_overhead`
+   - `idiom_cinema`
+   - `anime_cel`
 
 Test case definitions are in:
 

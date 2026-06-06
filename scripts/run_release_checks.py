@@ -42,7 +42,19 @@ from render_provider_payload import load_config, render  # noqa: E402
 
 
 TINY_PNG_B64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII="
-EXPECTED_ROUTES = {"portrait", "magazine", "poster", "cosplay", "interior", "product", "bathroom"}
+EXPECTED_ROUTES = {
+    "portrait",
+    "magazine",
+    "poster",
+    "cosplay",
+    "interior",
+    "product",
+    "bathroom",
+    "idiom_cinema",
+    "documentary",
+    "strategy_overhead",
+    "anime_cel",
+}
 
 
 def ok(message: str) -> None:
