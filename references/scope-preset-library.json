@@ -1,4 +1,4 @@
-﻿{
+{
   "schema_version": "scope-unified-preset-library-v1",
   "description": "Single preset entrypoint for the SCOPE Image Orchestrator: all route presets, distilled control templates, and route-level source notes are kept in one file.",
   "updated_at": "2026-06-06",
@@ -21,28 +21,31 @@
     }
   },
   "global_rules": {
-    "negative_anchor": "Negative: no watermark, no random paragraphs, no gibberish text, no logo corruption.",
+    "negative_anchor": "Negative: no random text paragraphs, no gibberish/placeholder lettering, no watermark.",
     "short_prompt_english_only": "Keep final production prompts in compact clean English.",
     "text_principles": [
       "Prefer concrete camera/light/material controls before abstract adjectives.",
-      "Use 2-4 concrete scene anchors and avoid long safety fillers.",
-      "Put hard constraints in negative_prompt.",
-      "Add route-specific detail when request is generic."
+      "Use 2-4 concrete scene anchors and include one controllable texture anchor.",
+      "Put hard constraints in negative_prompt and keep the positive prompt compact.",
+      "Add route-specific detail only when user intent is underspecified."
     ],
+    "optimization_budget": {
+      "target_max_chars": 900,
+      "frontload_constraints": true
+    },
     "model_comparison_note": "Prompt optimization stays deterministic, compact, and parseable for unstable endpoints.",
-    "external_library_usage": "Public prompt inspirations are distilled to short camera/material/composition controls; do not copy full third-party prompts verbatim."
+    "external_library_usage": "Public prompt inspirations are distilled to scene/camera/material composition controls; never copy full third-party prompts verbatim."
   },
   "routes": {
     "portrait": {
-      "route_hint": "editorial or lifestyle portrait route, explicit person identity anchors, realistic skin/hair/fabric micro-texture, candid body language.",
-      "fallback_prompt": "Photorealistic 2:3 vertical editorial portrait, adult subject: {subject}. Scene-first composition with {style_blocks}. {camera_phrase}. Natural facial asymmetry, realistic skin variation, visible pores, tiny flyaway hair, subtle shoulder and neck anatomy.",
+      "route_hint": "editorial or lifestyle portrait route with explicit person identity anchors, realistic skin/hair/fabric texture, candid body language, and practical imperfections.",
+      "fallback_prompt": "Photorealistic 2:3 vertical editorial portrait, adult subject: {subject}. {camera_phrase}, practical scene anchor: {style_blocks}, realistic skin variation and natural light falloff.",
       "camera_phrase": "85mm portrait lens, practical indoor/window light, natural falloff and skin-friendly exposure",
       "aspect_ratio": "2:3",
       "negative": "Negative: no cartoon look, no beauty-filter face, no plastic skin, no repeated random text, no watermark.",
       "booster_lines": [
-        "include one concrete scene anchor + one texture anchor",
-        "keep one clear identity anchor and one nearby environment detail",
-        "add natural asymmetry in hands/shoulders/face",
+        "one clear identity anchor and one nearby environment detail",
+        "add natural hand and shoulder asymmetry; keep pose imperfect but balanced",
         "skin microtexture with visible pores, subtle oil sheen, and believable imperfections"
       ],
       "style_blocks": [
@@ -80,8 +83,8 @@
       ]
     },
     "magazine": {
-      "route_hint": "high-fashion or luxury magazine cover route with layout-first composition and readable text hierarchy.",
-      "fallback_prompt": "Photorealistic 2:3 high-fashion magazine cover, adult model: {subject}. Layout-first masthead, 2-3 short cover lines, clean typography hierarchy, subtle issue badge, one issue number. {light_phrase}.",
+      "route_hint": "high-fashion or luxury magazine cover route with layout-first composition and clear typographic hierarchy.",
+      "fallback_prompt": "Photorealistic 2:3 high-fashion magazine cover, adult model: {subject}. Layout-first masthead, short readable cover lines, issue badge/number, practical high-end studio light.",
       "camera_phrase": "high-contrast 85mm editorial look with controlled paper-like contrast",
       "light_phrase": "cool ambient plus warm key with print-quality tonal separation",
       "aspect_ratio": "2:3",
@@ -127,8 +130,8 @@
       ]
     },
     "poster": {
-      "route_hint": "cinematic key-art poster route with hero focus, atmosphere, and readable title block.",
-      "fallback_prompt": "Cinematic 2:3 movie-poster key art, based on: {subject}. Hero focus in center-forward, one practical prop, readable title zone, short tagline, compact credits block. Build layered depth with controlled atmosphere and reflections.",
+      "route_hint": "cinematic key-art poster route with hero-first focus, atmosphere, and readable text hierarchy.",
+      "fallback_prompt": "Cinematic 2:3 movie-poster key art, based on: {subject}. Hero focus center-forward, one practical prop, readable title zone, short tagline, compact credits block, controlled depth and atmosphere.",
       "camera_phrase": "cinematic composition with clear foreground-midground-background separation",
       "light_phrase": "cold/warm split palette with practical contrast and subtle haze",
       "aspect_ratio": "2:3",
@@ -179,7 +182,8 @@
         "keep scale anchors every 2-3 meters (sofa, table, lamp)",
         "reflective surfaces use realistic intensity and roughness",
         "avoid warped furniture edges or impossible openings",
-        "material boundaries and edge contacts remain physically plausible"
+        "material boundaries and edge contacts remain physically plausible",
+        "show one clear circulation route and one lighting source"
       ],
       "style_blocks": [
         "camera should show circulation and room function",
@@ -261,7 +265,7 @@
       ]
     },
     "bathroom": {
-      "route_hint": "real smartphone mirror selfie route in hotel or compact apartment bathroom, life-style intimacy without explicit pose-heavy style.",
+      "route_hint": "smartphone mirror selfie route in hotel or compact apartment bathroom, real lifestyle intimacy without heavy pose directives.",
       "fallback_prompt": "Photorealistic 9:16 smartphone mirror selfie. Adult subject in hotel or compact apartment bathroom, private-lifestyle feel, one hand holding phone, one hand adjusting expression or clothes naturally. Slight 26mm asymmetry, mirror edge visible, realistic tile/glass/chrome surfaces.",
       "camera_phrase": "26mm equivalent smartphone perspective, slightly asymmetrical handheld framing, mild sensor grain",
       "aspect_ratio": "9:16",
@@ -275,11 +279,12 @@
       "style_blocks": [
         "modern hotel or compact apartment bathroom",
         "half-body or three-quarter mirror selfie, phone-crop asymmetry",
-        "warm vanity lights plus neutral fill; no harsh studio look"
+        "warm vanity lights plus neutral fill; no harsh studio look",
+        "white shirt optional, loose sleeves or loose collar for tactile fabric motion"
       ],
       "composition_patterns": [
         "lifestyle realism first, cover-style layout second",
-        "clean frame with one subject, no editorial title blocks"
+        "clean frame with one subject and mirror edge, no editorial title blocks"
       ],
       "external_patterns": [
         "real shower/vanity/ceramic context with subtle environmental cues",
@@ -363,7 +368,7 @@
   },
   "source_prompt_cache_summary": {
     "note": "Public prompt examples were distilled into route controls. Full third-party prompt bodies are intentionally omitted.",
-    "policy": "Do not include verbatim public prompt libraries or private caches in this repository."
+    "policy": "Do not include verbatim third-party prompt bodies or private caches in this repository."
   },
   "route_weighted_keywords": {
     "sensitive_style": [
@@ -409,5 +414,6 @@
       "separate subject, environment, lens, light, material, and post-processing",
       "prefer practical micro-details over abstract adjectives"
     ]
-  }
+  },
+  "inference_pipeline_note": "The runtime prompt optimizer receives only compact distilled controls from this library; no full upstream prompts are passed through."
 }
