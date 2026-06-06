@@ -123,6 +123,8 @@ scope_runs/<task>/
 
 ## 社区
 
+友情支持：Linux Do 社区
+
 QQ 群：`1107570994`
 
 <img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">

@@ -122,6 +122,8 @@ scope_runs/<task>/
 
 ## Community
 
+Friendly support: Linux Do Community
+
 QQ group: `1107570994`
 
 <img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">
