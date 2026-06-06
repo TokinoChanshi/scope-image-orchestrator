@@ -101,17 +101,17 @@ Use one clean output dir per route. Representative command:
 python scripts/generate_single_v2.py --env-file .codex_tmp/scope_publish_chatgpt2_live.env --llm-model gpt-5.5 --vision-model grok-4.3 --image-model gpt-image-2 --user-prompt "<route prompt>" --out-dir scope_runs/<route>_test --max-generation-attempts 2
 ```
 
-Observed in a recent run:
+For a reproducible non-sensitive check in this workspace, you can run a dry-run matrix:
 
-- `portrait`: `pass`
-- `magazine`: `needs_repair`
-- `poster`: `failed`
-- `cosplay`: `needs_repair`
-- `interior`: `failed`
-- `product`: `needs_repair`
-- `bathroom`: `failed`
+```bash
+python scripts/run_v2_route_regression.py --env-file <env> --llm-env-file <env> --out-dir scope_release_checks/<tag> --only-cases 01_europe_casual,01_luxe_cover,01_neon_protocol,01_pyro_hero,01_oriental_living,01_perfume,01_hotel_bathroom_mirror --dry-run
+```
 
-These outcomes are used as regression seeds for prompt tuning and are re-ran after preset updates.
+This dry-run result is used as an additional regression seed for route mapping and
+preset/negative-constraint coverage (no API calls).
+
+Live endpoints are tested separately with explicit operator approval and are intentionally
+not included in the release gate due key safety and service availability variance.
 
 ## Pre-publish checklist
 
