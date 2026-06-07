@@ -247,13 +247,13 @@ python scripts/run_v2_route_regression.py --env-file <image.env> --max-cases 3 -
 Before publishing or changing API adapters, run the offline release gate:
 
 ```bash
-python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir tmp/scope_release_checks
 ```
 
 Use the faster adapter/schema-only variant during iterative edits:
 
 ```bash
-python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks --skip-dry-run
+python scripts/run_release_checks.py --out-dir tmp/scope_release_checks --skip-dry-run
 ```
 
 Release cases and checklist live in `references/release-test-cases.json` and `references/release-testing.md`.

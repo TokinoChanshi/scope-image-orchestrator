@@ -7,19 +7,19 @@ The release gate is offline by default and does not call real APIs.
 ## Run the release gate
 
 ```bash
-python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks
 ```
 
 Fast mode (skip dry-run prompts):
 
 ```bash
-python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks --skip-dry-run
+python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks --skip-dry-run
 ```
 
 If the environment blocks compile output, use:
 
 ```bash
-python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks --skip-compile
+python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks --skip-compile
 ```
 
 Expected success line:
@@ -97,15 +97,15 @@ python scripts/scope_commands.py reference-run \
   --out-dir scope_runs/live_reference_smoke
 ```
 
-### Local live smoke log (example)
+### Optional live smoke example
 
 Use one clean output dir per route. Representative command:
 
 ```bash
-python scripts/generate_single_v2.py --env-file .codex_tmp/scope_publish_chatgpt2_live.env --llm-model gpt-5.5 --vision-model grok-4.3 --image-model gpt-image-2 --user-prompt "<route prompt>" --out-dir scope_runs/<route>_test --max-generation-attempts 2
+python scripts/generate_single_v2.py --env-file <image.env> --llm-model gpt-5.5 --vision-model grok-4.3 --image-model gpt-image-2 --user-prompt "<route prompt>" --out-dir scope_runs/<route>_test --max-generation-attempts 2
 ```
 
-For a reproducible non-sensitive check in this workspace, you can run a dry-run matrix:
+For a reproducible dry-run matrix, you can run:
 
 ```bash
 python scripts/run_v2_route_regression.py --env-file <env> --llm-env-file <env> --out-dir scope_release_checks/<tag> --only-cases 01_europe_casual,01_luxe_cover,01_neon_protocol,01_pyro_hero,01_oriental_living,01_perfume,01_hotel_bathroom_mirror --dry-run
@@ -114,12 +114,12 @@ python scripts/run_v2_route_regression.py --env-file <env> --llm-env-file <env> 
 This dry-run result is used as an additional regression seed for route mapping and
 preset/negative-constraint coverage (no API calls).
 
-Live endpoints are tested separately with explicit operator approval and are intentionally
-not included in the release gate due key safety and service availability variance.
+Live endpoints are tested separately and are intentionally not included in the
+offline release gate because credentials and service availability vary by user environment.
 
 ## Pre-publish checklist
 
-- [ ] `python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks` passes.
+- [ ] `python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks` passes.
 - [ ] `README.md` and `README.zh-CN.md` samples are still valid.
 - [ ] `SKILL.md` remains a short usage guide and points to reference docs.
 - [ ] `references/provider-config.example.json` contains no real endpoints or keys.

@@ -94,18 +94,14 @@ references/scope-preset-library.json
 发布前请执行离线发布检查（不调用真实图像 API）：
 
 ```bash
-python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks
 ```
 
 如需快速检查：
 
 ```bash
-python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks --skip-dry-run
+python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks --skip-dry-run
 ```
-
-发布可复现性证据：
-
-- [release-readiness-2026-06-06.md](docs/release-readiness-2026-06-06.md)
 
 ## 输出产物
 

@@ -6,8 +6,8 @@ configuration, adapter payload rendering, response extraction, preset routes,
 and representative dry-run prompts.
 
 Usage:
-    python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks
-    python scripts/run_release_checks.py --out-dir .codex_tmp/scope_release_checks --skip-dry-run
+    python scripts/run_release_checks.py --out-dir tmp/scope_release_checks
+    python scripts/run_release_checks.py --out-dir tmp/scope_release_checks --skip-dry-run
 """
 from __future__ import annotations
 

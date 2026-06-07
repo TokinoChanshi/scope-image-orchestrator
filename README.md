@@ -97,14 +97,10 @@ idiom_cinema, documentary, strategy_overhead, anime_cel
 Run the offline release check before publishing changes:
 
 ```bash
-python scripts/run_release_checks.py --out-dir ./.codex_tmp/scope_release_checks
+python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks
 ```
 
 This check is local only and does not call real APIs.
-
-Release evidence bundle:
-
-- [release-readiness-2026-06-06.md](docs/release-readiness-2026-06-06.md)
 
 ## Output artifacts
 
