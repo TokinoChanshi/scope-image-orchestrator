@@ -22,12 +22,16 @@ Command mode is natural-language first: infer the prompt, count, route, referenc
 | `帮助` / `命令` | Show available command-mode aliases. | `python scripts/scope_commands.py commands` |
 | `查看预设` | List all route presets from the unified library. | `python scripts/scope_commands.py list-presets --detail` |
 | `查看预设 bathroom` | List one route preset. | `python scripts/scope_commands.py list-presets --route bathroom --detail` |
+| `查看主题包` | List all image theme packs from the unified library. | `python scripts/scope_commands.py list-theme-packs --detail` |
+| `查看主题包 mecha_tokusatsu` | List one image theme pack. | `python scripts/scope_commands.py list-theme-packs --theme-pack mecha_tokusatsu --detail` |
 | `跑图 <prompt>` / `单张跑 <prompt>` | Generate one image with the v2 router. | `python scripts/generate_single_v2.py --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
 | `批量跑 N 张 <prompt>` | Run the same prompt N times; count comes from the user. | `python scripts/scope_commands.py batch-run --count N --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
 | `参考生图 <image> <prompt>` | Generate using a reference image for style/composition/identity/product guidance. | `python scripts/scope_commands.py reference-run --reference-image <image> --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
 | `严格链路 <prompt>` | Use the paper-style decomposition/synthesis/coverage chain. | Use the strict SCOPE runner for decomposition, synthesis, coverage verification, generation, and repair. |
 | `回归测试` / `预设回归` | Run route regression after preset or model changes. | `python scripts/run_v2_route_regression.py --env-file <env> --out-dir <out>` |
 | `审核 <image_root>` | Run visual audit over generated images. | `python scripts/audit_generated_images_with_vision.py --env-file <vision.env> --image-root <image_root> --out-file <out.json>` |
+| `三模型对比 <image_root> [--vision-models]` | Run one root against Gemini/Claude/GPT model list (comma-separated). | `python scripts/audit_generated_images_with_vision.py --env-file <vision.env> --image-root <image_root> --vision-models "gemini-3.5-flash,claude-3.5-sonnet,gpt-5.5" --out-file <out.json>` |
+
 | `干跑 <command>` | Produce route/prompt/plan without image API spending. | Add `--dry-run`; for batch wrappers also add `--print-only` if only commands are needed. |
 | `重跑失败` | Resume or rerun failed batch items. | Prefer `--resume` for regression or rerun failed item directories only. |
 | `退出生图优化` | Leave command mode. | Stop interpreting short messages as image commands. |

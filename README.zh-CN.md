@@ -74,6 +74,33 @@ python scripts/scope_commands.py commands
 - `references/api-providers.md`
 - `references/provider-config.example.json`
 
+### 快速切换模型对比（适用于本地回归）
+
+可以在同一类对比里切换不同视觉/LLM 模型名（例如 Gemini、Claude、GPT/Grok）：
+
+```bash
+# Gemini 3.5
+python scripts/scope_commands.py audit-run \
+  --env-file <vision.env> \
+  --image-root scope_runs/<batch> \
+  --vision-models "gemini-3.5-flash" \
+  --limit 6 --out-file vision-gemini.json
+
+# Claude 系列（OpenAI 兼容形状）
+python scripts/audit_generated_images_with_vision.py \
+  --env-file <vision.env> \
+  --image-root scope_runs/<batch> \
+  --vision-models "claude-3.5-sonnet" \
+  --limit 6 --out-file vision-claude.json
+
+# GPT/Grok 系列
+python scripts/audit_generated_images_with_vision.py \
+  --env-file <vision.env> \
+  --image-root scope_runs/<batch> \
+  --vision-models "gpt-5.5,gpt-4.20-auto,deepseek-ai/DeepSeek-V3.1,grok-4.3" \
+  --limit 6 --out-file vision-gpt.json
+```
+
 ## 预设库
 
 统一预设入口：

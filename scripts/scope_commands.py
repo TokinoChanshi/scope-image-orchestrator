@@ -68,6 +68,21 @@ def compact_route(route: str, cfg: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def compact_theme_pack(theme_pack: str, cfg: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "theme_pack": theme_pack,
+        "bind_routes": cfg.get("bind_routes", []),
+        "pack_hint": cfg.get("pack_hint"),
+        "activation_keywords": cfg.get("activation_keywords", []),
+        "negative": cfg.get("negative"),
+        "style_blocks": cfg.get("style_blocks", []),
+        "booster_lines": cfg.get("booster_lines", []),
+        "external_patterns": cfg.get("external_patterns", []),
+        "composition_patterns": cfg.get("composition_patterns", []),
+        "quality_controls": cfg.get("quality_controls", []),
+    }
+
+
 def list_presets(args: argparse.Namespace) -> int:
     lib = load_library(args.preset_file)
     routes = lib.get("routes", {})
@@ -100,6 +115,49 @@ def list_presets(args: argparse.Namespace) -> int:
             for key in ("fallback_prompt", "negative"):
                 if record.get(key):
                     print(f"- {key}: {record[key]}")
+            for key in ("style_blocks", "booster_lines", "external_patterns", "composition_patterns", "quality_controls"):
+                values = record.get(key) or []
+                if values:
+                    print(f"- {key}:")
+                    for item in values[:12]:
+                        print(f"  - {item}")
+        print()
+    return 0
+
+
+def list_theme_packs(args: argparse.Namespace) -> int:
+    lib = load_library(args.preset_file)
+    packs = lib.get("image_theme_packs", {})
+    selected = [args.theme_pack] if args.theme_pack else list(packs.keys())
+    records = []
+    for theme_pack in selected:
+        cfg = packs.get(theme_pack)
+        if not isinstance(cfg, dict):
+            continue
+        record = compact_theme_pack(theme_pack, cfg)
+        if not args.detail:
+            record = {
+                "theme_pack": record["theme_pack"],
+                "bind_routes": record["bind_routes"],
+                "pack_hint": record["pack_hint"],
+                "activation_keywords": record["activation_keywords"],
+            }
+        records.append(record)
+    if args.format == "json":
+        print(json.dumps(records, ensure_ascii=False, indent=2))
+        return 0
+    for record in records:
+        print(f"## {record['theme_pack']}")
+        bind_routes = record.get("bind_routes") or []
+        if bind_routes:
+            print("- bind_routes: " + ", ".join(str(x) for x in bind_routes[:16]))
+        print(f"- pack_hint: {record.get('pack_hint')}")
+        keywords = record.get("activation_keywords") or []
+        if keywords:
+            print("- activation_keywords: " + ", ".join(str(x) for x in keywords[:24]))
+        if args.detail:
+            if record.get("negative"):
+                print(f"- negative: {record['negative']}")
             for key in ("style_blocks", "booster_lines", "external_patterns", "composition_patterns", "quality_controls"):
                 values = record.get(key) or []
                 if values:
@@ -180,12 +238,6 @@ def strict_chain_run(args: argparse.Namespace) -> int:
         args.user_prompt,
         "--out-dir",
         str(args.out_dir),
-        "--llm-model",
-        args.llm_model,
-        "--vision-model",
-        args.vision_model,
-        "--image-model",
-        args.image_model,
         "--retries",
         str(args.retries),
         "--max-prompt-repair-rounds",
@@ -195,6 +247,9 @@ def strict_chain_run(args: argparse.Namespace) -> int:
         "--timeout",
         str(args.timeout),
     ]
+    append_if(cmd, "--llm-model", args.llm_model)
+    append_if(cmd, "--vision-model", args.vision_model)
+    append_if(cmd, "--image-model", args.image_model)
     if args.llm_env_file:
         cmd.extend(["--llm-env-file", str(args.llm_env_file)])
     if args.vision_provider == "vision":
@@ -215,12 +270,6 @@ def regression_run(args: argparse.Namespace) -> int:
         str(args.env_file),
         "--out-dir",
         str(args.out_dir),
-        "--image-model",
-        args.image_model,
-        "--llm-model",
-        args.llm_model,
-        "--vision-model",
-        args.vision_model,
         "--max-generation-attempts",
         str(args.max_generation_attempts),
         "--image-retries",
@@ -236,6 +285,9 @@ def regression_run(args: argparse.Namespace) -> int:
         cmd.extend(["--llm-env-file", str(args.llm_env_file)])
     if args.vision_env_file:
         cmd.extend(["--vision-env-file", str(args.vision_env_file)])
+    append_if(cmd, "--image-model", args.image_model)
+    append_if(cmd, "--llm-model", args.llm_model)
+    append_if(cmd, "--vision-model", args.vision_model)
     append_if(cmd, "--only-categories", args.only_categories)
     append_if(cmd, "--only-cases", args.only_cases)
     append_if(cmd, "--max-cases", args.max_cases)
@@ -257,8 +309,6 @@ def audit_run(args: argparse.Namespace) -> int:
         str(args.env_file),
         "--image-root",
         str(args.image_root),
-        "--model",
-        args.model,
         "--pattern",
         args.pattern,
         "--limit",
@@ -269,6 +319,10 @@ def audit_run(args: argparse.Namespace) -> int:
         str(args.delay),
     ]
     append_if(cmd, "--out-file", args.out_file)
+    if args.vision_models:
+        cmd.extend(["--vision-models", args.vision_models])
+    else:
+        cmd.extend(["--model", args.model])
     return run_child_with_optional(cmd, args)
 
 
@@ -279,6 +333,7 @@ def print_commands(_: argparse.Namespace) -> int:
 Chinese command aliases used by the skill:
 - 生图优化: enter command mode in the current thread
 - 查看预设 [route]: list route presets from references/scope-preset-library.json
+- 查看主题包 [name]: list image theme packs from references/scope-preset-library.json
 - 批量跑 N 张 <prompt>: run generate_single_v2.py N times
 - 参考生图 <image> <prompt>: run with --reference-image
 - 严格链路 <prompt>: use run_scope_pipeline.py
@@ -297,9 +352,9 @@ def add_common_run_args(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--out-dir", required=True, type=Path)
     parser.add_argument("--llm-env-file", type=Path)
     parser.add_argument("--vision-env-file", type=Path)
-    parser.add_argument("--llm-model", default="gpt-5.5")
-    parser.add_argument("--vision-model", default="grok-4.3")
-    parser.add_argument("--image-model", default="gpt-image-2")
+    parser.add_argument("--llm-model", help="Optional override. Defaults to SCOPE_LLM_MODEL from env file.")
+    parser.add_argument("--vision-model", help="Optional override. Defaults to SCOPE_VISION_MODEL from env file.")
+    parser.add_argument("--image-model", help="Optional override. Defaults to SCOPE_IMAGE_MODEL from env file.")
     parser.add_argument("--route", default="auto")
     parser.add_argument("--max-generation-attempts", type=int, default=3)
     parser.add_argument("--response-formats", default="b64_json,url")
@@ -322,6 +377,13 @@ def parse_args() -> argparse.Namespace:
     p_list.add_argument("--format", choices=["markdown", "json"], default="markdown")
     p_list.add_argument("--detail", action="store_true", help="Include fallback prompts, negatives, and distilled prompt patterns.")
     p_list.set_defaults(func=list_presets)
+
+    p_themes = sub.add_parser("list-theme-packs", help="List image theme packs from the unified preset library.")
+    p_themes.add_argument("--preset-file", type=Path, default=DEFAULT_PRESET_FILE)
+    p_themes.add_argument("--theme-pack", help="Optional single theme pack, e.g. mecha_tokusatsu.")
+    p_themes.add_argument("--format", choices=["markdown", "json"], default="markdown")
+    p_themes.add_argument("--detail", action="store_true", help="Include negatives and distilled theme-pack details.")
+    p_themes.set_defaults(func=list_theme_packs)
 
     p_batch = sub.add_parser("batch-run", help="Run the same prompt multiple times through generate_single_v2.py.")
     add_common_run_args(p_batch)
@@ -349,9 +411,9 @@ def parse_args() -> argparse.Namespace:
     p_reg.add_argument("--llm-env-file", type=Path)
     p_reg.add_argument("--vision-env-file", type=Path)
     p_reg.add_argument("--out-dir", required=True, type=Path)
-    p_reg.add_argument("--llm-model", default="gpt-5.5")
-    p_reg.add_argument("--vision-model", default="grok-4.3")
-    p_reg.add_argument("--image-model", default="gpt-image-2")
+    p_reg.add_argument("--llm-model", help="Optional override. Defaults to SCOPE_LLM_MODEL from env file.")
+    p_reg.add_argument("--vision-model", help="Optional override. Defaults to SCOPE_VISION_MODEL from env file.")
+    p_reg.add_argument("--image-model", help="Optional override. Defaults to SCOPE_IMAGE_MODEL from env file.")
     p_reg.add_argument("--max-generation-attempts", type=int, default=4)
     p_reg.add_argument("--image-retries", type=int, default=3)
     p_reg.add_argument("--timeout", type=int, default=340)
@@ -371,7 +433,8 @@ def parse_args() -> argparse.Namespace:
     p_audit.add_argument("--env-file", required=True, type=Path)
     p_audit.add_argument("--image-root", required=True, type=Path)
     p_audit.add_argument("--out-file", type=Path)
-    p_audit.add_argument("--model", default="grok-4.3")
+    p_audit.add_argument("--model", default="grok-4.3", help="Legacy single-model shortcut.")
+    p_audit.add_argument("--vision-models", default="", help="Comma/semicolon-separated vision model list.")
     p_audit.add_argument("--pattern", default="*.png")
     p_audit.add_argument("--limit", type=int, default=0)
     p_audit.add_argument("--timeout", type=int, default=180)

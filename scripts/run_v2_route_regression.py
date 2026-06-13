@@ -73,17 +73,38 @@ CASES: list[tuple[str, str, str]] = [
     ("bathroom", "06_soft_bathroom", "Photorealistic 9:16 private bathroom mirror selfie, natural cross-leg lean and hand placement, warm neutral interior light, chrome faucet and stone tile edges, imperfect smartphone framing."),
     ("documentary", "01_archaeology_robot", "Photorealistic BBC documentary-style archaeology scene, an archaeologist carefully brushing soil away from a small weathered robot half-buried in earth, natural daylight, cool neutral grading, off-center composition, believable dirt texture, ordinary camera realism, no poster layout."),
     ("documentary", "02_rooftop_survivors", "Photorealistic documentary scene at dusk, two exhausted people sitting near the edge of a ruined rooftop garden while a decayed city stretches below, candid reportage framing, natural ambient light, off-center composition, real materials, no poster styling."),
+    ("documentary", "03_industrial_monster", "Photorealistic fog-heavy offshore industrial platform scene, gigantic blast door, catwalk scale anchors, deep-water darkness, one full-body creature emerging through mist, hard-sci-fi realism, low visibility but readable silhouette."),
     ("strategy_overhead", "01_tanks_village", "Premium UE5-style real-time strategy overhead scene, god-view camera, two tanks attacking a village, readable terrain lanes, smoke and impact effects, no UI, no HUD, miniature battlefield logic remains clear."),
     ("strategy_overhead", "02_fleet_vs_kraken", "High-end top-down strategy scene, modern warships and older sail ships jointly fighting a giant sea creature, readable unit silhouettes, ocean lanes and scale clarity, cinematic but no user interface."),
     ("idiom_cinema", "01_dot_dragon_eye", "Low-saturation Chinese cinematic tableau, black background, shallow depth of field, dramatic low-angle view, over-the-shoulder scholar painting the white eye of a realistic dragon with a brush, symbolic mythic staging, 1980s film texture."),
     ("idiom_cinema", "02_repair_the_fold", "Low-saturation Chinese cinematic tableau, black background and selective practical highlights, a weathered scholar repairing a broken fence while a sheep escapes, dramatic low-angle framing, shallow depth, symbolic story-first staging."),
     ("anime_cel", "01_beijing_opera_warrior", "Clean cel-shaded anime character concept of a Beijing opera martial-role performer, full-body hero pose, restrained detail density, readable silhouette, premium flat shading, no text, no painterly texture."),
     ("anime_cel", "02_old_inn_waiter", "Clean cel-shaded anime full-body concept of an ordinary ancient-Chinese inn waiter, simple costume structure, strong silhouette, restrained ornament, premium animation-ready flat shading, no text or poster layout."),
+    ("cosplay", "07_mecha_tokusatsu", "Photorealistic live-action mecha transformation hero, industrial exosuit armor, visor mask, storm-night fog, real metal wear, tactical under-suit, believable joints and heavy silhouette."),
+    ("cosplay", "08_turnaround_sheet", "Photorealistic front side back turnaround sheet of an armored character, neutral backdrop, even studio lighting, consistent body proportions and armor attachment points across all three views."),
+    ("product", "07_tactical_gear", "Commercial tactical gear packshot: premium armored vest with straps and buckles, industrial side lighting, engineered polymer and metal surfaces, restrained teal LEDs, clean neutral background."),
+    ("portrait", "07_commercial_identity", "Ultra-real commercial identity portrait, clean background, soft side light, visible pores, subtle blemishes, natural flyaway hair, calm near-camera framing, non-glamour realism."),
+    ("portrait", "08_cyber_jianghu", "Retro-futurist wuxia portrait, mechanical prosthetic detail, classic Chinese costume silhouette, 35mm Hong Kong film mood, cold moonlight and warm lantern contrast, misty courtyard background."),
+    ("poster", "07_cyber_jianghu_keyart", "Cinematic cyber-jianghu key art poster, mechanical wuxia hero in misty courtyard night, prosthetic arm glint, strong title zone, 35mm grain, cold-warm contrast, readable heroic silhouette."),
 ]
 
 
 def split_csv(value: str | None) -> set[str]:
     return {x.strip() for x in (value or "").replace(";", ",").split(",") if x.strip()}
+
+
+def resolve_env_path(path: Path | None) -> Path | None:
+    if path is None:
+        return None
+    candidate = path.expanduser()
+    if candidate.is_absolute():
+        return candidate
+    if candidate.exists():
+        return candidate.resolve()
+    fallback = (SCRIPT_DIR.parent / candidate).resolve()
+    if fallback.exists():
+        return fallback
+    return candidate
 
 
 def ensure_writable_out_dir(requested: Path) -> Path:
@@ -115,7 +136,7 @@ def run_one(args: argparse.Namespace, category: str, code: str, prompt: str, out
     if args.resume and final_summary.exists():
         try:
             cached = json.loads(final_summary.read_text(encoding="utf-8"))
-            if cached.get("final_overall") == "pass":
+            if cached.get("final_overall") in {"pass", "vision_not_run"}:
                 return {"case": code, "category": category, "out_dir": str(out_dir), "returncode": 0, "elapsed_sec": 0, "cached": True, "final_summary": cached}
         except Exception:
             pass
@@ -133,10 +154,6 @@ def run_one(args: argparse.Namespace, category: str, code: str, prompt: str, out
         str(out_dir),
         "--route",
         category,
-        "--llm-model",
-        args.llm_model,
-        "--image-model",
-        args.image_model,
         "--max-generation-attempts",
         str(args.max_generation_attempts),
         "--image-retries",
@@ -148,8 +165,16 @@ def run_one(args: argparse.Namespace, category: str, code: str, prompt: str, out
         "--response-formats",
         args.response_formats,
     ]
+    if args.llm_model:
+        cmd.extend(["--llm-model", args.llm_model])
+    if args.image_model:
+        cmd.extend(["--image-model", args.image_model])
     if args.vision_env_file and not args.skip_vision:
-        cmd.extend(["--vision-env-file", str(args.vision_env_file), "--vision-model", args.vision_model])
+        cmd.extend(["--vision-env-file", str(args.vision_env_file)])
+        if args.vision_model:
+            cmd.extend(["--vision-model", args.vision_model])
+    if args.skip_vision:
+        cmd.append("--skip-vision")
 
     started = time.time()
     proc = subprocess.run(cmd, cwd=str(WORKSPACE_ROOT), text=True, capture_output=True, encoding="utf-8", errors="replace")
@@ -196,9 +221,9 @@ def parse_args() -> argparse.Namespace:
         type=Path,
         default=Path("scope_runs") / datetime.now().strftime("scope_v2_regression_%Y%m%d_%H%M%S"),
     )
-    parser.add_argument("--llm-model", default="gpt-5.5")
-    parser.add_argument("--vision-model", default="grok-4.3")
-    parser.add_argument("--image-model", default="gpt-image-2")
+    parser.add_argument("--llm-model", help="Optional override. Defaults to SCOPE_LLM_MODEL from env file.")
+    parser.add_argument("--vision-model", help="Optional override. Defaults to SCOPE_VISION_MODEL from env file.")
+    parser.add_argument("--image-model", help="Optional override. Defaults to SCOPE_IMAGE_MODEL from env file.")
     parser.add_argument("--max-generation-attempts", type=int, default=4)
     parser.add_argument("--image-retries", type=int, default=3)
     parser.add_argument("--timeout", type=int, default=340)
@@ -216,8 +241,18 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> int:
     args = parse_args()
+    args.env_file = resolve_env_path(args.env_file)
+    args.llm_env_file = resolve_env_path(args.llm_env_file)
+    args.vision_env_file = resolve_env_path(args.vision_env_file)
+
     if not args.env_file.exists():
         raise SystemExit(f"missing --env-file: {args.env_file}")
+
+    if args.llm_env_file and not args.llm_env_file.exists():
+        raise SystemExit(f"missing --llm-env-file: {args.llm_env_file}")
+    if args.vision_env_file and not args.vision_env_file.exists():
+        raise SystemExit(f"missing --vision-env-file: {args.vision_env_file}")
+
     args.out_dir = ensure_writable_out_dir(args.out_dir)
 
     cats = split_csv(args.only_categories)

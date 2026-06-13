@@ -19,6 +19,9 @@ from typing import Any
 
 import requests
 
+from api_adapters import build_vision_request, extract_text, normalize_adapter
+
+
 AUDIT_SYSTEM = """
 You are a strict visual QA verifier for SCOPE image generation.
 Return JSON only:
@@ -59,6 +62,58 @@ TRANSIENT_ERROR_PATTERNS = (
 )
 
 
+def split_models(raw: str | None) -> list[str]:
+    """Split comma/semicolon-separated model names and deduplicate."""
+    if not raw:
+        return []
+    models: list[str] = []
+    seen: set[str] = set()
+    for value in raw.replace(";", ",").split(","):
+        model = value.strip()
+        if not model or model in seen:
+            continue
+        seen.add(model)
+        models.append(model)
+    return models
+
+
+def normalize_vision_model(raw_model: str, base_url: str) -> str:
+    """Normalize user-facing model aliases to concrete model IDs by gateway."""
+    model = (raw_model or "").strip()
+    if not model:
+        return model
+    lowered = model.lower()
+    if "anuma" in base_url:
+        alias_map = {
+            "claude-4.6": "anthropic/claude-sonnet-4-6",
+            "claude-4-6": "anthropic/claude-sonnet-4-6",
+            "claude-sonnet-4-6": "anthropic/claude-sonnet-4-6",
+            "claude-opus-4-6": "anthropic/claude-opus-4-6",
+            "gpt-5.5": "openai/gpt-5",
+            "gpt-5": "openai/gpt-5",
+        }
+        return alias_map.get(lowered, raw_model)
+    if "grok" in base_url:
+        alias_map = {
+            "grok-4.3": "grok-4.20-0309",
+            "grok-4.20": "grok-4.20-0309",
+            "grok-4.20-auto": "grok-4.20-auto",
+            "grok-4.20-0309": "grok-4.20-0309",
+        }
+        return alias_map.get(lowered, raw_model)
+    alias_map = {
+        "claude-4.6": "anthropic/claude-sonnet-4-6",
+        "claude-4-6": "anthropic/claude-sonnet-4-6",
+        "claude-sonnet-4-6": "anthropic/claude-sonnet-4-6",
+        "claude-opus-4-6": "anthropic/claude-opus-4-6",
+        "grok-4.3": "grok-4.20-0309",
+        "grok-4.20": "grok-4.20-0309",
+        "gpt-5.5": "openai/gpt-5",
+        "gpt-5": "openai/gpt-5",
+    }
+    return alias_map.get(lowered, raw_model)
+
+
 def load_env_file(path: pathlib.Path) -> dict[str, str]:
     env: dict[str, str] = {}
     for raw in path.read_text(encoding="utf-8-sig", errors="ignore").splitlines():
@@ -97,10 +152,19 @@ def extract_json(text: str) -> Any:
     try:
         return json.loads(text)
     except json.JSONDecodeError:
-        start = text.find("{")
-        end = text.rfind("}")
-        if start >= 0 and end > start:
-            return json.loads(text[start : end + 1])
+        decoder = json.JSONDecoder()
+        idx = 0
+        while idx < len(text):
+            ch = text[idx]
+            if ch != "{":
+                idx += 1
+                continue
+            try:
+                obj, end = decoder.raw_decode(text, idx)
+                return obj
+            except json.JSONDecodeError:
+                idx += 1
+                continue
         raise
 
 
@@ -140,42 +204,85 @@ def post_json_reliable(url: str, headers: dict[str, str], payload: dict[str, Any
 
 
 def audit_one(env: dict[str, str], model: str, image_path: pathlib.Path, category: str, timeout: int) -> dict[str, Any]:
-    base = (env.get("SCOPE_VISION_BASE_URL") or env.get("SCOPE_REASONER_BASE_URL") or env.get("SCOPE_LLM_BASE_URL") or "").rstrip("/")
-    key = env.get("SCOPE_VISION_API_KEY") or env.get("SCOPE_REASONER_API_KEY") or env.get("SCOPE_LLM_API_KEY")
+    base = (
+        env.get("SCOPE_VISION_BASE_URL")
+        or env.get("SCOPE_REASONER_BASE_URL")
+        or env.get("SCOPE_LLM_BASE_URL")
+        or ""
+    ).rstrip("/")
+    key = (
+        env.get("SCOPE_VISION_API_KEY")
+        or env.get("SCOPE_REASONER_API_KEY")
+        or env.get("SCOPE_LLM_API_KEY")
+    )
     if not base:
         raise SystemExit("Missing SCOPE_VISION_BASE_URL / SCOPE_REASONER_BASE_URL / SCOPE_LLM_BASE_URL")
     if not key:
         raise SystemExit("Missing SCOPE_VISION_API_KEY / SCOPE_REASONER_API_KEY / SCOPE_LLM_API_KEY")
-    url = base + "/chat/completions"
-    user_text = f"Image file: {image_path.name}\nExpected category: {category}\n{CATEGORY_HINTS.get(category, '')}"
-    payload = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": AUDIT_SYSTEM},
-            {"role": "user", "content": [
-                {"type": "text", "text": user_text},
-                {"type": "image_url", "image_url": {"url": image_to_data_url(image_path)}},
-            ]},
-        ],
-        "temperature": 0,
-        "response_format": {"type": "json_object"},
-    }
-    headers = {
-        "Authorization": "Bearer " + key,
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Connection": "close",
-        "User-Agent": "Mozilla/5.0 SCOPE-Image-Orchestrator/1.0",
-    }
-    ok, body, error = post_json_reliable(url, headers, payload, timeout, attempts=5, label=f"audit {image_path.name}")
+
+    adapter = normalize_adapter(env.get("SCOPE_VISION_FORMAT") or env.get("SCOPE_LLM_FORMAT"), "openai-chat")
+    user_text = (
+        f"Image file: {image_path.name}\n"
+        f"Expected category: {category}\n"
+        f"{CATEGORY_HINTS.get(category, '')}"
+    )
+    url, headers, payload, used_adapter = build_vision_request(
+        adapter,
+        base,
+        key,
+        normalize_vision_model(model, base),
+        AUDIT_SYSTEM,
+        user_text,
+        [image_path],
+        env,
+        temperature=0,
+        json_object=True,
+    )
+    # Some gateways default to streaming even without explicit `stream:false`.
+    # We only need a single JSON object for downstream parsing.
+    if used_adapter == "openai-chat":
+        payload["stream"] = False
+    headers["User-Agent"] = "Mozilla/5.0 SCOPE-Image-Orchestrator/1.0"
+    attempts = max(1, int(env.get("SCOPE_VISION_ATTEMPTS", "5")))
+    ok, body, error = post_json_reliable(
+        url,
+        headers,
+        payload,
+        timeout,
+        attempts=attempts,
+        label=f"audit {adapter} {model} {image_path.name}",
+    )
     if not ok:
-        return {"image": str(image_path), "category": category, "ok": False, "error": error or "audit failed", "body": body}
-    content = body.get("choices", [{}])[0].get("message", {}).get("content", "{}")
+        return {
+            "image": str(image_path),
+            "category": category,
+            "model": model,
+            "adapter": used_adapter,
+            "ok": False,
+            "error": error or "audit failed",
+            "body": body,
+        }
+    content = extract_text(used_adapter, body) or "{}"
     try:
         parsed = extract_json(content)
     except Exception as exc:  # noqa: BLE001
-        return {"image": str(image_path), "category": category, "ok": False, "error": f"JSONDecodeError: {repr(exc)}", "body": body}
-    return {"image": str(image_path), "category": category, "ok": True, "audit": parsed}
+          return {
+            "image": str(image_path),
+            "category": category,
+            "model": model,
+            "adapter": used_adapter,
+            "ok": False,
+            "error": f"JSONDecodeError: {repr(exc)}",
+            "body": body,
+        }
+    return {
+        "image": str(image_path),
+        "category": category,
+        "model": model,
+        "adapter": used_adapter,
+        "ok": True,
+        "audit": parsed,
+    }
 
 
 def collect_images(root: pathlib.Path, pattern: str) -> list[pathlib.Path]:
@@ -193,7 +300,8 @@ def main() -> int:
     parser.add_argument("--env-file", required=True, type=pathlib.Path)
     parser.add_argument("--image-root", required=True, type=pathlib.Path)
     parser.add_argument("--out-file", type=pathlib.Path)
-    parser.add_argument("--model", default="grok-4.3")
+    parser.add_argument("--model", default="grok-4.3", help="Legacy single-model shortcut.")
+    parser.add_argument("--vision-models", default="", help="Comma/semicolon-separated vision model list.")
     parser.add_argument("--pattern", default="*.png")
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--timeout", type=int, default=180)
@@ -204,26 +312,61 @@ def main() -> int:
     images = collect_images(args.image_root, args.pattern)
     if args.limit > 0:
         images = images[: args.limit]
-    out_file = args.out_file or (args.image_root if args.image_root.is_dir() else args.image_root.parent) / "grok_visual_audit.json"
+    out_file = args.out_file or (
+        args.image_root
+        if args.image_root.is_dir()
+        else args.image_root.parent
+    ) / "vision_models_audit.json"
+
+    requested_models = split_models(args.vision_models)
+    if not requested_models:
+        requested_models = [env.get("SCOPE_VISION_MODEL", args.model)]
 
     results: list[dict[str, Any]] = []
     for i, image in enumerate(images, start=1):
         category = infer_category(image, args.image_root if args.image_root.is_dir() else args.image_root.parent)
         print(f"[AUDIT] {i}/{len(images)} {category} {image.name}", flush=True)
-        try:
-            result = audit_one(env, args.model, image, category, args.timeout)
-        except Exception as exc:  # noqa: BLE001
-            result = {"image": str(image), "category": category, "ok": False, "error": repr(exc)}
+        model_results: list[dict[str, Any]] = []
+        for model in requested_models:
+            try:
+                model_results.append(audit_one(env, model, image, category, args.timeout))
+            except Exception as exc:  # noqa: BLE001
+                model_results.append({"image": str(image), "category": category, "model": model, "ok": False, "error": repr(exc)})
+        has_pass = any(item.get("ok") and (item.get("audit") or {}).get("overall") == "pass" for item in model_results)
+        result = {
+            "image": str(image),
+            "category": category,
+            "ok": has_pass,
+            "results": model_results,
+        }
         results.append(result)
         out_file.write_text(json.dumps({"count": len(results), "results": results}, ensure_ascii=False, indent=2), encoding="utf-8")
         time.sleep(args.delay)
 
-    needs_repair = [r for r in results if r.get("ok") and r.get("audit", {}).get("overall") != "pass"]
+    needs_repair = [r for r in results if r.get("ok") and any(
+        item.get("ok") and (item.get("audit") or {}).get("overall") != "pass"
+        for item in r.get("results", [])
+    )]
     infra_failures = [r for r in results if not r.get("ok")]
+    model_summary: dict[str, dict[str, int]] = {model: {"pass": 0, "needs_repair": 0, "infra_fail": 0} for model in requested_models}
+    for result in results:
+        for item in result.get("results", []):
+            model = item.get("model") or "unknown"
+            model_summary.setdefault(model, {"pass": 0, "needs_repair": 0, "infra_fail": 0})
+            if not item.get("ok"):
+                model_summary[model]["infra_fail"] += 1
+                continue
+            audit_data = item.get("audit") or {}
+            if audit_data.get("overall") == "pass":
+                model_summary[model]["pass"] += 1
+            else:
+                model_summary[model]["needs_repair"] += 1
     summary = {
         "count": len(results),
+        "vision_models": requested_models,
         "needs_repair_count": len(needs_repair),
         "infra_failure_count": len(infra_failures),
+        "model_summary": model_summary,
         "infra_failure_examples": [r.get("image") for r in infra_failures][:8],
         "results": results,
     }

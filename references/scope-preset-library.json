@@ -1,7 +1,7 @@
 {
   "schema_version": "scope-unified-preset-library-v1",
   "description": "Single preset entrypoint for the SCOPE Image Orchestrator: all route presets, distilled control templates, and route-level source notes are kept in one file.",
-  "updated_at": "2026-06-06",
+  "updated_at": "2026-06-10",
   "runtime_schema_version": "scope-prompt-presets-v2",
   "compatibility": {
     "primary_file": "references/scope-preset-library.json",
@@ -501,21 +501,23 @@
       ]
     },
     "anime_cel": {
-      "route_hint": "clean cel-shaded anime character or concept route: simple structure, readable silhouette, restrained texture complexity, and polished flat-shaded rendering.",
-      "fallback_prompt": "Clean cel-shaded anime concept of {subject}. Full-body or key-shot silhouette, restrained detail density, elegant shape design, polished line economy, and flat-shaded premium animation finish.",
+      "route_hint": "strict cel-shaded anime character route with hard edges, flat tones, and restrained ornament detail: clear silhouette first.",
+      "fallback_prompt": "Clean cel-shaded anime character concept of {subject}. Full-body hero framing, hard contour lines, disciplined shape blocks, and premium flat shading.",
       "camera_phrase": "full-body concept framing or clean medium shot with silhouette priority",
       "aspect_ratio": "2:3",
-      "negative": "Negative: no oil painting texture, no thick painterly smears, no muddy gradients, no random typography, no 3D plastic skin, no overdesigned accessories.",
+      "negative": "Negative: no painterly brushwork, no muddy gradients, no soft skin-shading ramps, no random textures, no overdecorated accessories, no heavy ornaments, no 3D plastic skin, no random typography.",
       "booster_lines": [
         "favor strong silhouette and shape language over tiny texture detail",
-        "keep material rendering clean and cel-shaded, not painterly",
-        "use controlled accent details rather than busy ornament everywhere",
+        "keep material rendering strictly flat and cel-shaded, not painterly",
+        "use controlled accent details instead of dense pattern fields",
+        "flatten highlights and shadows into limited tone bands",
+        "limit headdress and costume ornaments to key anchors only",
         "pose and costume structure must read clearly in one glance"
       ],
       "style_blocks": [
-        "premium cel-shaded anime finish with disciplined detail density",
-        "shape-first character design with clean value separation",
-        "animation-studio presentation rather than poster typography"
+        "strict premium cel-shaded finish with hard outlines and flat tone bands",
+        "shape-first character design with controlled complexity and clean transitions",
+        "animation-keyframe readability with no decorative overload"
       ],
       "composition_patterns": [
         "full-body turnaround-like clarity or one clean hero pose",
@@ -524,25 +526,369 @@
       ],
       "external_patterns": [
         "MAPPA-like cleanliness without copying any exact IP style",
-        "flat-shaded premium animation surfaces",
-        "minimal but intentional structure changes and accent shapes"
+        "hard-edged flat-shaded surfaces",
+        "minimal, intentional accent motifs replacing dense decoration"
       ],
       "quality_controls": [
         "silhouette remains readable at thumbnail size",
-        "no muddy gradient banding or pseudo-oil textures",
+        "no painterly gradient ramps or banding in costume and skin",
+        "ornament density stays controlled and non-cluttered",
+        "hard contours remain readable at silhouette scale",
         "proportions stay intentional and stable"
       ],
       "route_keywords": [
-        "赛璐璐平涂",
-        "MAPPA风格",
-        "日本动画风格",
-        "角色设定图",
-        "动画角色立绘",
-        "不要复杂纹理",
         "anime cel",
         "cel-shaded anime",
-        "character concept flat shade"
+        "flat shade",
+        "cel concept",
+        "clean line art",
+        "hard edges",
+        "beijing opera",
+        "martial role"
       ]
+    }
+  },
+  "image_theme_packs": {
+    "mecha_tokusatsu": {
+      "bind_routes": [
+        "cosplay",
+        "poster"
+      ],
+      "pack_hint": "photoreal live-action mech transformation styling with heavy industrial armor logic, cinematic storm-night atmosphere, and real metal wear.",
+      "activation_keywords": [
+        "机甲",
+        "特摄",
+        "面罩",
+        "动力装甲",
+        "外骨骼",
+        "战术马甲",
+        "高科技战术马甲",
+        "机甲写真",
+        "机甲海报",
+        "mecha",
+        "tokusatsu",
+        "exosuit",
+        "power armor",
+        "visor mask",
+        "industrial armor"
+      ],
+      "style_blocks": [
+        "live-action sci-fi exosuit realism with heavy industrial panel logic",
+        "storm-night cinematic environment with fog, neon distance lights, and dark sky pressure",
+        "paint wear, grime, scratches, gasket seams, bolts, vents, and believable metal weight",
+        "real performer inside armor rather than floating CG shell"
+      ],
+      "booster_lines": [
+        "armor surfaces must show scale, wear, and engineering joints instead of toy plastics",
+        "keep the face or visor focal plane crisp while the environment stays atmospheric",
+        "wetness, smoke, and neon should separate materials rather than smearing them into one glossy shell",
+        "helmet or mask design should integrate visor, breathing logic, and mechanical fastening points",
+        "keep one human identity anchor visible if the face is not fully covered",
+        "prioritize believable metal, rubber, carbon-fiber, and tactical fabric transitions"
+      ],
+      "external_patterns": [
+        "cinematic mech realism over glossy superhero spandex styling",
+        "heavy silhouette and readable armor segmentation before small decorative details",
+        "weather, mist, sparks, and practical light only when they support scale"
+      ],
+      "composition_patterns": [
+        "hero figure plus one scale-defining environment anchor",
+        "clear full-body or three-quarter action read with one dominant gesture line"
+      ],
+      "quality_controls": [
+        "armor does not look like thin cosplay foam unless explicitly requested",
+        "metal panels, under-suit, and connectors remain materially distinct",
+        "no melted mask geometry or floating armor pieces",
+        "face plate, visor edge, and tactical fabric seams remain sharp and readable"
+      ],
+      "negative": "Negative: no toy-like plastic armor, no cheap foam costume look, no flat CGI plating, no floating disconnected parts, no soft blurry visor, no glossy one-material armor shell."
+    },
+    "tactical_gear_product": {
+      "bind_routes": [
+        "product"
+      ],
+      "pack_hint": "commercial tactical-gear packshot for masks, vests, arm controllers, and sci-fi equipment with hard material separation and industrial finishing.",
+      "activation_keywords": [
+        "战术背心",
+        "战术装备",
+        "面罩产品图",
+        "装备产品图",
+        "臂腕控制器",
+        "控制器产品图",
+        "热能刀",
+        "科技武器",
+        "护臂控制器",
+        "tactical vest",
+        "gear packshot",
+        "visor product",
+        "arm controller",
+        "sci-fi gear",
+        "weapon product"
+      ],
+      "style_blocks": [
+        "single hero gear item on neutral industrial backdrop",
+        "hard-edged commercial lighting with clear specular control on metal and polymer surfaces",
+        "visible screw heads, vent cuts, seam lines, coating wear, and manufacturing details",
+        "product-first composition with one clean support plane or mannequin form only when needed"
+      ],
+      "booster_lines": [
+        "show the product as engineered equipment, not as a toy render",
+        "maintain clean silhouette and readable attachment logic for straps, buckles, and interfaces",
+        "use restrained accent LEDs rather than flooding the scene with glow",
+        "micro scratches and edge wear should imply use without destroying premium finish",
+        "controller screen graphics should stay minimal, legible, and product-like instead of busy UI noise"
+      ],
+      "external_patterns": [
+        "commercial catalog realism with industrial texture discipline",
+        "clear hero object isolation and controlled reflections",
+        "functional attachment logic for straps, screens, rails, and protective shells"
+      ],
+      "composition_patterns": [
+        "hero object centered or slightly diagonal with one clean supporting plane",
+        "support props remain minimal and subordinate to the product"
+      ],
+      "quality_controls": [
+        "logos, labels, and screen elements stay simple and non-gibberish",
+        "metal, polymer, textile, and rubber are visually separable",
+        "object edges and rim highlights stay crisp and undistorted"
+      ],
+      "negative": "Negative: no toy blister-pack styling, no cartoon glow overload, no duplicate accessories, no warped screen or label details."
+    },
+    "turnaround_sheet": {
+      "bind_routes": [
+        "cosplay"
+      ],
+      "pack_hint": "front-side-back turnaround sheet for armor or character styling, focused on consistency, orthographic clarity, and design communication.",
+      "activation_keywords": [
+        "三视图",
+        "三面图",
+        "正侧背",
+        "角色设定图",
+        "设定三视图",
+        "前后左右设定",
+        "turnaround",
+        "turnaround sheet",
+        "front side back",
+        "character sheet",
+        "orthographic"
+      ],
+      "style_blocks": [
+        "front, side, and back full-body presentation with neutral backdrop",
+        "even studio lighting for design readability rather than dramatic mood",
+        "consistent body proportions, costume segmentation, and panel logic across views",
+        "concept-sheet clarity with photoreal materials"
+      ],
+      "booster_lines": [
+        "all views must preserve the same silhouette proportions and attachment positions",
+        "reduce dramatic atmosphere so structural information stays readable",
+        "keep pose neutral and balanced unless a specific presentation pose is requested",
+        "treat the output as a design communication sheet, not a poster"
+      ],
+      "external_patterns": [
+        "orthographic-style presentation with consistent spacing between views",
+        "design-sheet readability before cinematic mood",
+        "clear contour and material callouts through visuals rather than text"
+      ],
+      "composition_patterns": [
+        "three aligned figures across the frame with shared scale",
+        "neutral footing and stable horizon to avoid perspective drift"
+      ],
+      "quality_controls": [
+        "front, side, and back views remain consistent in armor placement and body ratio",
+        "no dramatic lens distortion bending the side view",
+        "the sheet reads as a reference board at thumbnail and full size"
+      ],
+      "negative": "Negative: no poster typography, no dynamic action pose, no heavy atmospheric fog, no perspective warping between views."
+    },
+    "cyber_jianghu": {
+      "bind_routes": [
+        "poster",
+        "portrait",
+        "cosplay"
+      ],
+      "pack_hint": "retro-futurist wuxia noir mixing Chinese classical costume grammar, mechanical prosthetics, cold-warm contrast, and 1980s Hong Kong film texture.",
+      "activation_keywords": [
+        "赛博江湖",
+        "机械武侠",
+        "蒸汽朋克武侠",
+        "义体武侠",
+        "港风武侠",
+        "义体古风",
+        "赛博武侠",
+        "cyber jianghu",
+        "mechanical wuxia",
+        "retro-futurist wuxia",
+        "prosthetic wuxia"
+      ],
+      "style_blocks": [
+        "retro-futurist wuxia atmosphere with classical costume structure and mechanical prosthetics",
+        "35mm or 85mm Hong Kong film sensibility with visible grain and theatrical key light",
+        "cool moonlight plus warm lantern or practical side light",
+        "courtyard, alley, or temple-night context with mist and restrained depth cues"
+      ],
+      "booster_lines": [
+        "prosthetic components must feel precision-machined and cold against living skin",
+        "costume should preserve elegant historical silhouette before cyber embellishment",
+        "keep contrast dramatic but avoid overfilling the frame with neon clutter",
+        "one strong facial expression and one mechanical detail anchor the image",
+        "retain small facial asymmetry, slight fatigue, and non-idol skin realism",
+        "historical robe fabric should read as woven cloth or layered silk, not synthetic vinyl unless requested"
+      ],
+      "external_patterns": [
+        "film-still mood over game splash-art noise",
+        "classical Chinese costume rhythm fused with industrial detail",
+        "mist and light should increase mystery, not hide structure"
+      ],
+      "composition_patterns": [
+        "medium close-up or half-body hero composition with one off-axis tension line",
+        "background architecture remains soft and supportive, not dominant"
+      ],
+      "quality_controls": [
+        "prosthetic detail reads as engineered metal instead of fantasy ornament only",
+        "face remains human, grounded, and emotionally legible",
+        "historical costume and cyber elements do not collapse into visual clutter"
+      ],
+      "negative": "Negative: no over-saturated nightclub neon, no generic sci-fi bodysuit, no purely fantasy ornament overload, no plastic-looking prosthetics, no idol-beauty retouch, no glossy vinyl robe unless explicitly requested."
+    },
+    "industrial_monster_scene": {
+      "bind_routes": [
+        "documentary",
+        "poster"
+      ],
+      "pack_hint": "fog-heavy industrial platform or dock scene with low-visibility scale cues, hard-sci-fi mood, and full-body creature readability.",
+      "activation_keywords": [
+        "工业平台",
+        "海上平台",
+        "雾中平台",
+        "工业码头",
+        "怪物设定",
+        "怪物全身",
+        "异形怪物",
+        "工业怪物场景",
+        "industrial platform",
+        "offshore platform",
+        "dock monster",
+        "full-body creature",
+        "industrial monster"
+      ],
+      "style_blocks": [
+        "offshore industrial platform or dock wrapped in heavy fog and cold steel atmosphere",
+        "large-scale blast door, catwalk, cranes, or deep water scale anchors",
+        "creature shown full-body with readable locomotion and silhouette",
+        "dark cyan-gray palette with sparse practical highlights"
+      ],
+      "booster_lines": [
+        "keep visibility low but preserve one readable path line and one creature silhouette edge",
+        "industrial structures should feel enormous and physically plausible",
+        "creature skin should be tactile, rough, and grounded rather than glossy rubber",
+        "fog should separate layers, not flatten the whole image"
+      ],
+      "external_patterns": [
+        "story-first industrial tension over empty spectacle",
+        "hard-sci-fi production design with real catwalk and machinery logic",
+        "creature readability stays strong despite haze"
+      ],
+      "composition_patterns": [
+        "one large architectural anchor plus one creature anchor",
+        "depth revealed through fog layers, perspective rails, and practical light pockets"
+      ],
+      "quality_controls": [
+        "platform geometry remains believable and large-scale",
+        "creature anatomy and movement mode read clearly at full-body scale",
+        "fog, darkness, and highlights stay balanced enough for narrative readability"
+      ],
+      "negative": "Negative: no random city skyline clutter, no overbright neon, no toy monster proportions, no unreadable all-gray mush."
+    },
+    "commercial_identity_portrait": {
+      "bind_routes": [
+        "portrait"
+      ],
+      "pack_hint": "ultra-real commercial identity portrait emphasizing mild imperfections, soft side light, clean background, and non-beauty-filter realism.",
+      "activation_keywords": [
+        "商业人像",
+        "真实人像",
+        "近景人像",
+        "人像摄影",
+        "证件感人像",
+        "写实肖像",
+        "轻微瑕疵",
+        "自然碎发",
+        "commercial portrait",
+        "identity portrait",
+        "clean headshot",
+        "realistic headshot"
+      ],
+      "style_blocks": [
+        "commercial portrait photography with clean background and soft side-light sculpting",
+        "natural pores, mild under-eye shadow, subtle blemishes, and realistic skin microvariation",
+        "few flyaway hairs and controlled fabric texture for realism",
+        "calm near-camera framing with non-stylized expression"
+      ],
+      "booster_lines": [
+        "preserve slight asymmetry and tiny imperfections instead of beauty-filter smoothing",
+        "avoid extreme makeup, exaggerated glamour glow, or over-retouched skin",
+        "keep the face structurally coherent with natural jaw, nose, and ear relationships",
+        "soft background separation should support identity clarity without fake bokeh overload",
+        "retain subtle under-eye texture, lip texture, and real eyebrow/hairline irregularity"
+      ],
+      "external_patterns": [
+        "commercial headshot polish without losing human realism",
+        "soft directional portrait lighting with realistic facial structure retention",
+        "clean simple wardrobe and limited accessories"
+      ],
+      "composition_patterns": [
+        "tight bust or close portrait framing with clear eye line",
+        "background remains quiet so face structure and texture dominate"
+      ],
+      "quality_controls": [
+        "skin remains detailed, not airbrushed",
+        "hairline, eyebrows, and lashes look natural and non-painted",
+        "expression stays believable and non-rigid"
+      ],
+      "negative": "Negative: no beauty filter, no porcelain doll skin, no over-sharpened eyes, no glamour retouch halos."
+    },
+    "anime_cel_restrictor": {
+      "bind_routes": [
+        "anime_cel"
+      ],
+      "pack_hint": "strict flat-anime control for opera and ceremonial costumes: hard edges, limited ornaments, and clean palette discipline.",
+      "activation_keywords": [
+        "beijing opera",
+        "martial role",
+        "opera",
+        "opera warrior",
+        "headdress",
+        "flag",
+        "dragon",
+        "traditional costume"
+      ],
+      "style_blocks": [
+        "MAPPA/Miyazaki clean structure influence only, no direct cloning",
+        "flat animation palette with 2-4 principal materials",
+        "clean costume-to-body transitions and hard contour consistency"
+      ],
+      "booster_lines": [
+        "enforce hard-edge outlines on costume edges and major folds",
+        "reduce dense pattern repetition; keep only key motifs",
+        "restrict palette steps and remove soft texture transitions",
+        "clarify body and face silhouette before adding accessory detail"
+      ],
+      "external_patterns": [
+        "premium cel render logic from production animation references",
+        "clean costume-to-body transitions",
+        "minimal motif repetition and spacing discipline"
+      ],
+      "composition_patterns": [
+        "character occupies primary frame center-left or center-right",
+        "background simplified to support main shape readability",
+        "clear front-facing hero silhouette with strong outline perimeter"
+      ],
+      "quality_controls": [
+        "no area shows uncontrolled texture noise",
+        "no overfilled headdress or flag sections",
+        "strong line direction and shape hierarchy on silhouette and accessories"
+      ],
+      "negative": "Negative: no painterly transitions, no soft bloom, no random ornaments, no clutter, no 3D gloss, no pattern noise, no fake UI."
     }
   },
   "external_prompt_sources": {
@@ -550,7 +896,30 @@
     "distilled_bundles": [
       "public internet prompt collections for editorial / product / lifestyle scenes",
       "public prompt examples from Infinite Canvas prompt boards",
-      "user-supplied SSS0625 prompt corpus distilled into category-level controls only"
+      "user-supplied SSS0625 prompt corpus distilled into category-level controls only",
+      "DiffusionDB-style subject/lens/material prompt structuring patterns",
+      "Fooocus-style prompt expansion and style normalization ideas",
+      "user-supplied tokusatsu / cyber-wuxia / gear-design notes distilled into image-only controls"
+    ],
+    "recent_public_references": [
+      "DiffusionDB prompt dataset structure",
+      "Fooocus prompt expansion and style presets",
+      "Infinite Canvas public prompt-board concepts"
+    ]
+  },
+  "future_video_notes": {
+    "note": "These notes are intentionally kept outside runtime image routing. They are preserved as future references for a later video-generation module.",
+    "preserved_topics": [
+      "single-take or one-shot choreography",
+      "time-coded shot breakdowns and camera movement paths",
+      "sound design / on-set audio notes",
+      "transformation sequencing and action timing",
+      "continuation / extend-video workflow hints"
+    ],
+    "image_first_policy": [
+      "distill reusable still-image assets first: face/identity, armor, props, environment, creatures, and three-view sheets",
+      "reuse still-image outputs as reference inputs for later video systems",
+      "keep video-specific instructions separate from current prompt optimization runtime"
     ]
   },
   "optimizer_guides": {
@@ -610,6 +979,12 @@
       "treat prompt as physical shot plan",
       "separate subject, environment, lens, light, material, and post-processing",
       "prefer practical micro-details over abstract adjectives"
+    ],
+    "distilled_recent_findings": [
+      "long prompts should be compressed into subject, scene, lens, material, and exclusions blocks",
+      "for mech and gear prompts, material separation matters more than adjective stacking",
+      "for identity portraits, slight imperfections improve realism more than stronger beauty words",
+      "for dark industrial scenes, preserve one silhouette edge and one scale anchor even under haze"
     ]
   },
   "inference_pipeline_note": "The runtime prompt optimizer receives only compact distilled controls from this library; no full upstream prompts are passed through."

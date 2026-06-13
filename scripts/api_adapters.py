@@ -553,6 +553,27 @@ def extract_text(adapter_raw: str, body: Any) -> str:
     if not isinstance(body, dict):
         return ""
     if adapter == "openai-chat":
+        # Some OpenAI-compatible gateways route specific upstreams through an
+        # Anthropic-like response envelope even when the request shape is
+        # /chat/completions.  Accept that envelope so custom model pools can be
+        # used without writing a provider-specific adapter.
+        content = body.get("content")
+        if isinstance(content, list):
+            chunks = []
+            for part in content:
+                if isinstance(part, dict):
+                    chunks.append(str(part.get("text") or ""))
+                elif isinstance(part, str):
+                    chunks.append(part)
+            text = "\n".join(x for x in chunks if x)
+            if text:
+                return text
+        elif isinstance(content, str):
+            return content
+        if isinstance(body.get("message"), dict):
+            message_content = body["message"].get("content")
+            if isinstance(message_content, str):
+                return message_content
         choice = (body.get("choices") or [{}])[0]
         return str((choice.get("message") or {}).get("content") or "")
     if adapter == "openai-responses":

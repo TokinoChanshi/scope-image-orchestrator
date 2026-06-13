@@ -215,6 +215,36 @@
       "id": "anime-cel-character",
       "route": "anime_cel",
       "prompt": "clean cel-shaded anime character concept, full-body silhouette, restrained details, premium flat shading"
+    },
+    {
+      "id": "mecha-tokusatsu-pack",
+      "route": "cosplay",
+      "prompt": "photoreal live-action mecha exosuit hero, storm-night industrial armor, visor mask, heavy metal wear, tactical under-suit"
+    },
+    {
+      "id": "tactical-gear-packshot",
+      "route": "product",
+      "prompt": "commercial tactical vest and arm controller packshot, industrial lighting, premium engineered surfaces, restrained LED accents"
+    },
+    {
+      "id": "turnaround-sheet-armor",
+      "route": "cosplay",
+      "prompt": "photoreal front side back turnaround sheet of a power armor character, neutral studio background, consistent proportions"
+    },
+    {
+      "id": "cyber-jianghu-portrait",
+      "route": "portrait",
+      "prompt": "retro-futurist wuxia identity portrait, mechanical prosthetic detail, 35mm hong kong film mood, cold-warm contrast"
+    },
+    {
+      "id": "industrial-monster-scene",
+      "route": "documentary",
+      "prompt": "fog-heavy offshore industrial platform scene with a full-body creature silhouette, hard-sci-fi realism, scale anchors, low visibility"
+    },
+    {
+      "id": "commercial-identity-portrait",
+      "route": "portrait",
+      "prompt": "ultra-real commercial identity portrait, clean background, soft side light, visible pores, subtle blemishes, natural flyaway hair"
     }
   ],
   "response_extraction_cases": [

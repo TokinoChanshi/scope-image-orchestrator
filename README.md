@@ -73,6 +73,33 @@ For detailed request shapes, see:
 - `references/api-providers.md`
 - `references/provider-config.example.json`
 
+### Quick model routing for this batch workflow
+
+For **vision auditing/review** and **text-optimizer/repair** you can switch models in the same run:
+
+```bash
+# Gemini 3.5
+python scripts/scope_commands.py audit-run \
+  --env-file <vision.env> \
+  --image-root scope_runs/<batch> \
+  --vision-models "gemini-3.5-flash" \
+  --limit 6 --out-file vision-gemini.json
+
+# Claude-family (OpenAI-compatible endpoint)
+python scripts/audit_generated_images_with_vision.py \
+  --env-file <vision.env> \
+  --image-root scope_runs/<batch> \
+  --vision-models "claude-3.5-sonnet" \
+  --limit 6 --out-file vision-claude.json
+
+# GPT-family / Grok-family
+python scripts/audit_generated_images_with_vision.py \
+  --env-file <vision.env> \
+  --image-root scope_runs/<batch> \
+  --vision-models "gpt-5.5,gpt-4.20-auto,deepseek-ai/DeepSeek-V3.1,grok-4.3" \
+  --limit 6 --out-file vision-gpt.json
+```
+
 ## Presets
 
 The unified preset library is:

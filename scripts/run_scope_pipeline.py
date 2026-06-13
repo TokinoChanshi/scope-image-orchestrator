@@ -628,7 +628,22 @@ def grok_vision_verify(
     )
     if status == 200:
         content = extract_text(adapter, body)
-        parsed = extract_json(content)
+        try:
+            parsed = extract_json(content)
+        except Exception:
+            parsed = {
+                "can_see_image": False,
+                "overall": "needs_repair",
+                "entities": [],
+                "constraints": [],
+                "failed_ids": [],
+                "repair_instructions": (
+                    f"Vision output could not be parsed as JSON: {str(content)[:300]}"
+                    if content
+                    else "Empty vision output"
+                ),
+                "risk_notes": "vision response format mismatch or model capability limit",
+            }
         return {"status": status, "parsed": parsed, "raw": body}
     return {
         "status": "error",
