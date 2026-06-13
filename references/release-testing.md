@@ -120,7 +120,7 @@ offline release gate because credentials and service availability vary by user e
 ## Pre-publish checklist
 
 - [ ] `python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks` passes.
-- [ ] `README.md` and `README.zh-CN.md` samples are still valid.
+- [ ] `README.md`, `README.en.md`, and `README.zh-CN.md` samples are still valid.
 - [ ] `SKILL.md` remains a short usage guide and points to reference docs.
 - [ ] `references/provider-config.example.json` contains no real endpoints or keys.
 - [ ] `references/.env.example` contains placeholders only.
