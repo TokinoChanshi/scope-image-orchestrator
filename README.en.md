@@ -106,20 +106,10 @@ idiom_cinema, documentary, strategy_overhead, anime_cel
 
 Most preset ideas are distilled from public prompt examples and community practices. The library keeps route-level controls rather than redistributing verbatim third-party prompt bodies.
 
-## Validation
-
-```bash
-python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks
-python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks --skip-dry-run
-```
-
-The release gate is offline by default and does not call real APIs.
-
 ## Related docs
 
 - `SKILL.md`
 - `docs/gallery.md`
-- `references/release-testing.md`
 
 ## Community
 

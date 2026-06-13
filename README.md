@@ -175,28 +175,11 @@ scope_runs/<task>/
   final_summary.json
 ```
 
-## 验证
-
-发布前建议先跑离线检查：
-
-```bash
-python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks
-```
-
-快速模式：
-
-```bash
-python scripts/run_release_checks.py --out-dir ./tmp/scope_release_checks --skip-dry-run
-```
-
-该检查默认不调用真实 API。
-
 ## 相关文档
 
 - Skill 说明：`SKILL.md`
 - 图集：`docs/gallery.md`
 - 预设库：`references/scope-preset-library.json`
-- 发布测试说明：`references/release-testing.md`
 
 ## 开源说明
 
