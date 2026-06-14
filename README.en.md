@@ -118,6 +118,9 @@ python scripts/scope_commands.py video-run --env-file .env --user-prompt "high-e
 # 3) Video storyboard smoke (multi-shot + candidates)
 python scripts/scope_commands.py video-story --env-file .env --user-prompt "create a 60-second premium lifestyle story" --out-dir scope_runs/smoke_story --target-duration 60 --shot-duration 10 --candidate-count 3
 
+# 3b) Natural-language video skill wrapper smoke
+python scripts/scope_commands.py video-skill --env-file .env --user-input "create a 60-second premium lifestyle story with 10-second shots and 3 candidates each" --out-dir scope_runs/smoke_video_skill --print-only
+
 # 4) Route-regression smoke
 python scripts/run_v2_route_regression.py --env-file .env --max-cases 1 --skip-vision --dry-run --out-dir scope_runs/smoke_regression
 

@@ -23,6 +23,7 @@ REGRESSION_RUNNER = SCRIPT_ROOT / "run_v2_route_regression.py"
 AUDIT_RUNNER = SCRIPT_ROOT / "audit_generated_images_with_vision.py"
 VIDEO_RUNNER = SCRIPT_ROOT / "generate_video.py"
 VIDEO_STORY_RUNNER = SCRIPT_ROOT / "video_story_pipeline.py"
+VIDEO_SKILL_RUNNER = SCRIPT_ROOT / "run_video_skill.py"
 VIDEO_SKILL_CHECK_RUNNER = SCRIPT_ROOT / "run_video_skill_check.py"
 
 
@@ -524,6 +525,66 @@ def video_story_run(args: argparse.Namespace) -> int:
     return run_child_with_optional(cmd, args)
 
 
+def video_skill_run(args: argparse.Namespace) -> int:
+    args.out_dir = ensure_writable_out_dir(args.out_dir)
+    cmd = [
+        sys.executable,
+        str(VIDEO_SKILL_RUNNER),
+        "--env-file",
+        str(args.env_file),
+        "--user-input",
+        args.user_input,
+        "--out-dir",
+        str(args.out_dir),
+    ]
+    _append_if_not_empty(cmd, "--preset-file", args.preset_file)
+    if args.target_duration:
+        cmd.extend(["--target-duration", str(args.target_duration)])
+    if args.shot_duration:
+        cmd.extend(["--shot-duration", str(args.shot_duration)])
+    if args.candidate_count:
+        cmd.extend(["--candidate-count", str(args.candidate_count)])
+    if args.max_shots:
+        cmd.extend(["--max-shots", str(args.max_shots)])
+    _append_if_not_empty(cmd, "--route", args.route)
+    _append_if_not_empty(cmd, "--llm-env-file", args.llm_env_file)
+    _append_if_not_empty(cmd, "--llm-model", args.llm_model)
+    _append_if_not_empty(cmd, "--video-model", args.video_model)
+    _append_if_not_empty(cmd, "--fps", args.fps)
+    _append_if_not_empty(cmd, "--aspect-ratio", args.aspect_ratio)
+    _append_if_not_empty(cmd, "--response-format", args.response_format)
+    _append_if_not_empty(cmd, "--max-prompt-chars", args.max_prompt_chars)
+    _append_if_not_empty(cmd, "--timeout", args.timeout)
+    _append_if_not_empty(cmd, "--video-request-retries", args.video_request_retries)
+    _append_if_not_empty(cmd, "--poll-attempts", args.poll_attempts)
+    _append_if_not_empty(cmd, "--poll-delay", args.poll_delay)
+    if args.selection_file:
+        cmd.extend(["--selection-file", str(args.selection_file)])
+    if args.score_threshold is not None:
+        cmd.extend(["--score-threshold", str(args.score_threshold)])
+    if args.disable_llm_score:
+        cmd.append("--disable-llm-score")
+    if args.send:
+        cmd.append("--send")
+    if args.dry_run:
+        cmd.append("--dry-run")
+    _append_if_not_empty(cmd, "--selection-strategy", args.selection_strategy)
+    if args.interactive:
+        cmd.append("--interactive")
+    if args.require_pass:
+        cmd.append("--require-pass")
+    if args.max_pass_retry:
+        cmd.extend(["--max-pass-retry", str(args.max_pass_retry)])
+    if args.no_assemble:
+        cmd.append("--no-assemble")
+    if args.assembly_timeout:
+        cmd.extend(["--assembly-timeout", str(args.assembly_timeout)])
+    _append_if_not_empty(cmd, "--ffmpeg-path", args.ffmpeg_path)
+    if args.print_only:
+        cmd.append("--print-only")
+    return run_child_with_optional(cmd, args)
+
+
 def print_commands(_: argparse.Namespace) -> int:
     print(
         """SCOPE Image Orchestrator command mode
@@ -550,6 +611,7 @@ def print_commands(_: argparse.Namespace) -> int:
     - 仅生成规划（不走视频 API）：追加 --dry-run
     - 人工逐镜：追加 --interactive
   - 一句式视频创作（自然语言）：`python scripts/run_video_skill.py --env-file <env> --user-input "<prompt>" --out-dir <out>`
+  - 命令模式封装：`python scripts/scope_commands.py video-skill --env-file <env> --user-input "<prompt>" --out-dir <out> [--send]`
     - 默认干跑；含时长/节奏/备选信息时自动映射为 video-story 参数
 """
     )
@@ -734,6 +796,42 @@ def parse_args() -> argparse.Namespace:
     p_video_story.add_argument("--print-only", action="store_true", help="Print child command without running it.")
     p_video_story.set_defaults(func=video_story_run)
 
+    p_video_skill = sub.add_parser("video-skill", help="Run the natural-language video skill wrapper (auto infer duration/shot/candidates).")
+    p_video_skill.add_argument("--env-file", required=True, type=Path)
+    p_video_skill.add_argument("--user-input", required=True)
+    p_video_skill.add_argument("--out-dir", required=True, type=Path)
+    p_video_skill.add_argument("--preset-file", type=Path)
+    p_video_skill.add_argument("--target-duration", type=int, default=0, help="Override inferred total duration in seconds.")
+    p_video_skill.add_argument("--shot-duration", type=int, default=0, help="Override inferred shot duration in seconds.")
+    p_video_skill.add_argument("--candidate-count", type=int, default=0, help="Override inferred candidates per shot.")
+    p_video_skill.add_argument("--max-shots", type=int, default=0, help="Maximum number of shots.")
+    p_video_skill.add_argument("--route", default="")
+    p_video_skill.add_argument("--llm-env-file", type=Path)
+    p_video_skill.add_argument("--llm-model", default="gpt-5.5")
+    p_video_skill.add_argument("--video-model")
+    p_video_skill.add_argument("--fps", type=int, default=24)
+    p_video_skill.add_argument("--aspect-ratio", default="")
+    p_video_skill.add_argument("--response-format", default="url")
+    p_video_skill.add_argument("--max-prompt-chars", type=int, default=1200)
+    p_video_skill.add_argument("--timeout", type=int, default=180)
+    p_video_skill.add_argument("--video-request-retries", type=int, default=2)
+    p_video_skill.add_argument("--poll-attempts", type=int, default=8)
+    p_video_skill.add_argument("--poll-delay", type=float, default=6.0)
+    p_video_skill.add_argument("--send", action="store_true", help="Call the real video API. Without this flag, run in dry mode.")
+    p_video_skill.add_argument("--dry-run", action="store_true", help="Force dry-run.")
+    p_video_skill.add_argument("--selection-strategy", choices=["auto", "first", "manual"], default="auto")
+    p_video_skill.add_argument("--interactive", action="store_true", help="Enable per-shot manual selection.")
+    p_video_skill.add_argument("--selection-file", type=Path, help="Optional JSON mapping file: [{\"shot_index\":1,\"candidate\":2}, ...].")
+    p_video_skill.add_argument("--score-threshold", type=float, default=0.68, help="Quality threshold for candidate selection/pass check.")
+    p_video_skill.add_argument("--disable-llm-score", action="store_true", help="Disable LLM scoring; use heuristic fallback only.")
+    p_video_skill.add_argument("--require-pass", action="store_true", help="Keep only passing candidates.")
+    p_video_skill.add_argument("--max-pass-retry", type=int, default=0, help="Extra candidate attempts when require-pass is enabled.")
+    p_video_skill.add_argument("--no-assemble", action="store_true", help="Skip final local ffmpeg assembly.")
+    p_video_skill.add_argument("--assembly-timeout", type=int, default=1200)
+    p_video_skill.add_argument("--ffmpeg-path", default="")
+    p_video_skill.add_argument("--print-only", action="store_true", help="Print child command without running.")
+    p_video_skill.set_defaults(func=video_skill_run)
+
     p_video_skill_check = sub.add_parser("video-skill-check", help="Run video one-shot parser checks and optional smoke run for run_video_skill.py.")
     p_video_skill_check.add_argument("--env-file", required=True, type=Path)
     p_video_skill_check.add_argument("--out-dir", type=Path, default=SKILL_ROOT / "scope_runs" / "video_skill_check")
@@ -756,4 +854,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

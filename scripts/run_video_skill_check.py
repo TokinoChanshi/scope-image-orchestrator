@@ -5,12 +5,23 @@ from __future__ import annotations
 import argparse
 import subprocess
 import sys
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 VIDEO_SKILL = SCRIPT_DIR / "run_video_skill.py"
 VIDEO_SKILL_REGRESSION = SCRIPT_DIR / "run_video_skill_parse_regression.py"
+from generate_video import ensure_writable_out_dir
+
+
+def _safe_out_dir(path: Path) -> Path:
+    try:
+        return ensure_writable_out_dir(path)
+    except Exception:
+        fallback = Path(tempfile.gettempdir()) / "scope_image_runs" / path.name
+        fallback.parent.mkdir(parents=True, exist_ok=True)
+        return ensure_writable_out_dir(fallback)
 
 
 def _run_parse_regression() -> int:
@@ -20,7 +31,7 @@ def _run_parse_regression() -> int:
 
 def _run_smoke(args: argparse.Namespace) -> int:
     out_dir = args.out_dir / f"smoke_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    out_dir = _safe_out_dir(out_dir)
 
     cmd = [
         sys.executable,
@@ -66,7 +77,9 @@ def main() -> int:
     if not args.env_file.exists():
         raise SystemExit(f"--env-file not found: {args.env_file}")
 
-    args.out_dir.mkdir(parents=True, exist_ok=True)
+    if not args.out_dir.is_absolute():
+        args.out_dir = (Path.cwd() / args.out_dir).resolve()
+    args.out_dir = _safe_out_dir(args.out_dir)
 
     rc = _run_parse_regression()
     if rc != 0:

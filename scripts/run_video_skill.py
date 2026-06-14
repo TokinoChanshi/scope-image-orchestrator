@@ -258,6 +258,12 @@ def build_command(args: argparse.Namespace, intent: ParsedIntent) -> list[str]:
         cmd += ["--poll-attempts", str(args.poll_attempts)]
     if args.poll_delay:
         cmd += ["--poll-delay", str(args.poll_delay)]
+    if args.score_threshold is not None:
+        cmd += ["--score-threshold", str(args.score_threshold)]
+    if args.disable_llm_score:
+        cmd += ["--disable-llm-score"]
+    if args.selection_file:
+        cmd += ["--selection-file", str(args.selection_file)]
     if args.assembly_timeout:
         cmd += ["--assembly-timeout", str(args.assembly_timeout)]
     if args.ffmpeg_path:
@@ -314,7 +320,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--dry-run", action="store_true", help="Force dry-run even if --send is present.")
     parser.add_argument("--selection-strategy", choices=["auto", "first", "manual"], default="auto")
     parser.add_argument("--interactive", action="store_true", help="Enable per-shot manual selection.")
+    parser.add_argument("--selection-file", type=Path, help="Optional JSON file mapping shots to candidate index.")
     parser.add_argument("--require-pass", action="store_true", help="Keep only passing candidates.")
+    parser.add_argument("--score-threshold", type=float, default=0.68, help="Quality threshold for auto selection and pass checks.")
+    parser.add_argument("--disable-llm-score", action="store_true", help="Disable LLM scoring; use heuristic fallback only.")
     parser.add_argument("--max-pass-retry", type=int, default=0, help="Retry count when require-pass is enabled.")
     parser.add_argument("--no-assemble", action="store_true", help="Skip final local ffmpeg assembly.")
     parser.add_argument("--assembly-timeout", type=int, default=1200, help="ffmpeg timeout seconds.")
