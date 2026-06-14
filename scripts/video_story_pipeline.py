@@ -289,10 +289,9 @@ def _normalize_inferred_params(prompt: str, args: argparse.Namespace) -> None:
         shot = _infer_shot_seconds(prompt)
         if shot:
             args.shot_duration = shot
-    if args.candidate_count == 3:
+    if args.candidate_count == 0:
         inferred_count = _infer_candidate_count(prompt)
-        if inferred_count:
-            args.candidate_count = inferred_count
+        args.candidate_count = inferred_count or 3
 
 
 def _env(path: Path) -> dict[str, str]:
@@ -1397,7 +1396,7 @@ def main() -> int:
     parser.add_argument("--min-shot-duration", type=int, default=4)
     parser.add_argument("--max-shot-duration", type=int, default=16)
     parser.add_argument("--max-shots", type=int, default=0)
-    parser.add_argument("--candidate-count", type=int, default=3)
+    parser.add_argument("--candidate-count", type=int, default=0, help="Candidates per shot (0 => infer from prompt, fallback 3).")
     parser.add_argument("--score-threshold", type=float, default=0.68)
     parser.add_argument("--selection-strategy", choices=["auto", "first", "manual"], default="auto")
     parser.add_argument("--selection-file", type=Path)
@@ -1428,8 +1427,12 @@ def main() -> int:
 
     args = parser.parse_args()
 
+    if args.candidate_count < 0:
+        raise SystemExit("--candidate-count must be >= 0")
     if args.max_shots < 0:
         raise SystemExit("--max-shots must be >= 0")
+    if args.candidate_count == 0:
+        args.candidate_count = 3
     if args.candidate_count < 1:
         raise SystemExit("--candidate-count must be >= 1")
 
