@@ -181,12 +181,6 @@ scope_runs/<task>/
 - 图集：`docs/gallery.md`
 - 预设库：`references/scope-preset-library.json`
 
-## 开源说明
-
-- 文档中仅保留真实**模型名称**与**通用兼容格式**
-- 不公开真实 key、私有 endpoint、私有输出
-- 预设库以“蒸馏后的控制项”为主，不以搬运第三方完整 prompt 为目标
-
 ## 社区
 
 友情支持：Linux Do 社区

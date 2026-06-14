@@ -7,9 +7,9 @@ description: Use when an image-generation workflow needs SCOPE-style semantic de
 
 ## Goal
 
-SCOPE Image Orchestrator is an open-source friendly Codex skill for image-generation orchestration. It applies the SCOPE paper's core idea: preserve important user requirements as explicit semantic commitments, then keep generation, verification, and repair aligned to those commitments.
+SCOPE Image Orchestrator is a Codex skill for image-generation orchestration. It applies the SCOPE paper's core idea: preserve important user requirements as explicit semantic commitments, then keep generation, verification, and repair aligned to those commitments.
 
-This skill is model-agnostic and endpoint-agnostic, but API wire formats must be explicit. Public examples should use official OpenAI and Google Gemini request shapes and should name models only, not private channels, relays, vendors, or deployment sources. Configure endpoints through environment variables or a task-local config file, and never commit real keys.
+This skill is model-agnostic and endpoint-agnostic, but API wire formats must be explicit. Public examples should use official OpenAI and Google Gemini request shapes and should name models only, not deployment-channel labels or relay-specific wording. Configure endpoints through environment variables or a task-local config file.
 
 ## Command Mode
 
@@ -26,6 +26,11 @@ Command mode is natural-language first: infer the prompt, count, route, referenc
 | `查看主题包 mecha_tokusatsu` | List one image theme pack. | `python scripts/scope_commands.py list-theme-packs --theme-pack mecha_tokusatsu --detail` |
 | `跑图 <prompt>` / `单张跑 <prompt>` | Generate one image with the v2 router. | `python scripts/generate_single_v2.py --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
 | `批量跑 N 张 <prompt>` | Run the same prompt N times; count comes from the user. | `python scripts/scope_commands.py batch-run --count N --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
+| `视频创作 <prompt>` / `跑视频 <prompt>` | Generate one clip from a route-aware video plan. | `python scripts/scope_commands.py video-run --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
+| `批量跑视频 N <prompt>` | Run the same video request N times; count from user. | `python scripts/scope_commands.py video-batch --count N --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
+| `视频分镜创作 <prompt>` / `创作 <prompt> 视频` | Storyboard extraction + per-shot candidates + scoring + selection + assembly (when URLs exist). If 目标时长和`--shot-duration`给出，将按时长切片成多个镜头，默认每镜可自动提候选并打分。 | `python scripts/scope_commands.py video-story --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
+| `视频分镜创作 <prompt> [--send]` | 默认是 dry-run；补充 `--send` 才会真实调视频 API。 | `python scripts/scope_commands.py video-story --env-file <env> --user-prompt "<prompt>" --out-dir <out> --send` |
+| `视频分镜创作 <prompt> --interactive` | 人工逐镜挑选（按候选序号选择） | `python scripts/scope_commands.py video-story --env-file <env> --user-prompt "<prompt>" --out-dir <out> --interactive` |
 | `参考生图 <image> <prompt>` | Generate using a reference image for style/composition/identity/product guidance. | `python scripts/scope_commands.py reference-run --reference-image <image> --env-file <env> --user-prompt "<prompt>" --out-dir <out>` |
 | `严格链路 <prompt>` | Use the paper-style decomposition/synthesis/coverage chain. | Use the strict SCOPE runner for decomposition, synthesis, coverage verification, generation, and repair. |
 | `回归测试` / `预设回归` | Run route regression after preset or model changes. | `python scripts/run_v2_route_regression.py --env-file <env> --out-dir <out>` |
@@ -82,7 +87,7 @@ idiom_cinema, documentary, strategy_overhead, anime_cel
 
 ## Quick Workflow
 
-1. **Create a run directory**, e.g. `scope_runs/<short-task-name>/`.
+1. **Choose an output directory**, e.g. `scope_runs/<short-task-name>/`.
 2. **Decompose the request** into:
    - `entities`: people, characters, objects, text blocks, places, styles, logos, UI elements.
    - `constraints`: atomic attribute, relation, layout, style, text, or factual requirements.
@@ -108,7 +113,7 @@ idiom_cinema, documentary, strategy_overhead, anime_cel
 
 ## Environment Contract
 
-Prefer generic `SCOPE_*` variables in open-source examples. Set the adapter format first:
+Prefer generic `SCOPE_*` variables in examples. Set the adapter format first:
 
 ```env
 SCOPE_LLM_FORMAT=openai-responses
@@ -188,8 +193,6 @@ SCOPE_SEND_REFERENCE_IMAGE=1
 SCOPE_REFERENCE_IMAGE_FIELD=images
 ```
 
-Do not commit real env files or generated private outputs.
-
 ## Output Artifacts
 
 A serious run should persist compact artifacts:
@@ -198,11 +201,21 @@ A serious run should persist compact artifacts:
 scope_runs/<task>/
   user_request.txt
   route.json
+  video_route.json
   optimized_prompt.json
+  story_plan.json
+  shot_candidates.json
+  shot_selection.json
+  assembly_plan.json
+  assembly_result.json
+  assembly/final_video.mp4 (when assembly succeeds)
+  video_story_final_summary.json
+  video_final_summary.json
   generation_prompt.txt
   generation_prompt.attempt_N.txt
   image_result.attempt_N.json
   visual_audit.attempt_N.json
+  video_response.attempt_N.json
   reference_image.json
   image.png
   final_summary.json
@@ -242,7 +255,7 @@ When changing presets, model routing, or retry logic:
 python scripts/run_v2_route_regression.py --env-file <image.env> --llm-env-file <llm.env> --vision-env-file <vision.env> --out-dir scope_runs/scope_v2_regression
 ```
 
-For quick smoke tests:
+For a small validation run:
 
 ```bash
 python scripts/run_v2_route_regression.py --env-file <image.env> --max-cases 3 --skip-vision --dry-run

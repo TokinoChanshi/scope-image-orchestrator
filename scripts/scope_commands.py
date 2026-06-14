@@ -21,14 +21,27 @@ RUNNER = SCRIPT_ROOT / "generate_single_v2.py"
 SCOPE_PIPELINE = SCRIPT_ROOT / "run_scope_pipeline.py"
 REGRESSION_RUNNER = SCRIPT_ROOT / "run_v2_route_regression.py"
 AUDIT_RUNNER = SCRIPT_ROOT / "audit_generated_images_with_vision.py"
+VIDEO_RUNNER = SCRIPT_ROOT / "generate_video.py"
+VIDEO_STORY_RUNNER = SCRIPT_ROOT / "video_story_pipeline.py"
 
 
 def ensure_writable_out_dir(requested: Path) -> Path:
     requested = requested.expanduser()
+
+    def can_write_dir(path: Path) -> bool:
+        probe = path / ".scope_rw_probe"
+        try:
+            path.mkdir(parents=True, exist_ok=True)
+            probe.write_text("ok", encoding="utf-8")
+            probe.unlink(missing_ok=True)
+            return True
+        except Exception:
+            return False
+
     candidates = [
         requested,
         (Path.cwd() / requested).resolve(),
-        (Path("scope_runs") / requested).resolve(),
+        (Path("scope_runs") / requested.name).resolve(),
         (Path(tempfile.gettempdir()) / "scope_image_runs" / requested.name).resolve(),
     ]
 
@@ -39,8 +52,8 @@ def ensure_writable_out_dir(requested: Path) -> Path:
             continue
         seen.add(str(normalized))
         try:
-            normalized.mkdir(parents=True, exist_ok=True)
-            return normalized
+            if can_write_dir(normalized):
+                return normalized
         except OSError:
             continue
     raise RuntimeError(f"cannot create writable directory: {requested}")
@@ -326,21 +339,196 @@ def audit_run(args: argparse.Namespace) -> int:
     return run_child_with_optional(cmd, args)
 
 
+def _append_if_not_empty(cmd: list[str], flag: str, value: Any) -> None:
+    if value is None:
+        return
+    if isinstance(value, str) and value == "":
+        return
+    cmd.extend([flag, str(value)])
+
+
+def video_run(args: argparse.Namespace) -> int:
+    args.out_dir = ensure_writable_out_dir(args.out_dir)
+    cmd = [
+        sys.executable,
+        str(VIDEO_RUNNER),
+        "--env-file",
+        str(args.env_file),
+        "--user-prompt",
+        args.user_prompt,
+        "--out-dir",
+        str(args.out_dir),
+        "--route",
+        args.route,
+        "--duration",
+        str(args.duration),
+        "--fps",
+        str(args.fps),
+        "--max-prompt-chars",
+        str(args.max_prompt_chars),
+        "--timeout",
+        str(args.timeout),
+        "--preset-file",
+        str(args.preset_file),
+    ]
+    _append_if_not_empty(cmd, "--video-model", args.video_model)
+    _append_if_not_empty(cmd, "--aspect-ratio", args.aspect_ratio)
+    _append_if_not_empty(cmd, "--response-format", args.response_format)
+    _append_if_not_empty(cmd, "--video-request-retries", args.video_request_retries)
+    _append_if_not_empty(cmd, "--poll-attempts", args.poll_attempts)
+    _append_if_not_empty(cmd, "--poll-delay", args.poll_delay)
+    if args.dry_run:
+        cmd.append("--dry-run")
+    elif args.send:
+        cmd.append("--send")
+    return run_child_with_optional(cmd, args)
+
+
+def video_batch(args: argparse.Namespace) -> int:
+    if args.count < 1:
+        raise SystemExit("--count must be >= 1")
+    args.out_dir = ensure_writable_out_dir(args.out_dir)
+    cmd = [
+        sys.executable,
+        str(VIDEO_RUNNER),
+        "--env-file",
+        str(args.env_file),
+        "--user-prompt",
+        args.user_prompt,
+        "--out-dir",
+        str(args.out_dir),
+        "--route",
+        args.route,
+        "--count",
+        str(args.count),
+        "--duration",
+        str(args.duration),
+        "--fps",
+        str(args.fps),
+        "--max-prompt-chars",
+        str(args.max_prompt_chars),
+        "--timeout",
+        str(args.timeout),
+        "--preset-file",
+        str(args.preset_file),
+    ]
+    _append_if_not_empty(cmd, "--video-model", args.video_model)
+    _append_if_not_empty(cmd, "--aspect-ratio", args.aspect_ratio)
+    _append_if_not_empty(cmd, "--response-format", args.response_format)
+    _append_if_not_empty(cmd, "--video-request-retries", args.video_request_retries)
+    _append_if_not_empty(cmd, "--poll-attempts", args.poll_attempts)
+    _append_if_not_empty(cmd, "--poll-delay", args.poll_delay)
+    if args.dry_run:
+        cmd.append("--dry-run")
+    elif args.send:
+        cmd.append("--send")
+    return run_child_with_optional(cmd, args)
+
+
+def video_story_run(args: argparse.Namespace) -> int:
+    args.out_dir = ensure_writable_out_dir(args.out_dir)
+    cmd = [
+        sys.executable,
+        str(VIDEO_STORY_RUNNER),
+        "--env-file",
+        str(args.env_file),
+        "--user-prompt",
+        args.user_prompt,
+        "--out-dir",
+        str(args.out_dir),
+        "--preset-file",
+        str(args.preset_file),
+        "--route",
+        args.route,
+        "--target-duration",
+        str(args.target_duration),
+        "--fps",
+        str(args.fps),
+        "--shot-duration",
+        str(args.shot_duration),
+        "--min-shot-duration",
+        str(args.min_shot_duration),
+        "--max-shot-duration",
+        str(args.max_shot_duration),
+        "--max-shots",
+        str(args.max_shots),
+        "--candidate-count",
+        str(args.candidate_count),
+        "--score-threshold",
+        str(args.score_threshold),
+        "--selection-strategy",
+        args.selection_strategy,
+        "--max-prompt-chars",
+        str(args.max_prompt_chars),
+        "--timeout",
+        str(args.timeout),
+        "--video-request-retries",
+        str(args.video_request_retries),
+        "--poll-attempts",
+        str(args.poll_attempts),
+        "--poll-delay",
+        str(args.poll_delay),
+    ]
+    if args.duration > 0:
+        cmd.extend(["--duration", str(args.duration)])
+    _append_if_not_empty(cmd, "--llm-model", args.llm_model)
+    if args.video_model:
+        cmd.extend(["--video-model", args.video_model])
+    if args.llm_env_file:
+        cmd.extend(["--llm-env-file", str(args.llm_env_file)])
+    if args.aspect_ratio:
+        cmd.extend(["--aspect-ratio", args.aspect_ratio])
+    if args.response_format:
+        cmd.extend(["--response-format", args.response_format])
+    if args.selection_file:
+        cmd.extend(["--selection-file", str(args.selection_file)])
+    if args.disable_llm_score:
+        cmd.append("--disable-llm-score")
+    if args.require_pass:
+        cmd.append("--require-pass")
+    if args.max_pass_retry:
+        cmd.extend(["--max-pass-retry", str(args.max_pass_retry)])
+    if args.no_assemble:
+        cmd.append("--no-assemble")
+    if args.interactive:
+        cmd.append("--interactive")
+    if args.assembly_timeout:
+        cmd.extend(["--assembly-timeout", str(args.assembly_timeout)])
+    if args.ffmpeg_path:
+        cmd.extend(["--ffmpeg-path", str(args.ffmpeg_path)])
+    if args.dry_run:
+        cmd.append("--dry-run")
+    if args.send:
+        cmd.append("--send")
+    if args.print_only:
+        cmd.append("--print-only")
+    return run_child_with_optional(cmd, args)
+
+
 def print_commands(_: argparse.Namespace) -> int:
     print(
         """SCOPE Image Orchestrator command mode
 
-Chinese command aliases used by the skill:
-- 生图优化: enter command mode in the current thread
-- 查看预设 [route]: list route presets from references/scope-preset-library.json
-- 查看主题包 [name]: list image theme packs from references/scope-preset-library.json
-- 批量跑 N 张 <prompt>: run generate_single_v2.py N times
-- 参考生图 <image> <prompt>: run with --reference-image
-- 严格链路 <prompt>: use run_scope_pipeline.py
-- 回归测试: run run_v2_route_regression.py
-- 审核 <image_root>: use audit_generated_images_with_vision.py
-- 单张跑 / 跑图 <prompt>: run generate_single_v2.py once
-- 退出生图优化: leave command mode
+命令列表（command mode）：
+  - 生图优化: 进入图像 / 视频命令模式（当前会话内会持续解析生图类指令）
+  - 查看预设 [route]: 查看路由配置（可加 --route）
+  - 查看主题包 [name]: 查看主题包（可加 --detail）
+  - 生图 <prompt> / 单张生图 <prompt>: 生成 1 张图
+  - 批量生图 N <prompt>: 一次生成 N 张图
+  - 参考生图 <image> <prompt>: 基于参考图生成
+  - 严格链路 <prompt>: 执行 run_scope_pipeline.py 的完整链路
+  - 回归测试: 运行 run_v2_route_regression.py
+  - 审核 <image_root>: 运行 audit_generated_images_with_vision.py
+  - 三模型对比 <image_root>: 对图片集合做多模型视觉评测
+
+视频链路（含示例）：
+  - 跑视频 <prompt>: `python scripts/scope_commands.py video-run --env-file <env> --user-prompt "<prompt>" --out-dir <out> [--send]`
+  - 批量跑视频 N <prompt>: `python scripts/scope_commands.py video-batch --env-file <env> --user-prompt "<prompt>" --out-dir <out> --count N [--send]`
+  - 视频分镜创作 <prompt> / 创作 <prompt> 视频: `python scripts/scope_commands.py video-story --env-file <env> --user-prompt "<prompt>" --out-dir <out>`
+    - 示例（建议起步）：3分钟 / 每镜10秒 / 每镜3候选
+      `... video-story --env-file <env> --user-prompt "<prompt>" --out-dir <out> --target-duration 180 --shot-duration 10 --candidate-count 3`
+    - 仅生成规划（不走视频 API）：追加 --dry-run
+    - 人工逐镜：追加 --interactive
 """
     )
     return 0
@@ -442,6 +630,88 @@ def parse_args() -> argparse.Namespace:
     p_audit.add_argument("--print-only", action="store_true", help="Print child command without running.")
     p_audit.set_defaults(func=audit_run)
 
+    p_video = sub.add_parser("video-run", help="Run one video generation job via generate_video.py.")
+    p_video.add_argument("--env-file", required=True, type=Path)
+    p_video.add_argument("--user-prompt", required=True)
+    p_video.add_argument("--out-dir", required=True, type=Path)
+    p_video.add_argument("--preset-file", type=Path, default=SKILL_ROOT / "references" / "scope-video-presets.json")
+    p_video.add_argument("--route", default="", help="Route key, e.g. single_take | shot_driven | photo_to_video | magazine_broll.")
+    p_video.add_argument("--video-model")
+    p_video.add_argument("--duration", type=int, default=8)
+    p_video.add_argument("--fps", type=int, default=24)
+    p_video.add_argument("--aspect-ratio", default="")
+    p_video.add_argument("--response-format", default="url")
+    p_video.add_argument("--max-prompt-chars", type=int, default=1200)
+    p_video.add_argument("--timeout", type=int, default=180)
+    p_video.add_argument("--video-request-retries", type=int, default=2)
+    p_video.add_argument("--poll-attempts", type=int, default=8)
+    p_video.add_argument("--poll-delay", type=float, default=6.0)
+    p_video.add_argument("--send", action="store_true", help="Actually request the video API. Without this flag, run in dry mode.")
+    p_video.add_argument("--dry-run", action="store_true", help="Print generated request only.")
+    p_video.add_argument("--print-only", action="store_true", help="Print child command without running it.")
+    p_video.set_defaults(func=video_run)
+
+    p_video_batch = sub.add_parser("video-batch", help="Run the same video prompt N times.")
+    p_video_batch.add_argument("--env-file", required=True, type=Path)
+    p_video_batch.add_argument("--user-prompt", required=True)
+    p_video_batch.add_argument("--out-dir", required=True, type=Path)
+    p_video_batch.add_argument("--count", type=int, required=True)
+    p_video_batch.add_argument("--preset-file", type=Path, default=SKILL_ROOT / "references" / "scope-video-presets.json")
+    p_video_batch.add_argument("--route", default="", help="Route key.")
+    p_video_batch.add_argument("--video-model")
+    p_video_batch.add_argument("--duration", type=int, default=8)
+    p_video_batch.add_argument("--fps", type=int, default=24)
+    p_video_batch.add_argument("--aspect-ratio", default="")
+    p_video_batch.add_argument("--response-format", default="url")
+    p_video_batch.add_argument("--max-prompt-chars", type=int, default=1200)
+    p_video_batch.add_argument("--timeout", type=int, default=180)
+    p_video_batch.add_argument("--video-request-retries", type=int, default=2)
+    p_video_batch.add_argument("--poll-attempts", type=int, default=8)
+    p_video_batch.add_argument("--poll-delay", type=float, default=6.0)
+    p_video_batch.add_argument("--send", action="store_true", help="Actually request the video API. Without this flag, run in dry mode.")
+    p_video_batch.add_argument("--dry-run", action="store_true", help="Print generated request only.")
+    p_video_batch.add_argument("--print-only", action="store_true", help="Print child command without running it.")
+    p_video_batch.set_defaults(func=video_batch)
+
+    p_video_story = sub.add_parser("video-story", help="Run video storyboard pipeline (storyboard + multiple candidate variants per shot).")
+    p_video_story.add_argument("--env-file", required=True, type=Path)
+    p_video_story.add_argument("--llm-env-file", type=Path)
+    p_video_story.add_argument("--user-prompt", required=True)
+    p_video_story.add_argument("--out-dir", required=True, type=Path)
+    p_video_story.add_argument("--preset-file", type=Path, default=SKILL_ROOT / "references" / "scope-video-presets.json")
+    p_video_story.add_argument("--route", default="", help="Route key, e.g. single_take | shot_driven | photo_to_video | magazine_broll.")
+    p_video_story.add_argument("--llm-model", default="gpt-5.5")
+    p_video_story.add_argument("--video-model")
+    p_video_story.add_argument("--target-duration", type=int, default=60)
+    p_video_story.add_argument("--shot-duration", type=int, default=0)
+    p_video_story.add_argument("--min-shot-duration", type=int, default=4)
+    p_video_story.add_argument("--max-shot-duration", type=int, default=16)
+    p_video_story.add_argument("--max-shots", type=int, default=0)
+    p_video_story.add_argument("--candidate-count", type=int, default=3)
+    p_video_story.add_argument("--score-threshold", type=float, default=0.68)
+    p_video_story.add_argument("--selection-strategy", choices=["auto", "first", "manual"], default="auto")
+    p_video_story.add_argument("--selection-file", type=Path)
+    p_video_story.add_argument("--interactive", action="store_true", help="Enable interactive per-shot manual selection.")
+    p_video_story.add_argument("--disable-llm-score", action="store_true", help="Use heuristic scoring only.")
+    p_video_story.add_argument("--require-pass", action="store_true", help="Skip all candidates that do not pass the quality threshold.")
+    p_video_story.add_argument("--max-pass-retry", type=int, default=0, help="Extra candidate attempts when require-pass is enabled.")
+    p_video_story.add_argument("--duration", type=int, default=0, help="Compatibility alias for target-duration.")
+    p_video_story.add_argument("--fps", type=int, default=24)
+    p_video_story.add_argument("--aspect-ratio", default="")
+    p_video_story.add_argument("--response-format", default="url")
+    p_video_story.add_argument("--max-prompt-chars", type=int, default=1200)
+    p_video_story.add_argument("--timeout", type=int, default=180)
+    p_video_story.add_argument("--video-request-retries", type=int, default=2)
+    p_video_story.add_argument("--poll-attempts", type=int, default=8)
+    p_video_story.add_argument("--poll-delay", type=float, default=6.0)
+    p_video_story.add_argument("--no-assemble", action="store_true", help="Skip final local ffmpeg assembly.")
+    p_video_story.add_argument("--assembly-timeout", type=int, default=1200, help="Local ffmpeg command timeout in seconds.")
+    p_video_story.add_argument("--ffmpeg-path", help="Custom ffmpeg executable path.")
+    p_video_story.add_argument("--send", action="store_true", help="Actually call the video API. Without this flag, run in dry mode.")
+    p_video_story.add_argument("--dry-run", action="store_true", help="Print generated request only.")
+    p_video_story.add_argument("--print-only", action="store_true", help="Print child command without running it.")
+    p_video_story.set_defaults(func=video_story_run)
+
     return parser.parse_args()
 
 
@@ -452,3 +722,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

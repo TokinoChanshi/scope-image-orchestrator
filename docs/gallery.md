@@ -2,7 +2,7 @@
 
 # 示例图集
 
-Sample outputs from local runs (representative only).
+Curated sample outputs.
 
 ## Examples
 
@@ -19,5 +19,5 @@ Sample outputs from local runs (representative only).
 ## Note
 
 - 样例图仅供风格演示，不承诺任何单张结果完全一致。
-- 文档与脚本仅用于工程复现与方法验证。
-- 对照 `generation_prompt.txt` 与 `final_summary.json` 可复盘每次调用的生成链路。
+- 文档与脚本用于展示工作流与预设方向。
+- 结果会因模型、接口、参数与参考信息而变化。

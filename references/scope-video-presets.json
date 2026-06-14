@@ -1,0 +1,162 @@
+{
+  "schema_version": "scope-video-presets-v1",
+  "updated_at": "2026-06-13",
+  "global_rules": {
+    "language": "Compact control-first prompts in English for API stability.",
+    "negative_anchor": "Negative: no random text overlays, no duplicated subtitles, no watermark, no low-quality compression artifacts.",
+    "defaults": {
+      "duration_seconds": 8,
+      "default_shot_duration": 8,
+      "fps": 24,
+      "aspect_ratio": "16:9",
+      "max_prompt_chars": 1200
+    },
+    "default_route": "single_take"
+  },
+  "video_routes": {
+    "single_take": {
+      "route_hint": "single-take or one-shot choreography, practical character continuity, no hard cuts",
+      "planning_template": "Create one coherent one-shot video sequence under the given duration.",
+      "default_shot_duration": 9,
+      "shot_design": "single continuous movement; keep one clear subject arc and one practical camera path.",
+      "duration_range": [6, 15],
+      "default_aspect_ratio": "9:16",
+      "keywords": [
+        "single-take",
+        "one shot",
+        "one take",
+        "continuous",
+        "walkthrough",
+        "tracking"
+      ],
+      "booster_lines": [
+        "start with a clear action beat then move into detail beats",
+        "keep character movement stable and physically plausible",
+        "maintain consistent fabric/lighting continuity"
+      ],
+      "audio_notes": [
+        "ambient room tone should be consistent",
+        "prefer subtle realistic sound cues and breath movement over loud music"
+      ]
+    },
+    "shot_driven": {
+      "route_hint": "multi-shot cinematic clip with clear time-coded shot list and transitions",
+      "planning_template": "Compose the request as a short shot list with explicit in/out actions.",
+      "default_shot_duration": 12,
+      "shot_design": "3 to 5 shots, each with one major action and one camera move.",
+      "duration_range": [8, 18],
+      "default_aspect_ratio": "16:9",
+      "keywords": [
+        "shot breakdown",
+        "timeline",
+        "cinematic",
+        "montage",
+        "scene changes",
+        "分镜",
+        "分镜头",
+        "故事板",
+        "magazine",
+        "杂志",
+        "poster",
+        "杂志页"
+      ],
+      "booster_lines": [
+        "every shot must have one clear subject and one clear motion",
+        "transitions must preserve temporal continuity",
+        "scene transitions should include practical context changes"
+      ],
+      "audio_notes": [
+        "if available add short sound transition cue points",
+        "support background texture with practical ambience"
+      ]
+    },
+    "photo_to_video": {
+      "route_hint": "derive motion from still-image references while preserving composition fidelity",
+      "planning_template": "Use the uploaded still/image references as composition anchors, then animate natural micro-motion.",
+      "default_shot_duration": 10,
+      "shot_design": "1-2 shots, avoid major perspective changes and keep anchor geometry stable.",
+      "duration_range": [6, 12],
+      "default_aspect_ratio": "16:9",
+      "keywords": [
+        "reference image",
+        "photo motion",
+        "still reference",
+        "anchor geometry",
+        "consistency"
+      ],
+      "booster_lines": [
+        "preserve pose geometry across frames",
+        "micro-motion only; no heavy distortion",
+        "keep clothing and fabric behavior physically plausible"
+      ],
+      "audio_notes": [
+        "use low-profile room sound to avoid mismatch with still-style visuals",
+        "avoid over-layered music during motion anchors"
+      ]
+    },
+    "magazine_broll": {
+      "route_hint": "high-end fashion or lifestyle magazine-style b-roll with readable motion and typography intent",
+      "planning_template": "Generate short polished b-roll with one hero, one title-support block, and one background movement layer.",
+      "default_shot_duration": 10,
+      "shot_design": "2-4 shots with controlled parallax and editorial pacing.",
+      "duration_range": [7, 14],
+      "default_aspect_ratio": "9:16",
+      "keywords": [
+        "magazine",
+        "b-roll",
+        "editorial",
+        "lifestyle",
+        "cover scene",
+        "interior",
+        "室内",
+        "home",
+        "室内生活",
+        "场景",
+        "space",
+        "interior shoot",
+        "镜头",
+        "镜头切换"
+      ],
+      "booster_lines": [
+        "strong hero presentation in first 2 seconds",
+        "text-friendly spacing and clean negative space",
+        "strong lighting continuity across the clip"
+      ],
+      "audio_notes": [
+        "light ambient and subtle hit points before cuts",
+        "prioritize natural room acoustics and fabric movement"
+      ]
+    },
+    "bathroom_selfie": {
+      "route_hint": "modern bathroom mirror selfie scene with natural phone framing and intimate lifestyle styling",
+      "planning_template": "Build a warm, realistic mirror selfie narrative with practical self-holding motion and smooth pacing.",
+      "default_shot_duration": 10,
+      "shot_design": "1-3 shots, phone selfie framing, one natural hand-led motion, one subject-facing reflection shot.",
+      "duration_range": [6, 16],
+      "default_aspect_ratio": "9:16",
+      "keywords": [
+        "bathroom selfie",
+        "镜前自拍",
+        "镜子自拍",
+        "浴室",
+        "bathroom",
+        "自拍",
+        "mirror",
+        "mirror selfie",
+        "酒店",
+        "hotel bathroom",
+        "白衬衫"
+      ],
+      "booster_lines": [
+        "keep one mirror reflection, avoid impossible geometry",
+        "phone frame should feel hand-held with slight natural movement",
+        "preserve fabric and skin continuity with practical motion blur only"
+      ],
+      "audio_notes": [
+        "low background water/air sounds where appropriate",
+        "keep music restrained and non-distracting"
+      ]
+    }
+  },
+  "external_source_note": "Prompt logic is distilled from previously provided workflow fragments and public video planning practice."
+}

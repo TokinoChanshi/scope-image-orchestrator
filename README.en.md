@@ -106,6 +106,22 @@ idiom_cinema, documentary, strategy_overhead, anime_cel
 
 Most preset ideas are distilled from public prompt examples and community practices. The library keeps route-level controls rather than redistributing verbatim third-party prompt bodies.
 
+## Smoke test matrix (dry-run)
+
+```bash
+# 1) Image workflow smoke (single)
+python scripts/generate_single_v2.py --env-file .env --user-prompt "cinematic product photo, warm indoor light" --out-dir scope_runs/smoke_image --dry-run
+
+# 2) Video generation smoke (single route build)
+python scripts/scope_commands.py video-run --env-file .env --user-prompt "high-end lifestyle montage" --out-dir scope_runs/smoke_video
+
+# 3) Video storyboard smoke (multi-shot + candidates)
+python scripts/scope_commands.py video-story --env-file .env --user-prompt "create a 60-second premium lifestyle story" --out-dir scope_runs/smoke_story --target-duration 60 --shot-duration 10 --candidate-count 3
+
+# 4) Route-regression smoke
+python scripts/run_v2_route_regression.py --env-file .env --max-cases 1 --skip-vision --dry-run --out-dir scope_runs/smoke_regression
+```
+
 ## Related docs
 
 - `SKILL.md`
@@ -113,7 +129,7 @@ Most preset ideas are distilled from public prompt examples and community practi
 
 ## Community
 
-Friendly support: Linux Do Community
+Linux Do Community
 
 QQ group: `1107570994`
 

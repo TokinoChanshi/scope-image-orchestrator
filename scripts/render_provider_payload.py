@@ -81,6 +81,15 @@ def render(cfg: dict[str, Any], role: str, prompt: str, system: str, size: str, 
         endpoint = provider.get("generations_url") or "${" + provider.get("generations_url_env", "SCOPE_IMAGE_GENERATIONS_URL") + "}"
         if endpoint.startswith("${"):
             endpoint = render_openai_endpoint(base_url, "images/generations")
+    elif adapter in {"openai-videos", "openai-videos-legacy"}:
+        payload = {
+            "model": model,
+            "prompt": prompt,
+            **defaults,
+        }
+        endpoint = provider.get("generations_url") or "${" + provider.get("generations_url_env", "SCOPE_VIDEO_GENERATIONS_URL") + "}"
+        if endpoint.startswith("${"):
+            endpoint = render_openai_endpoint(base_url, "videos/generations")
     elif adapter == "openai-responses-image":
         payload = {
             "model": model,
@@ -138,6 +147,13 @@ def render(cfg: dict[str, Any], role: str, prompt: str, system: str, size: str, 
             "prompt": prompt,
             "n": n or defaults.get("n", 1),
             "size": size or defaults.get("size", "1024x1024"),
+            **defaults,
+        }
+        endpoint = provider.get("endpoint_url") or base_url
+    elif adapter == "generic-video-json":
+        payload = {
+            "model": model,
+            "prompt": prompt,
             **defaults,
         }
         endpoint = provider.get("endpoint_url") or base_url

@@ -49,6 +49,10 @@
     "image_generator_legacy": {
       "provider": "image_legacy",
       "model": "image-model"
+    },
+    "video_generator": {
+      "provider": "video_openai",
+      "model": "video-model"
     }
   },
   "providers": {
@@ -196,6 +200,19 @@
       "default_options": {
         "n": 1,
         "response_format": "b64_json"
+      }
+    },
+    "video_openai": {
+      "adapter": "openai-videos",
+      "base_url_env": "SCOPE_VIDEO_BASE_URL",
+      "api_key_env": "SCOPE_VIDEO_API_KEY",
+      "models": [
+        "video-model"
+      ],
+      "default_options": {
+        "duration_seconds": 8,
+        "fps": 24,
+        "response_format": "url"
       }
     }
   }

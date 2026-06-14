@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """Run the v2 SCOPE route regression matrix.
 
-This is the reusable version of the 42-case smoke/regression batch used when
-prompt presets, external prompt libraries, model routing, or endpoint reliability
-logic changes.
+This is the reusable 42-case regression batch for preset, routing, and endpoint
+reliability changes.
 """
 from __future__ import annotations
 

@@ -19,6 +19,9 @@ Supported adapters:
 | Image | `openai-images` | OpenAI Images, `POST /v1/images/generations` |
 | Image | `openai-responses-image` | OpenAI Responses with `image_generation` tool |
 | Image | `google-gemini-image` | Gemini native image generation |
+| Video | `openai-videos` | OpenAI-style video generation endpoint, `POST /v1/videos/generations` |
+| Video | `openai-videos-legacy` | OpenAI-compatible legacy path from `SCOPE_VIDEO_GENERATIONS_URL` |
+| Video | `generic-video-json` | Generic JSON video endpoint |
 | Generic text | `generic-text-json` | Simple JSON wrapper endpoint |
 | Generic vision | `generic-vision-json` | Simple JSON wrapper endpoint with data URL images |
 | Generic image | `generic-image-json` | Simple JSON image endpoint |
@@ -242,6 +245,38 @@ SCOPE_GOOGLE_API_KEY_AUTH=bearer  # Authorization: Bearer ...
 
 With a reference image, add an `inlineData` part. Generated image bytes are read
 from `candidates[].content.parts[].inlineData.data`.
+
+## OpenAI video generation
+
+Request:
+
+```json
+{
+  "model": "video-model",
+  "prompt": "compact cinematic one-shot story",
+  "duration_seconds": 8,
+  "fps": 24,
+  "aspect_ratio": "16:9",
+  "n": 1
+}
+```
+
+Legacy-compatible endpoints may also accept `/v1/videos/generations` and may return:
+
+```json
+{"task_id":"abcd1234"}
+```
+
+or direct:
+
+```json
+{"data":[{"url":"https://.../sample.mp4"}]}
+```
+
+Task polling for async responses uses:
+
+- `SCOPE_VIDEO_TASK_STATUS_URL` (template)
+- fallback `SCOPE_VIDEO_BASE_URL + \"/v1/videos/{task_id}\"`
 
 ## Generic JSON adapters
 

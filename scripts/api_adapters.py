@@ -42,6 +42,11 @@ ADAPTER_ALIASES = {
     "openai-images-generation": "openai-images",
     "openai-image-generation": "openai-images",
     "openai-images-legacy-json": "openai-images-legacy",
+    "openai-video": "openai-videos",
+    "openai-videos": "openai-videos",
+    "openai-videos-generations": "openai-videos-legacy",
+    "openai-video-generation": "openai-videos",
+    "openai-videos-legacy": "openai-videos-legacy",
     "openai-responses-image-generation": "openai-responses-image",
     "gemini": "google-gemini",
     "google": "google-gemini",
@@ -55,6 +60,8 @@ ADAPTER_ALIASES = {
     "generic-chat-json": "generic-text-json",
     "generic-vision": "generic-vision-json",
     "generic-image": "generic-image-json",
+    "generic-video": "generic-video-json",
+    "generic-video-json": "generic-video-json",
     "custom-json": "generic-text-json",
     "custom-text-json": "generic-text-json",
     "custom-vision-json": "generic-vision-json",
@@ -546,6 +553,91 @@ def build_image_request(
         return url, generic_json_headers(api_key, env, "image"), payload, adapter
 
     raise ValueError(f"unsupported image adapter: {adapter_raw}")
+
+
+def build_video_request(
+    adapter_raw: str,
+    base_url: str,
+    api_key: str,
+    model: str,
+    prompt: str,
+    env: dict[str, str] | None = None,
+    *,
+    duration_seconds: int = 8,
+    fps: int = 24,
+    aspect_ratio: str | None = None,
+    n: int = 1,
+    response_format: str | None = None,
+    endpoint_override: str | None = None,
+) -> tuple[str, dict[str, str], dict[str, Any], str]:
+    env = env or {}
+    adapter = normalize_adapter(adapter_raw, "openai-videos")
+
+    if adapter in {"openai-videos", "openai-videos-legacy"}:
+        payload: dict[str, Any] = {
+            "model": model,
+            "prompt": prompt,
+            "n": int(n),
+            "duration_seconds": int(duration_seconds),
+            "fps": int(fps),
+        }
+        if aspect_ratio:
+            payload["aspect_ratio"] = aspect_ratio
+        if response_format or env.get("SCOPE_VIDEO_RESPONSE_FORMAT"):
+            payload["response_format"] = response_format or env.get("SCOPE_VIDEO_RESPONSE_FORMAT")
+        return endpoint_override or openai_url(base_url, "videos/generations"), json_headers(api_key), payload, adapter
+
+    if adapter == "generic-video-json":
+        payload: dict[str, Any] = {
+            "model": model,
+            "prompt": prompt,
+            "n": int(n),
+            "duration_seconds": int(duration_seconds),
+            "fps": int(fps),
+        }
+        if aspect_ratio:
+            payload["aspect_ratio"] = aspect_ratio
+        if response_format or env.get("SCOPE_VIDEO_RESPONSE_FORMAT"):
+            payload["response_format"] = response_format or env.get("SCOPE_VIDEO_RESPONSE_FORMAT")
+        return endpoint_override or generic_endpoint(env, "video", base_url, api_key), generic_json_headers(api_key, env, "video"), payload, adapter
+
+    raise ValueError(f"unsupported video adapter: {adapter_raw}")
+
+
+def extract_video_items(body: Any) -> list[dict[str, Any]]:
+    """Return video candidates as {url, format, source} dictionaries."""
+    items: list[dict[str, Any]] = []
+    if not isinstance(body, dict):
+        return items
+
+    def add_candidate(value: Any, source: str) -> None:
+        if not isinstance(value, str) or not value:
+            return
+        if value.startswith("http://") or value.startswith("https://"):
+            items.append({"url": value, "source": source})
+
+    for key in ("video_url", "url", "fileUrl", "file_url", "output_url", "result_url"):
+        add_candidate(body.get(key), f"body.{key}")
+
+    for item in body.get("data") or []:
+        if not isinstance(item, dict):
+            continue
+        for key in ("video_url", "url", "fileUrl", "file_url", "output_url", "result_url"):
+            add_candidate(item.get(key), f"data.{key}")
+
+    for output in body.get("output") or []:
+        if not isinstance(output, dict):
+            continue
+        for key in ("video", "result", "url", "fileUrl", "file_url"):
+            value = output.get(key)
+            if isinstance(value, str):
+                add_candidate(value, f"output.{key}")
+
+    for key in ("task_id",):
+        value = body.get(key)
+        if value is not None:
+            items.append({"task_id": str(value), "source": "body.task_id"})
+    return items
 
 
 def extract_text(adapter_raw: str, body: Any) -> str:
