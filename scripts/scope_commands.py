@@ -529,6 +529,8 @@ def print_commands(_: argparse.Namespace) -> int:
       `... video-story --env-file <env> --user-prompt "<prompt>" --out-dir <out> --target-duration 180 --shot-duration 10 --candidate-count 3`
     - 仅生成规划（不走视频 API）：追加 --dry-run
     - 人工逐镜：追加 --interactive
+  - 一句式视频创作（自然语言）：`python scripts/run_video_skill.py --env-file <env> --user-input "<prompt>" --out-dir <out>`
+    - 默认干跑；含时长/节奏/备选信息时自动映射为 video-story 参数
 """
     )
     return 0

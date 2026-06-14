@@ -1,48 +1,63 @@
-[中文（主）](README.md) | [English](README.en.md) | [中文镜像](README.zh-CN.md)
-
 # SCOPE Image Orchestrator
 
-`README.md` 为主中文说明；本文件保留为中文镜像与兼容入口，便于历史链接继续可用。
+这是一个开源的图像/视频生成流程封装项目，聚焦“可复现”与“可追踪”的生产逻辑：
 
-## 快速入口
+1) 解析用户意图（路线、风格、限制）
+2) 路由到预设
+3) 预处理/优化提示词
+4) 调用文本/图像/视频模型
+5) 结果校验与打分
+6) 回传修正（多次重跑）
 
-- 主说明：`README.md`
-- 英文说明：`README.en.md`
-- Skill 说明：`SKILL.md`
-- 图集：`docs/gallery.md`
-- 预设库：`references/scope-preset-library.json`
-- 接口说明：`references/api-providers.md`
+本仓库实现受 arXiv 论文《SCOPE》的启发（论文参考见 `references/scope-paper.md`），不复现其官方代码。
 
-## 项目概述
-
-这是一个面向图像生成协同流程的开源 Skill。  
-核心目标是把“自然语言需求 → 结构化约束 → 路由 → 优化 → 生图 → 审核 → 修复”做成一条可复现链路。
-
-## 论文来源
-
-- **SCOPE: Structured Decomposition and Conditional Skill Orchestration for Complex Image Generation**
-- arXiv: https://arxiv.org/abs/2605.08043
-- HTML: https://arxiv.org/html/2605.08043v1
-- Project: https://nopnor.github.io/SCOPE/
-
-## 常用命令
+## 快速开始
 
 ```bash
+cp references/.env.example .env
+python scripts/generate_single_v2.py --env-file .env --user-prompt "高端生活场景照片" --out-dir scope_runs/example --dry-run
 python scripts/scope_commands.py commands
-python scripts/scope_commands.py list-presets --detail
-python scripts/generate_single_v2.py --env-file .env --user-prompt "你的图像需求" --out-dir scope_runs/example --dry-run
 ```
 
-## 说明
+## 命令入口
 
-- 中文优先以 `README.md` 为准
-- 公开文档仅展示模型名与通用兼容格式
-- 不提交真实 key、私有 endpoint、私有输出
+常用命令示例：
+
+```bash
+python scripts/scope_commands.py list-presets --detail
+python scripts/scope_commands.py video-run --env-file .env --user-prompt "高端生活片段" --out-dir scope_runs/video --dry-run
+python scripts/scope_commands.py video-story --env-file .env --user-prompt "创建一个60秒分镜故事" --out-dir scope_runs/story --target-duration 60 --shot-duration 10 --candidate-count 3
+python scripts/run_v2_route_regression.py --env-file .env --max-cases 1 --skip-vision --dry-run --out-dir scope_runs/regression
+```
+
+## 视觉模型/视频自然语言入口
+
+支持一句话直接驱动分镜与候选生成（推荐）：
+
+```bash
+python scripts/run_video_skill.py \
+  --env-file .env \
+  --user-input "创作一个3分钟的高端生活片，每10秒一个镜头，每镜3个备选" \
+  --out-dir scope_runs/story_mode
+```
+
+- 默认不开启 `--send`，脚本进入干跑（dry-run）；
+- 可自动解析 `3分钟`、`每10秒`、`每镜3个` 等；
+- 支持 `--send`、`--interactive`、`--selection-strategy`、`--max-shots`、`--no-assemble`。
+
+### 兼容模型与格式
+
+文档与示例只列出模型名称，不包含私有端点和密钥信息。支持模型形态：
+
+- OpenAI 兼容接口（文本/图像/视频）
+- Google Gemini 接口
+- 通用 JSON 包装接口（可用于自定义代理）
+
+更多适配说明见 `references/api-providers.md`。
 
 ## 社区
 
-友情支持：Linux Do 社区
-
+Linux Do 社区  
 QQ 群：`1107570994`
 
 <img src="docs/assets/qq-group.png" alt="QQ group 1107570994" width="360">

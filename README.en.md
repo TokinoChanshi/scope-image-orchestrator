@@ -122,6 +122,25 @@ python scripts/scope_commands.py video-story --env-file .env --user-prompt "crea
 python scripts/run_v2_route_regression.py --env-file .env --max-cases 1 --skip-vision --dry-run --out-dir scope_runs/smoke_regression
 ```
 
+## 自然语言视频入口（建议日常）
+
+如果你更习惯一句话描述目标时长，可以直接调用：
+
+```bash
+python scripts/run_video_skill.py \
+  --env-file .env \
+  --user-input "创作一个3分钟高端生活片，每10秒一个镜头，每镜3个备选" \
+  --out-dir scope_runs/story_mode \
+  --send
+```
+
+说明：
+
+- 脚本会自动解析 `3分钟`、`每10秒`、`每镜3个` 等信息并映射到 `video-story` 的参数；
+- 未加 `--send` 时默认干跑（`--dry-run`）；
+- 你可以通过 `--candidate-count / --shot-duration / --target-duration / --route` 覆盖推断结果；
+- 支持 `--interactive`、`--max-shots`、`--no-assemble` 等同 `video-story` 的常用参数。
+
 ## Related docs
 
 - `SKILL.md`
