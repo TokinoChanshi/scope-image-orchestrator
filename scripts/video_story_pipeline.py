@@ -769,6 +769,14 @@ def _build_storyboard(
     if not shots:
         shots = _fallback_story_from_prompt(user_prompt, target_shot_count, shot_base, min_shot, max_shot)
 
+    shots = _align_shots_to_target_count(
+        shots=shots,
+        target_count=target_shot_count,
+        shot_base=shot_base,
+        min_shot=min_shot,
+        max_shot=max_shot,
+    )
+
     durations = _normalize_duration_sequence([s.duration_seconds for s in shots], target_duration, min_shot, max_shot)
     for shot, duration in zip(shots, durations):
         shot.duration_seconds = _clamp_int(duration, min_shot, max_shot)
@@ -776,6 +784,7 @@ def _build_storyboard(
     return shots, {
         "route": route,
         "shot_count_target": target_shot_count,
+        "shot_count_actual": len(shots),
         "llm_extracted": llm_used,
         "route_hint": route_cfg.get("route_hint"),
     }, "ok" if llm_used else "fallback"
@@ -864,6 +873,39 @@ def _build_candidate_record(
         "suggestions": suggestions,
     })
     return record
+
+
+def _align_shots_to_target_count(
+    shots: list[StoryShot],
+    target_count: int,
+    shot_base: int,
+    min_shot: int,
+    max_shot: int,
+) -> list[StoryShot]:
+    if target_count <= 0:
+        return shots
+    if not shots:
+        return []
+    if len(shots) > target_count:
+        shots = shots[:target_count]
+    elif len(shots) < target_count:
+        seed_count = len(shots)
+        while len(shots) < target_count:
+            seed = shots[len(shots) % seed_count]
+            shots.append(
+                StoryShot(
+                    shot_index=len(shots) + 1,
+                    goal=f"{seed.goal}（续）",
+                    visual=seed.visual or "continuity-preserving extension",
+                    camera=seed.camera or "smooth continuity movement",
+                    transition=seed.transition or "clean cut",
+                    duration_seconds=_clamp_int(shot_base, min_shot, max_shot),
+                    notes=f"{seed.notes or ''} auto-extended".strip(),
+                )
+            )
+    for idx, shot in enumerate(shots, start=1):
+        shot.shot_index = idx
+    return shots
 
 
 def _write_selection_template(out_dir: Path, selected_records: list[dict[str, Any]], candidate_records: list[dict[str, Any]]) -> None:
@@ -1664,7 +1706,8 @@ def main() -> int:
         "user_prompt": args.user_prompt,
         "route": route,
         "target_duration_seconds": args.target_duration,
-        "target_shots": math.ceil(args.target_duration / max(1, shot_base)),
+        "target_shots": storyboard_meta.get("shot_count_target", math.ceil(args.target_duration / max(1, shot_base))),
+        "actual_shots": storyboard_meta.get("shot_count_actual", len(storyboard)),
         "target_shot_duration": shot_base,
         "selection_strategy": args.selection_strategy,
         "require_pass": args.require_pass,

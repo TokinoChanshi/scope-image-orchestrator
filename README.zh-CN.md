@@ -28,6 +28,7 @@ python scripts/scope_commands.py list-presets --detail
 python scripts/scope_commands.py video-run --env-file .env --user-prompt "高端生活片段" --out-dir scope_runs/video --dry-run
 python scripts/scope_commands.py video-story --env-file .env --user-prompt "创建一个60秒分镜故事" --out-dir scope_runs/story --target-duration 60 --shot-duration 10 --candidate-count 3
 python scripts/run_v2_route_regression.py --env-file .env --max-cases 1 --skip-vision --dry-run --out-dir scope_runs/regression
+python scripts/scope_commands.py video-skill-check --env-file .env --out-dir scope_runs/video_skill_check
 ```
 
 ## 视觉模型/视频自然语言入口

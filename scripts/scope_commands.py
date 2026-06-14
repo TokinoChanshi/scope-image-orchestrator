@@ -23,6 +23,7 @@ REGRESSION_RUNNER = SCRIPT_ROOT / "run_v2_route_regression.py"
 AUDIT_RUNNER = SCRIPT_ROOT / "audit_generated_images_with_vision.py"
 VIDEO_RUNNER = SCRIPT_ROOT / "generate_video.py"
 VIDEO_STORY_RUNNER = SCRIPT_ROOT / "video_story_pipeline.py"
+VIDEO_SKILL_CHECK_RUNNER = SCRIPT_ROOT / "run_video_skill_check.py"
 
 
 def ensure_writable_out_dir(requested: Path) -> Path:
@@ -314,6 +315,24 @@ def regression_run(args: argparse.Namespace) -> int:
     return run_child_with_optional(cmd, args)
 
 
+def video_skill_check(args: argparse.Namespace) -> int:
+    cmd = [
+        sys.executable,
+        str(VIDEO_SKILL_CHECK_RUNNER),
+        "--env-file",
+        str(args.env_file),
+        "--out-dir",
+        str(args.out_dir),
+        "--smoke-user-input",
+        args.smoke_user_input,
+    ]
+    if args.skip_smoke:
+        cmd.append("--skip-smoke")
+    if args.print_only:
+        cmd.append("--print-only")
+    return run_child_with_optional(cmd, args, dry_field="print_only")
+
+
 def audit_run(args: argparse.Namespace) -> int:
     cmd = [
         sys.executable,
@@ -518,6 +537,7 @@ def print_commands(_: argparse.Namespace) -> int:
   - 参考生图 <image> <prompt>: 基于参考图生成
   - 严格链路 <prompt>: 执行 run_scope_pipeline.py 的完整链路
   - 回归测试: 运行 run_v2_route_regression.py
+  - 一句式视频解析回归: `python scripts/scope_commands.py video-skill-check --env-file <env> --out-dir <out> [--skip-smoke]`
   - 审核 <image_root>: 运行 audit_generated_images_with_vision.py
   - 三模型对比 <image_root>: 对图片集合做多模型视觉评测
 
@@ -713,6 +733,18 @@ def parse_args() -> argparse.Namespace:
     p_video_story.add_argument("--dry-run", action="store_true", help="Print generated request only.")
     p_video_story.add_argument("--print-only", action="store_true", help="Print child command without running it.")
     p_video_story.set_defaults(func=video_story_run)
+
+    p_video_skill_check = sub.add_parser("video-skill-check", help="Run video one-shot parser checks and optional smoke run for run_video_skill.py.")
+    p_video_skill_check.add_argument("--env-file", required=True, type=Path)
+    p_video_skill_check.add_argument("--out-dir", type=Path, default=SKILL_ROOT / "scope_runs" / "video_skill_check")
+    p_video_skill_check.add_argument(
+        "--smoke-user-input",
+        default="制作一个90秒故事，每镜头5秒，最多4个镜头，给我2个备选。",
+        help="Natural-language smoke prompt for run_video_skill.",
+    )
+    p_video_skill_check.add_argument("--skip-smoke", action="store_true", help="Only run parse regression checks.")
+    p_video_skill_check.add_argument("--print-only", action="store_true", help="Run smoke in print-only mode.")
+    p_video_skill_check.set_defaults(func=video_skill_check)
 
     return parser.parse_args()
 

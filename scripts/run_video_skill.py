@@ -93,53 +93,79 @@ class ParsedIntent:
     selection_strategy: str
 
 
+def _is_shot_scoped_rate(context: str) -> bool:
+    if not context:
+        return False
+    return bool(
+        re.search(r"(?:每|每个|每一|each|per)\s*(?:镜头|段落|镜|shot|clip|segment)", context, flags=re.I)
+        or re.search(r"(?:shot|镜头|clip|segment)\s*(?:每|每个|每一|each|per)", context, flags=re.I)
+    )
+
+
 def infer_target_duration(text: str) -> Optional[int]:
-    patterns = [
-        (r"([0-9一二三四五六七八九十]+)\s*分钟", 60),
-        (r"(\d+)\s*min(?:ute)?s?", 60),
-        (r"([0-9一二三四五六七八九十]+)\s*秒", 1),
-        (r"(\d+)\s*秒", 1),
-        (r"(\d+)\s*s(?:ec(?:ond)?s?)?", 1),
+    # 优先匹配总时长表达（避免把“每个镜头X秒”误当作总时长）
+    specific_patterns = [
+        (r"(?:for|about|around|total|总共|总时长|总长度|整段|全片)\s*(?:约|大约)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:分钟|分|min(?:ute)?s?)", 60),
+        (r"(?:全片|视频|共|共计|共计时长)\s*(?:大约|about|around)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:分钟|分|min(?:ute)?s?)", 60),
+        (r"([0-9一二三四五六七八九十]+|\d+)\s*分钟", 60),
     ]
-    return _first_match(patterns, text)
+    generic_patterns = [
+        (r"(\d+)\s*秒", 1),
+        (r"(\d+)\s*(?:s|sec(?:ond)?s?)", 1),
+    ]
+
+    value = _first_match(specific_patterns, text)
+    if value is not None:
+        return value
+
+    for pattern, factor in generic_patterns:
+        for m in re.finditer(pattern, text, flags=re.I):
+            value = _to_int(m.group(1))
+            if not value or value <= 0:
+                continue
+            around = text[max(0, m.start() - 8):m.end() + 6]
+            if _is_shot_scoped_rate(around):
+                continue
+            return value * factor
+    return None
 
 
 def infer_shot_duration(text: str) -> Optional[int]:
     patterns = [
-        r"(?:每|每个|每一)镜(?:头)?\s*(?:时长|长度)?\s*(?:约|左右|大约)?\s*([0-9一二三四五六七八九十]+)\s*秒",
-        r"(?:每|每个|每一)镜(?:头)?\s*(?:时长|长度)?\s*(?:约|左右|大约)?\s*(\d+)\s*秒",
-        r"(?:each|每)\s*([0-9一二三四五六七八九十]+)\s*(?:秒|s|sec|second)s?\s*(?:镜|镜头|shot)",
-        r"(?:each|每)\s*(\d+)\s*(?:秒|s|sec|second)s?\s*(?:镜|镜头|shot)",
-        r"(?:each|每)\s*(?:镜|镜头|shot)\s*(?:约|about|around|~)?\s*([0-9一二三四五六七八九十]+)\s*(?:秒|s|sec|second)s?",
-        r"(?:each|每)\s*(?:镜|镜头|shot)\s*(?:约|about|around|~)?\s*(\d+)\s*(?:秒|s|sec|second)s?",
-        r"(?:每|each)\s*(?:个|a)?\s*(?:镜|镜头|shot)\s*(?:约|around|~|about)?\s*([0-9一二三四五六七八九十]+)\s*(?:秒|s|sec|second)s?",
-        r"(?:每|each)\s*(?:个|a)?\s*(?:镜|镜头|shot)\s*(?:约|around|~|about)?\s*(\d+)\s*(?:秒|s|sec|second)s?",
-        r"(?:shot|镜头)\s*(?:duration|时长)\s*([0-9一二三四五六七八九十]+)\s*秒",
-        r"(?:shot|镜头)\s*(?:duration|时长)\s*(\d+)\s*(?:sec|秒)",
+        r"(?:每|每个|每一)\s*(?:镜头|shot)\s*(?:时长|长度|持续时长)?\s*(?:约|左右|大约|带|about|around)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:秒|s|sec(?:ond)?s?|seconds?)",
+        r"(?:每|each|per)\s*(?:个|)?\s*(?:镜头|shot)\s*(?:约|左右|大约|带|about|around)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:秒|s|sec(?:ond)?s?|seconds?)",
+        r"(?:对\s*)?(?:每|每个|每一)\s*(?:镜头|shot)\s*(?:进行|生成|拍摄|拍)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:秒|s|sec(?:ond)?s?|seconds?)",
+        r"(?:shot|镜头)\s*(?:duration|时长)\s*(?:是|为|about|around)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:秒|s|sec(?:ond)?s?|seconds?)",
+        r"(?:每|each|per)\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:秒|s|sec(?:ond)?s?|seconds?)\s*(?:每|每个|each|per)\s*(?:镜头|shot)",
+        r"([0-9一二三四五六七八九十]+|\d+)\s*(?:秒|s|sec(?:ond)?s?|seconds?)\s*(?:每|每个|each|per)\s*(?:镜头|shot)",
     ]
-    return _first_match_range(patterns, text, 2, 60)
+    if re.search(r"(shot|镜头|段落|clip|segment)", text, flags=re.I):
+        return _first_match_range(patterns, text, 2, 120)
+    return None
 
 
 def infer_candidate_count(text: str) -> Optional[int]:
     patterns = [
-        r"(?:每|每个|每一)镜(?:头)?\s*(?:做|生成)?\s*([0-9一二三四五六七八九十]+)\s*(?:个|张|条)?\s*(?:备选|变体|版本|候选|样本|条)",
-        r"(?:每|每个|每一)镜(?:头)?\s*(?:做|生成)?\s*(\d+)\s*(?:个|张|条)?\s*(?:备选|变体|版本|候选|样本|条)",
-        r"(?:each|per)\s*shot\s*(?:with)?\s*([0-9一二三四五六七八九十]+)\s*(?:candidates?|variants?|options?|copies?)",
-        r"(?:each|per)\s*shot\s*(?:with)?\s*(\d+)\s*(?:candidates?|variants?|options?|copies?)",
-        r"(\d+)\s*(?:candidates?|variants?|options?|copies?)\s*each shot",
-        r"([0-9一二三四五六七八九十]+)\s*(?:candidates?|variants?|options?|copies?)\s*each shot",
-        r"(?:each|per)\s*(?:\d+\s*)?(?:镜|镜头|shot)\s*(?:with)?\s*([0-9一二三四五六七八九十]+)\s*(?:candidates|variants|options|copies|shots)",
-        r"(?:each|per)\s*(?:\d+\s*)?(?:镜|镜头|shot)\s*(?:with)?\s*(\d+)\s*(?:candidates|variants|options|copies|shots)",
-        r"(?:候选|备选|变体|版本)\s*(?:每|给|出)?\s*镜(?:头)?\s*(?:各|个)?\s*([0-9一二三四五六七八九十]+)\s*(?:个|张|条)?",
-        r"(?:候选|备选|变体|版本)\s*(?:每|给|出)?\s*镜(?:头)?\s*(?:各|个)?\s*(\d+)\s*(?:个|张|条)?",
+        r"(?:每|每个|每一|each|per)\s*(?:镜头|shot)\s*(?:约|大约|about|around)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:个|)?\s*(?:候选|版本|变体|备选|candidates?|variants?|options?|copies?)",
+        r"(?:候选|版本|变体|备选)\s*(?:每|每个|每一|each|per)\s*(?:镜头|shot)\s*(?:约|大约|about|around)?\s*([0-9一二三四五六七八九十]+|\d+)",
+        r"(?:每|each|per)\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:候选|版本|变体|备选|candidates?|variants?|options?|copies?)\s*(?:每|每个|镜头|shot)",
+        r"每个镜头\s*做\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:个|)?候选",
+        r"(?:给我|给|想要|我想要|给出)\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:个|)?(?:候选|版本|变体|备选|candidates?|variants?)",
+        r"(?:each|per)\s*shot\s*(?:with|with up to|at most)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:candidates?|variants?|options?|copies?)",
+        r"with\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:candidates?|variants?|options?|copies?)",
+        r"(?:每|每个|每一|each|per)\s*(?:镜头|shot)?\s*(?:做|生成)?\s*(\d+)\s*选\d+",
+        r"(\d+)\s*选\d+",
+        r"(?:each|per)\s*shot\s*.*?(\d+)\s*(?:candidates?|variants?|options?|copies?)",
     ]
     return _first_match_range(patterns, text, 1, 12)
 
 
 def infer_max_shots(text: str) -> Optional[int]:
     patterns = [
-        r"(?:共|共计|总共|总计|需要|拍摄)\s*(\d+)\s*(?:个)?\s*镜(?:头)?",
-        r"(?:共|共计|总共|总计|需要|拍摄)\s*([0-9一二三四五六七八九十]+)\s*(?:个)?\s*镜(?:头)?",
+        r"(?:最多|不超过|上限|最大|max|maximum)\s*(?:镜头|shot)?\s*(?:为|=|是|约|大约)?\s*([0-9一二三四五六七八九十]+|\d+)",
+        r"(?:at most|no more than)\s*(?:最多)?\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:镜头|shots?)?",
+        r"(?:max|maximum)\s*(?:shots?)?\s*(?:is|=|:|\s)?\s*([0-9一二三四五六七八九十]+|\d+)",
+        r"(?:共|共计|总共|总计|需要|拍摄)\s*([0-9一二三四五六七八九十]+|\d+)\s*(?:个)?\s*镜头",
     ]
     return _first_match_range(patterns, text, 1, 30)
 
@@ -315,114 +341,7 @@ def main() -> int:
     return run_child(cmd, args.print_only)
 
 
-# Compatibility overrides for richer natural-language parsing.
-# Keep these below the original implementations so they take effect at runtime.
-
-def _is_shot_scoped_rate(context: str) -> bool:
-    return bool(re.search(r"(?:^|[\s,，。])(?:each|per|每|每个)\s*$", context, flags=re.I))
-
-
-def infer_target_duration(text: str) -> Optional[int]:
-    specific_patterns = [
-        (r"(?:for|about|around|total|大约|总共)\s*([0-9]+)\s*(?:min(?:ute)?s?|分钟)", 60),
-        (r"(?<![0-9])([0-9零一二三四五六七八九十]+)\s*分钟", 60),
-        (r"(\d+)\s*min(?:ute)?s?", 60),
-    ]
-    generic_patterns = [
-        (r"([0-9零一二三四五六七八九十]+)\s*秒", 1),
-        (r"(\d+)\s*秒", 1),
-        (r"(\d+)\s*s(?:ec(?:ond)?s?)?", 1),
-    ]
-
-    # First honor total/minute style cues.
-    value = _first_match(specific_patterns, text)
-    if value is not None:
-        return value
-
-    # Filter generic second/minute patterns to avoid consuming shot-scoped values
-    # like "each 8 seconds" when no total duration was explicitly provided.
-    for pattern, factor in generic_patterns:
-        for m in re.finditer(pattern, text, flags=re.I):
-            value = _to_int(m.group(1))
-            if value is None:
-                continue
-            value *= factor
-            if value <= 0:
-                continue
-            prefix = text[max(0, m.start() - 20) : m.start()]
-            if _is_shot_scoped_rate(prefix.lower()):
-                continue
-            return value
-    return None
-
-
-def infer_shot_duration(text: str) -> Optional[int]:
-    t = f" {text.lower()} "
-
-    # Most reliable explicit formats with shot/镜头 context.
-    explicit_patterns = [
-        r"\b(?:each|per)\s+shot\s*(?:about|around|~)?\s*(\d+)\s*(?:s|sec(?:ond)?s?|seconds?)",
-        r"\b(?:each|per)\s*shot\s*(?:is|about|around)?\s*([0-9零一二三四五六七八九十]+)\s*(?:s|sec(?:ond)?s?|seconds?)",
-        r"\b(?:shot|镜头)\s*(?:duration|时长)\s*(?:is|为)?\s*([0-9零一二三四五六七八九十]+)\s*(?:秒|s|sec(?:ond)?s?)",
-        r"\b(?:shot|镜头)\s*(?:time|duration)\s*(?:is|of)?\s*(\d+)\s*(?:秒|s|sec(?:ond)?s?)",
-        r"(?:每镜|每个镜头|每段)\s*(?:时长|长度)?\s*([0-9零一二三四五六七八九十]+)\s*(?:秒|s)",
-        r"(?:每镜|每个镜头|每段)\s*(?:时长|长度)?\s*(\d+)\s*(?:秒|s)",
-        r"(?:每镜|每个镜头|每段)\s*(?:约|大约)?\s*([0-9零一二三四五六七八九十]+)\s*秒",
-        r"(?:每镜|每个镜头|每段)\s*(?:约|大约)?\s*(\d+)\s*秒",
-    ]
-    shot_duration = _first_match_range(explicit_patterns, text, 2, 60)
-    if shot_duration is not None:
-        return shot_duration
-
-    # Compact but common phrasing: "each 8 seconds" / "8 seconds each shot".
-    compact_patterns = [
-        r"\b(?:each|per)\s+(\d+)\s*(?:s|sec(?:ond)?s?|seconds?)\b",
-        r"\b(?:each|per)\s+([0-9零一二三四五六七八九十]+)\s*(?:s|sec(?:ond)?s?|seconds?)\b",
-        r"\b(\d+)\s*(?:s|sec(?:ond)?s?|seconds?)\s*(?:each|per)(?:\s+(?:shot|镜头))?",
-        r"\b([0-9零一二三四五六七八九十]+)\s*(?:s|sec(?:ond)?s?|seconds?)\s*(?:each|per)(?:\s+(?:shot|镜头))?",
-        r"(?:每个镜头|每镜头|每镜)\s*(\d+)\s*秒",
-        r"(?:每个镜头|每镜头|每镜)\s*([0-9零一二三四五六七八九十]+)\s*秒",
-    ]
-    # If user only mentions a generic duration and no shot context, avoid over-matching.
-    if re.search(r"\b(shot|镜头|clip|clip|段)\b", t, flags=re.I):
-        return _first_match_range(compact_patterns, text, 2, 60)
-
-    return None
-
-
-def infer_candidate_count(text: str) -> Optional[int]:
-    patterns = [
-        r"(?:each|per)\s*([0-9零一二三四五六七八九十]+)\s*(?:candidate|candidates|variants|options|copies|version|versions|张|候选)",
-        r"(?:each|per)\s*(\d+)\s*(?:candidate|candidates|variants|options|copies|version|versions|张|候选)",
-        r"(?:每|每个)\s*([0-9零一二三四五六七八九十]+)\s*(?:候选|张|张图|张照片)",
-        r"(?:每|每个)\s*(\d+)\s*(?:候选|张|张图|张照片)",
-        r"(?:each|per)\s*shot\s*(?:with|生成)?\s*([0-9零一二三四五六七八九十]+)\s*(?:candidate|candidates|variants|options|copies|version|versions)",
-        r"(?:each|per)\s*shot\s*(?:with|生成)?\s*(\d+)\s*(?:candidate|candidates|variants|options|copies|version|versions)",
-        r"(?:each|per)\s*(?:\d+\s*)?(?:shot|镜头)\s*(?:with)?\s*([0-9零一二三四五六七八九十]+)\s*(?:candidates?|variants?|options?|copies?)",
-        r"(?:each|per)\s*(?:\d+\s*)?(?:shot|镜头)\s*(?:with)?\s*(\d+)\s*(?:candidates?|variants?|options?|copies?)",
-        r"(\d+)\s*(?:候选|张|张图|候选图|candidates?|variants?|options?|copies?|版本)\s*each shot",
-        r"([0-9零一二三四五六七八九十]+)\s*(?:候选|张|张图|候选图|candidates?|variants?|options?|copies?|版本)\s*each shot",
-        r"(\d+)\s*(?:候选|张|张图|图|张照片)\s*(?:每|每个)\s*(?:镜头|shot)",
-        r"候选\s*(?:is|为|是|:|：)?\s*([0-9零一二三四五六七八九十]+)\s*(?:张|张图|张照片)?",
-        r"每(?:个|镜头|镜)\s*(?:shot|镜头)\s*(?:候选|张|版本)?\s*([0-9零一二三四五六七八九十]+)",
-        r"候选\s*[:：]?\s*([0-9零一二三四五六七八九十]+)\s*(?:张|图|张图)",
-        r"(\d+)\s*张\s*(?:每|每个)\s*(?:镜头|shot)",
-        r"([0-9零一二三四五六七八九十]+)\s*张\s*(?:每|每个)\s*(?:镜头|shot)",
-        r"(?:每镜|每个镜头|每\s*shot)\s*(?:生成)?\s*([0-9零一二三四五六七八九十]+)\s*(?:候选|candidate|candidates|variant|options|copies?)",
-        r"(?:每镜|每个镜头|每\s*shot)\s*(?:生成)?\s*(\d+)\s*(?:候选|candidate|candidates|variants|options|copies?)",
-    ]
-    return _first_match_range(patterns, text, 1, 12)
-
-
-def infer_max_shots(text: str) -> Optional[int]:
-    patterns = [
-        r"(?:max|maximum)\s*(?:shots?)\s*=?\s*(\d+)",
-        r"(?:max|maximum)\s*([0-9零一二三四五六七八九十]+)",
-        r"(?:最多|最大|上限|限)\s*([0-9]+)\s*(?:个|镜头|shots?)",
-        r"(?:最多|最大|上限|限)\s*([0-9零一二三四五六七八九十]+)\s*(?:个|镜头|shots?)",
-    ]
-    return _first_match_range(patterns, text, 1, 30)
-
-
 if __name__ == "__main__":
     raise SystemExit(main())
+
+

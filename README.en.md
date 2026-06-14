@@ -120,6 +120,9 @@ python scripts/scope_commands.py video-story --env-file .env --user-prompt "crea
 
 # 4) Route-regression smoke
 python scripts/run_v2_route_regression.py --env-file .env --max-cases 1 --skip-vision --dry-run --out-dir scope_runs/smoke_regression
+
+# 5) Video one-shot parser + smoke chain
+python scripts/scope_commands.py video-skill-check --env-file .env --out-dir scope_runs/smoke_video_skill_check
 ```
 
 ## 自然语言视频入口（建议日常）
